@@ -34,7 +34,23 @@
             this.Player_Name_Label = new System.Windows.Forms.Label();
             this.Server_Domain_Box = new System.Windows.Forms.TextBox();
             this.Server_Domain_Label = new System.Windows.Forms.Label();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.BogglePanel = new System.Windows.Forms.TableLayoutPanel();
+            this.button16 = new System.Windows.Forms.Button();
+            this.button15 = new System.Windows.Forms.Button();
+            this.button14 = new System.Windows.Forms.Button();
+            this.button13 = new System.Windows.Forms.Button();
+            this.button10 = new System.Windows.Forms.Button();
+            this.button9 = new System.Windows.Forms.Button();
+            this.button8 = new System.Windows.Forms.Button();
+            this.button7 = new System.Windows.Forms.Button();
+            this.button6 = new System.Windows.Forms.Button();
+            this.button5 = new System.Windows.Forms.Button();
+            this.button4 = new System.Windows.Forms.Button();
+            this.button3 = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
+            this.button11 = new System.Windows.Forms.Button();
+            this.button12 = new System.Windows.Forms.Button();
             this.Register_Button = new System.Windows.Forms.Button();
             this.Cancel_Registration_Button = new System.Windows.Forms.Button();
             this.Time_Left_Box = new System.Windows.Forms.TextBox();
@@ -61,24 +77,8 @@
             this.Player_1_Words = new System.Windows.Forms.Label();
             this.Player_1_Score_Label = new System.Windows.Forms.Label();
             this.Player_2_Words = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
-            this.button4 = new System.Windows.Forms.Button();
-            this.button5 = new System.Windows.Forms.Button();
-            this.button6 = new System.Windows.Forms.Button();
-            this.button7 = new System.Windows.Forms.Button();
-            this.button8 = new System.Windows.Forms.Button();
-            this.button9 = new System.Windows.Forms.Button();
-            this.button10 = new System.Windows.Forms.Button();
-            this.button11 = new System.Windows.Forms.Button();
-            this.button12 = new System.Windows.Forms.Button();
-            this.button13 = new System.Windows.Forms.Button();
-            this.button14 = new System.Windows.Forms.Button();
-            this.button15 = new System.Windows.Forms.Button();
-            this.button16 = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
-            this.tableLayoutPanel1.SuspendLayout();
+            this.BogglePanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -129,38 +129,182 @@
             this.Server_Domain_Label.TabIndex = 4;
             this.Server_Domain_Label.Text = "Server Domain";
             // 
-            // tableLayoutPanel1
+            // BogglePanel
             // 
-            this.tableLayoutPanel1.ColumnCount = 4;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 80F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 80F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 80F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 80F));
-            this.tableLayoutPanel1.Controls.Add(this.button16, 3, 3);
-            this.tableLayoutPanel1.Controls.Add(this.button15, 2, 3);
-            this.tableLayoutPanel1.Controls.Add(this.button14, 1, 3);
-            this.tableLayoutPanel1.Controls.Add(this.button13, 0, 3);
-            this.tableLayoutPanel1.Controls.Add(this.button12, 3, 2);
-            this.tableLayoutPanel1.Controls.Add(this.button11, 2, 2);
-            this.tableLayoutPanel1.Controls.Add(this.button10, 1, 2);
-            this.tableLayoutPanel1.Controls.Add(this.button9, 0, 2);
-            this.tableLayoutPanel1.Controls.Add(this.button8, 3, 1);
-            this.tableLayoutPanel1.Controls.Add(this.button7, 2, 1);
-            this.tableLayoutPanel1.Controls.Add(this.button6, 1, 1);
-            this.tableLayoutPanel1.Controls.Add(this.button5, 0, 1);
-            this.tableLayoutPanel1.Controls.Add(this.button4, 3, 0);
-            this.tableLayoutPanel1.Controls.Add(this.button3, 2, 0);
-            this.tableLayoutPanel1.Controls.Add(this.button2, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.button1, 0, 0);
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(12, 168);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 4;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 80F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 80F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 80F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 80F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(317, 321);
-            this.tableLayoutPanel1.TabIndex = 5;
+            this.BogglePanel.ColumnCount = 4;
+            this.BogglePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 80F));
+            this.BogglePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 80F));
+            this.BogglePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 80F));
+            this.BogglePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 80F));
+            this.BogglePanel.Controls.Add(this.button16, 3, 3);
+            this.BogglePanel.Controls.Add(this.button15, 2, 3);
+            this.BogglePanel.Controls.Add(this.button14, 1, 3);
+            this.BogglePanel.Controls.Add(this.button13, 0, 3);
+            this.BogglePanel.Controls.Add(this.button10, 1, 2);
+            this.BogglePanel.Controls.Add(this.button9, 0, 2);
+            this.BogglePanel.Controls.Add(this.button8, 3, 1);
+            this.BogglePanel.Controls.Add(this.button7, 2, 1);
+            this.BogglePanel.Controls.Add(this.button6, 1, 1);
+            this.BogglePanel.Controls.Add(this.button5, 0, 1);
+            this.BogglePanel.Controls.Add(this.button4, 3, 0);
+            this.BogglePanel.Controls.Add(this.button3, 2, 0);
+            this.BogglePanel.Controls.Add(this.button2, 1, 0);
+            this.BogglePanel.Controls.Add(this.button1, 0, 0);
+            this.BogglePanel.Controls.Add(this.button11, 2, 2);
+            this.BogglePanel.Controls.Add(this.button12, 3, 2);
+            this.BogglePanel.Location = new System.Drawing.Point(12, 168);
+            this.BogglePanel.Name = "BogglePanel";
+            this.BogglePanel.RowCount = 4;
+            this.BogglePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 80F));
+            this.BogglePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 80F));
+            this.BogglePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 80F));
+            this.BogglePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 80F));
+            this.BogglePanel.Size = new System.Drawing.Size(317, 321);
+            this.BogglePanel.TabIndex = 5;
+            // 
+            // button16
+            // 
+            this.button16.Font = new System.Drawing.Font("Impact", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button16.Location = new System.Drawing.Point(243, 243);
+            this.button16.Name = "button16";
+            this.button16.Size = new System.Drawing.Size(74, 74);
+            this.button16.TabIndex = 15;
+            this.button16.UseVisualStyleBackColor = true;
+            // 
+            // button15
+            // 
+            this.button15.Font = new System.Drawing.Font("Impact", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button15.Location = new System.Drawing.Point(163, 243);
+            this.button15.Name = "button15";
+            this.button15.Size = new System.Drawing.Size(74, 74);
+            this.button15.TabIndex = 14;
+            this.button15.UseVisualStyleBackColor = true;
+            // 
+            // button14
+            // 
+            this.button14.Font = new System.Drawing.Font("Impact", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button14.Location = new System.Drawing.Point(83, 243);
+            this.button14.Name = "button14";
+            this.button14.Size = new System.Drawing.Size(74, 74);
+            this.button14.TabIndex = 13;
+            this.button14.UseVisualStyleBackColor = true;
+            // 
+            // button13
+            // 
+            this.button13.Font = new System.Drawing.Font("Impact", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button13.Location = new System.Drawing.Point(3, 243);
+            this.button13.Name = "button13";
+            this.button13.Size = new System.Drawing.Size(74, 74);
+            this.button13.TabIndex = 12;
+            this.button13.UseVisualStyleBackColor = true;
+            // 
+            // button10
+            // 
+            this.button10.Font = new System.Drawing.Font("Impact", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button10.Location = new System.Drawing.Point(83, 163);
+            this.button10.Name = "button10";
+            this.button10.Size = new System.Drawing.Size(74, 74);
+            this.button10.TabIndex = 9;
+            this.button10.UseVisualStyleBackColor = true;
+            // 
+            // button9
+            // 
+            this.button9.Font = new System.Drawing.Font("Impact", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button9.Location = new System.Drawing.Point(3, 163);
+            this.button9.Name = "button9";
+            this.button9.Size = new System.Drawing.Size(74, 74);
+            this.button9.TabIndex = 8;
+            this.button9.UseVisualStyleBackColor = true;
+            // 
+            // button8
+            // 
+            this.button8.Font = new System.Drawing.Font("Impact", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button8.Location = new System.Drawing.Point(243, 83);
+            this.button8.Name = "button8";
+            this.button8.Size = new System.Drawing.Size(74, 74);
+            this.button8.TabIndex = 7;
+            this.button8.UseVisualStyleBackColor = true;
+            // 
+            // button7
+            // 
+            this.button7.Font = new System.Drawing.Font("Impact", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button7.Location = new System.Drawing.Point(163, 83);
+            this.button7.Name = "button7";
+            this.button7.Size = new System.Drawing.Size(74, 74);
+            this.button7.TabIndex = 6;
+            this.button7.UseVisualStyleBackColor = true;
+            // 
+            // button6
+            // 
+            this.button6.Font = new System.Drawing.Font("Impact", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button6.Location = new System.Drawing.Point(83, 83);
+            this.button6.Name = "button6";
+            this.button6.Size = new System.Drawing.Size(74, 74);
+            this.button6.TabIndex = 5;
+            this.button6.UseVisualStyleBackColor = true;
+            // 
+            // button5
+            // 
+            this.button5.Font = new System.Drawing.Font("Impact", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button5.Location = new System.Drawing.Point(3, 83);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(74, 74);
+            this.button5.TabIndex = 4;
+            this.button5.UseVisualStyleBackColor = true;
+            // 
+            // button4
+            // 
+            this.button4.Font = new System.Drawing.Font("Impact", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button4.Location = new System.Drawing.Point(243, 3);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(74, 74);
+            this.button4.TabIndex = 3;
+            this.button4.UseVisualStyleBackColor = true;
+            // 
+            // button3
+            // 
+            this.button3.Font = new System.Drawing.Font("Impact", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button3.Location = new System.Drawing.Point(163, 3);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(74, 74);
+            this.button3.TabIndex = 2;
+            this.button3.UseVisualStyleBackColor = true;
+            // 
+            // button2
+            // 
+            this.button2.Font = new System.Drawing.Font("Impact", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button2.Location = new System.Drawing.Point(83, 3);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(74, 74);
+            this.button2.TabIndex = 1;
+            this.button2.UseVisualStyleBackColor = true;
+            // 
+            // button1
+            // 
+            this.button1.Font = new System.Drawing.Font("Impact", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button1.Location = new System.Drawing.Point(3, 3);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(74, 74);
+            this.button1.TabIndex = 0;
+            this.button1.UseVisualStyleBackColor = true;
+            // 
+            // button11
+            // 
+            this.button11.Font = new System.Drawing.Font("Impact", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button11.Location = new System.Drawing.Point(163, 163);
+            this.button11.Name = "button11";
+            this.button11.Size = new System.Drawing.Size(74, 74);
+            this.button11.TabIndex = 10;
+            this.button11.UseVisualStyleBackColor = true;
+            // 
+            // button12
+            // 
+            this.button12.Font = new System.Drawing.Font("Impact", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button12.Location = new System.Drawing.Point(243, 163);
+            this.button12.Name = "button12";
+            this.button12.Size = new System.Drawing.Size(74, 74);
+            this.button12.TabIndex = 11;
+            this.button12.UseVisualStyleBackColor = true;
             // 
             // Register_Button
             // 
@@ -170,6 +314,7 @@
             this.Register_Button.TabIndex = 6;
             this.Register_Button.Text = "Register";
             this.Register_Button.UseVisualStyleBackColor = true;
+            this.Register_Button.Click += new System.EventHandler(this.Register_Button_Click);
             // 
             // Cancel_Registration_Button
             // 
@@ -218,7 +363,7 @@
             // 
             // Cancel_Game_Button
             // 
-            this.Cancel_Game_Button.Location = new System.Drawing.Point(511, 33);
+            this.Cancel_Game_Button.Location = new System.Drawing.Point(511, 61);
             this.Cancel_Game_Button.Name = "Cancel_Game_Button";
             this.Cancel_Game_Button.Size = new System.Drawing.Size(101, 23);
             this.Cancel_Game_Button.TabIndex = 12;
@@ -243,12 +388,13 @@
             // 
             // Request_Game_Button
             // 
-            this.Request_Game_Button.Location = new System.Drawing.Point(511, 59);
+            this.Request_Game_Button.Location = new System.Drawing.Point(511, 34);
             this.Request_Game_Button.Name = "Request_Game_Button";
             this.Request_Game_Button.Size = new System.Drawing.Size(101, 23);
             this.Request_Game_Button.TabIndex = 15;
             this.Request_Game_Button.Text = "Request Game";
             this.Request_Game_Button.UseVisualStyleBackColor = true;
+            this.Request_Game_Button.Click += new System.EventHandler(this.Request_Game_Button_Click);
             // 
             // Player_1_Label
             // 
@@ -389,150 +535,6 @@
             this.Player_2_Words.TabIndex = 31;
             this.Player_2_Words.Text = "Words";
             // 
-            // button1
-            // 
-            this.button1.Font = new System.Drawing.Font("Impact", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.Location = new System.Drawing.Point(3, 3);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(74, 74);
-            this.button1.TabIndex = 0;
-            this.button1.UseVisualStyleBackColor = true;
-            // 
-            // button2
-            // 
-            this.button2.Font = new System.Drawing.Font("Impact", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button2.Location = new System.Drawing.Point(83, 3);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(74, 74);
-            this.button2.TabIndex = 1;
-            this.button2.UseVisualStyleBackColor = true;
-            // 
-            // button3
-            // 
-            this.button3.Font = new System.Drawing.Font("Impact", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button3.Location = new System.Drawing.Point(163, 3);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(74, 74);
-            this.button3.TabIndex = 2;
-            this.button3.UseVisualStyleBackColor = true;
-            // 
-            // button4
-            // 
-            this.button4.Font = new System.Drawing.Font("Impact", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button4.Location = new System.Drawing.Point(243, 3);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(74, 74);
-            this.button4.TabIndex = 3;
-            this.button4.UseVisualStyleBackColor = true;
-            // 
-            // button5
-            // 
-            this.button5.Font = new System.Drawing.Font("Impact", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button5.Location = new System.Drawing.Point(3, 83);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(74, 74);
-            this.button5.TabIndex = 4;
-            this.button5.UseVisualStyleBackColor = true;
-            // 
-            // button6
-            // 
-            this.button6.Font = new System.Drawing.Font("Impact", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button6.Location = new System.Drawing.Point(83, 83);
-            this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(74, 74);
-            this.button6.TabIndex = 5;
-            this.button6.UseVisualStyleBackColor = true;
-            // 
-            // button7
-            // 
-            this.button7.Font = new System.Drawing.Font("Impact", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button7.Location = new System.Drawing.Point(163, 83);
-            this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(74, 74);
-            this.button7.TabIndex = 6;
-            this.button7.UseVisualStyleBackColor = true;
-            // 
-            // button8
-            // 
-            this.button8.Font = new System.Drawing.Font("Impact", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button8.Location = new System.Drawing.Point(243, 83);
-            this.button8.Name = "button8";
-            this.button8.Size = new System.Drawing.Size(74, 74);
-            this.button8.TabIndex = 7;
-            this.button8.UseVisualStyleBackColor = true;
-            // 
-            // button9
-            // 
-            this.button9.Font = new System.Drawing.Font("Impact", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button9.Location = new System.Drawing.Point(3, 163);
-            this.button9.Name = "button9";
-            this.button9.Size = new System.Drawing.Size(74, 74);
-            this.button9.TabIndex = 8;
-            this.button9.UseVisualStyleBackColor = true;
-            // 
-            // button10
-            // 
-            this.button10.Font = new System.Drawing.Font("Impact", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button10.Location = new System.Drawing.Point(83, 163);
-            this.button10.Name = "button10";
-            this.button10.Size = new System.Drawing.Size(74, 74);
-            this.button10.TabIndex = 9;
-            this.button10.UseVisualStyleBackColor = true;
-            // 
-            // button11
-            // 
-            this.button11.Font = new System.Drawing.Font("Impact", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button11.Location = new System.Drawing.Point(163, 163);
-            this.button11.Name = "button11";
-            this.button11.Size = new System.Drawing.Size(74, 74);
-            this.button11.TabIndex = 10;
-            this.button11.UseVisualStyleBackColor = true;
-            // 
-            // button12
-            // 
-            this.button12.Font = new System.Drawing.Font("Impact", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button12.Location = new System.Drawing.Point(243, 163);
-            this.button12.Name = "button12";
-            this.button12.Size = new System.Drawing.Size(74, 74);
-            this.button12.TabIndex = 11;
-            this.button12.UseVisualStyleBackColor = true;
-            // 
-            // button13
-            // 
-            this.button13.Font = new System.Drawing.Font("Impact", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button13.Location = new System.Drawing.Point(3, 243);
-            this.button13.Name = "button13";
-            this.button13.Size = new System.Drawing.Size(74, 74);
-            this.button13.TabIndex = 12;
-            this.button13.UseVisualStyleBackColor = true;
-            // 
-            // button14
-            // 
-            this.button14.Font = new System.Drawing.Font("Impact", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button14.Location = new System.Drawing.Point(83, 243);
-            this.button14.Name = "button14";
-            this.button14.Size = new System.Drawing.Size(74, 74);
-            this.button14.TabIndex = 13;
-            this.button14.UseVisualStyleBackColor = true;
-            // 
-            // button15
-            // 
-            this.button15.Font = new System.Drawing.Font("Impact", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button15.Location = new System.Drawing.Point(163, 243);
-            this.button15.Name = "button15";
-            this.button15.Size = new System.Drawing.Size(74, 74);
-            this.button15.TabIndex = 14;
-            this.button15.UseVisualStyleBackColor = true;
-            // 
-            // button16
-            // 
-            this.button16.Font = new System.Drawing.Font("Impact", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button16.Location = new System.Drawing.Point(243, 243);
-            this.button16.Name = "button16";
-            this.button16.Size = new System.Drawing.Size(74, 74);
-            this.button16.TabIndex = 15;
-            this.button16.UseVisualStyleBackColor = true;
-            // 
             // Boggle
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -565,7 +567,7 @@
             this.Controls.Add(this.Time_Left_Box);
             this.Controls.Add(this.Cancel_Registration_Button);
             this.Controls.Add(this.Register_Button);
-            this.Controls.Add(this.tableLayoutPanel1);
+            this.Controls.Add(this.BogglePanel);
             this.Controls.Add(this.Server_Domain_Label);
             this.Controls.Add(this.Server_Domain_Box);
             this.Controls.Add(this.Player_Name_Label);
@@ -576,7 +578,7 @@
             this.Text = "Boggle";
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
-            this.tableLayoutPanel1.ResumeLayout(false);
+            this.BogglePanel.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -590,7 +592,7 @@
         private System.Windows.Forms.Label Player_Name_Label;
         private System.Windows.Forms.TextBox Server_Domain_Box;
         private System.Windows.Forms.Label Server_Domain_Label;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private System.Windows.Forms.TableLayoutPanel BogglePanel;
         private System.Windows.Forms.Button Register_Button;
         private System.Windows.Forms.Button Cancel_Registration_Button;
         private System.Windows.Forms.TextBox Time_Left_Box;

@@ -19,11 +19,12 @@ namespace Boggle
 
         event Action CancelGame;
 
-        event Action RequestGame;
+        event Action<int> RequestGame;
 
         event Action<string> SubmitPlayWord;
 
         event Action ClearPlayWord;
+
 
     }
 }
