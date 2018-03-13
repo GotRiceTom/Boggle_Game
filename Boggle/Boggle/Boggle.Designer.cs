@@ -34,7 +34,7 @@
             this.Player_Name_Label = new System.Windows.Forms.Label();
             this.Server_Domain_Box = new System.Windows.Forms.TextBox();
             this.Server_Domain_Label = new System.Windows.Forms.Label();
-            this.boggleGrid = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.Register_Button = new System.Windows.Forms.Button();
             this.Cancel_Registration_Button = new System.Windows.Forms.Button();
             this.Time_Left_Box = new System.Windows.Forms.TextBox();
@@ -43,14 +43,24 @@
             this.Word_Entry_Label = new System.Windows.Forms.Label();
             this.Cancel_Game_Button = new System.Windows.Forms.Button();
             this.Desired_Game_Length_Label = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.Game_Length_Box = new System.Windows.Forms.TextBox();
             this.Request_Game_Button = new System.Windows.Forms.Button();
             this.Player_1_Label = new System.Windows.Forms.Label();
             this.Player_2_Label = new System.Windows.Forms.Label();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.textBox3 = new System.Windows.Forms.TextBox();
-            this.textBox4 = new System.Windows.Forms.TextBox();
-            this.textBox5 = new System.Windows.Forms.TextBox();
+            this.Player_1_Words_Box = new System.Windows.Forms.TextBox();
+            this.Player_2_Words_Box = new System.Windows.Forms.TextBox();
+            this.Player_1_Name_Box = new System.Windows.Forms.TextBox();
+            this.Player_2_Name_Box = new System.Windows.Forms.TextBox();
+            this.Game_Status_Label = new System.Windows.Forms.Label();
+            this.Game_Status_Box = new System.Windows.Forms.TextBox();
+            this.Submit_Button = new System.Windows.Forms.Button();
+            this.Player_1_Score_Box = new System.Windows.Forms.TextBox();
+            this.Player_2_Score_Box = new System.Windows.Forms.TextBox();
+            this.Player_2_Score_Label = new System.Windows.Forms.Label();
+            this.Clear_Button = new System.Windows.Forms.Button();
+            this.Player_1_Words = new System.Windows.Forms.Label();
+            this.Player_1_Score_Label = new System.Windows.Forms.Label();
+            this.Player_2_Words = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -60,7 +70,7 @@
             this.helpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(685, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(645, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -102,22 +112,22 @@
             this.Server_Domain_Label.TabIndex = 4;
             this.Server_Domain_Label.Text = "Server Domain";
             // 
-            // boggleGrid
+            // tableLayoutPanel1
             // 
-            this.boggleGrid.ColumnCount = 4;
-            this.boggleGrid.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 80F));
-            this.boggleGrid.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 80F));
-            this.boggleGrid.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 80F));
-            this.boggleGrid.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 80F));
-            this.boggleGrid.Location = new System.Drawing.Point(12, 168);
-            this.boggleGrid.Name = "boggleGrid";
-            this.boggleGrid.RowCount = 4;
-            this.boggleGrid.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 80F));
-            this.boggleGrid.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 80F));
-            this.boggleGrid.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 80F));
-            this.boggleGrid.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 80F));
-            this.boggleGrid.Size = new System.Drawing.Size(317, 321);
-            this.boggleGrid.TabIndex = 5;
+            this.tableLayoutPanel1.ColumnCount = 4;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 80F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 80F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 80F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 80F));
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(12, 168);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 4;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 80F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 80F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 80F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 80F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(317, 321);
+            this.tableLayoutPanel1.TabIndex = 5;
             // 
             // Register_Button
             // 
@@ -157,23 +167,25 @@
             // 
             // Word_Entry_Box
             // 
-            this.Word_Entry_Box.Location = new System.Drawing.Point(108, 506);
+            this.Word_Entry_Box.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Word_Entry_Box.Location = new System.Drawing.Point(83, 513);
             this.Word_Entry_Box.Name = "Word_Entry_Box";
-            this.Word_Entry_Box.Size = new System.Drawing.Size(100, 20);
+            this.Word_Entry_Box.ReadOnly = true;
+            this.Word_Entry_Box.Size = new System.Drawing.Size(112, 24);
             this.Word_Entry_Box.TabIndex = 10;
             // 
             // Word_Entry_Label
             // 
             this.Word_Entry_Label.AutoSize = true;
-            this.Word_Entry_Label.Location = new System.Drawing.Point(12, 509);
+            this.Word_Entry_Label.Location = new System.Drawing.Point(9, 519);
             this.Word_Entry_Label.Name = "Word_Entry_Label";
-            this.Word_Entry_Label.Size = new System.Drawing.Size(95, 13);
+            this.Word_Entry_Label.Size = new System.Drawing.Size(73, 13);
             this.Word_Entry_Label.TabIndex = 11;
-            this.Word_Entry_Label.Text = "Enter Words Here:";
+            this.Word_Entry_Label.Text = "Current Word:";
             // 
             // Cancel_Game_Button
             // 
-            this.Cancel_Game_Button.Location = new System.Drawing.Point(228, 506);
+            this.Cancel_Game_Button.Location = new System.Drawing.Point(511, 33);
             this.Cancel_Game_Button.Name = "Cancel_Game_Button";
             this.Cancel_Game_Button.Size = new System.Drawing.Size(101, 23);
             this.Cancel_Game_Button.TabIndex = 12;
@@ -183,24 +195,24 @@
             // Desired_Game_Length_Label
             // 
             this.Desired_Game_Length_Label.AutoSize = true;
-            this.Desired_Game_Length_Label.Location = new System.Drawing.Point(346, 48);
+            this.Desired_Game_Length_Label.Location = new System.Drawing.Point(302, 64);
             this.Desired_Game_Length_Label.Name = "Desired_Game_Length_Label";
-            this.Desired_Game_Length_Label.Size = new System.Drawing.Size(110, 13);
+            this.Desired_Game_Length_Label.Size = new System.Drawing.Size(97, 13);
             this.Desired_Game_Length_Label.TabIndex = 13;
-            this.Desired_Game_Length_Label.Text = "Desired Game Length";
+            this.Desired_Game_Length_Label.Text = "Game Length (sec)";
             // 
-            // textBox1
+            // Game_Length_Box
             // 
-            this.textBox1.Location = new System.Drawing.Point(462, 45);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(60, 20);
-            this.textBox1.TabIndex = 14;
+            this.Game_Length_Box.Location = new System.Drawing.Point(405, 62);
+            this.Game_Length_Box.Name = "Game_Length_Box";
+            this.Game_Length_Box.Size = new System.Drawing.Size(100, 20);
+            this.Game_Length_Box.TabIndex = 14;
             // 
             // Request_Game_Button
             // 
-            this.Request_Game_Button.Location = new System.Drawing.Point(528, 45);
+            this.Request_Game_Button.Location = new System.Drawing.Point(511, 59);
             this.Request_Game_Button.Name = "Request_Game_Button";
-            this.Request_Game_Button.Size = new System.Drawing.Size(98, 23);
+            this.Request_Game_Button.Size = new System.Drawing.Size(101, 23);
             this.Request_Game_Button.TabIndex = 15;
             this.Request_Game_Button.Text = "Request Game";
             this.Request_Game_Button.UseVisualStyleBackColor = true;
@@ -208,7 +220,7 @@
             // Player_1_Label
             // 
             this.Player_1_Label.AutoSize = true;
-            this.Player_1_Label.Location = new System.Drawing.Point(443, 110);
+            this.Player_1_Label.Location = new System.Drawing.Point(406, 108);
             this.Player_1_Label.Name = "Player_1_Label";
             this.Player_1_Label.Size = new System.Drawing.Size(45, 13);
             this.Player_1_Label.TabIndex = 16;
@@ -217,55 +229,156 @@
             // Player_2_Label
             // 
             this.Player_2_Label.AutoSize = true;
-            this.Player_2_Label.Location = new System.Drawing.Point(565, 110);
+            this.Player_2_Label.Location = new System.Drawing.Point(528, 108);
             this.Player_2_Label.Name = "Player_2_Label";
             this.Player_2_Label.Size = new System.Drawing.Size(45, 13);
             this.Player_2_Label.TabIndex = 17;
             this.Player_2_Label.Text = "Player 2";
             // 
-            // textBox2
+            // Player_1_Words_Box
             // 
-            this.textBox2.Location = new System.Drawing.Point(401, 152);
-            this.textBox2.Multiline = true;
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(121, 347);
-            this.textBox2.TabIndex = 18;
+            this.Player_1_Words_Box.Location = new System.Drawing.Point(364, 211);
+            this.Player_1_Words_Box.Multiline = true;
+            this.Player_1_Words_Box.Name = "Player_1_Words_Box";
+            this.Player_1_Words_Box.ReadOnly = true;
+            this.Player_1_Words_Box.Size = new System.Drawing.Size(121, 338);
+            this.Player_1_Words_Box.TabIndex = 18;
             // 
-            // textBox3
+            // Player_2_Words_Box
             // 
-            this.textBox3.Location = new System.Drawing.Point(528, 152);
-            this.textBox3.Multiline = true;
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(120, 347);
-            this.textBox3.TabIndex = 19;
+            this.Player_2_Words_Box.Location = new System.Drawing.Point(491, 211);
+            this.Player_2_Words_Box.Multiline = true;
+            this.Player_2_Words_Box.Name = "Player_2_Words_Box";
+            this.Player_2_Words_Box.ReadOnly = true;
+            this.Player_2_Words_Box.Size = new System.Drawing.Size(120, 338);
+            this.Player_2_Words_Box.TabIndex = 19;
             // 
-            // textBox4
+            // Player_1_Name_Box
             // 
-            this.textBox4.Location = new System.Drawing.Point(401, 126);
-            this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(121, 20);
-            this.textBox4.TabIndex = 20;
+            this.Player_1_Name_Box.Location = new System.Drawing.Point(364, 124);
+            this.Player_1_Name_Box.Name = "Player_1_Name_Box";
+            this.Player_1_Name_Box.ReadOnly = true;
+            this.Player_1_Name_Box.Size = new System.Drawing.Size(121, 20);
+            this.Player_1_Name_Box.TabIndex = 20;
             // 
-            // textBox5
+            // Player_2_Name_Box
             // 
-            this.textBox5.Location = new System.Drawing.Point(528, 126);
-            this.textBox5.Name = "textBox5";
-            this.textBox5.Size = new System.Drawing.Size(120, 20);
-            this.textBox5.TabIndex = 21;
+            this.Player_2_Name_Box.Location = new System.Drawing.Point(491, 124);
+            this.Player_2_Name_Box.Name = "Player_2_Name_Box";
+            this.Player_2_Name_Box.ReadOnly = true;
+            this.Player_2_Name_Box.Size = new System.Drawing.Size(120, 20);
+            this.Player_2_Name_Box.TabIndex = 21;
+            // 
+            // Game_Status_Label
+            // 
+            this.Game_Status_Label.AutoSize = true;
+            this.Game_Status_Label.Location = new System.Drawing.Point(331, 37);
+            this.Game_Status_Label.Name = "Game_Status_Label";
+            this.Game_Status_Label.Size = new System.Drawing.Size(68, 13);
+            this.Game_Status_Label.TabIndex = 22;
+            this.Game_Status_Label.Text = "Game Status";
+            // 
+            // Game_Status_Box
+            // 
+            this.Game_Status_Box.Location = new System.Drawing.Point(405, 34);
+            this.Game_Status_Box.Name = "Game_Status_Box";
+            this.Game_Status_Box.ReadOnly = true;
+            this.Game_Status_Box.Size = new System.Drawing.Size(100, 20);
+            this.Game_Status_Box.TabIndex = 23;
+            // 
+            // Submit_Button
+            // 
+            this.Submit_Button.Location = new System.Drawing.Point(206, 502);
+            this.Submit_Button.Name = "Submit_Button";
+            this.Submit_Button.Size = new System.Drawing.Size(58, 47);
+            this.Submit_Button.TabIndex = 24;
+            this.Submit_Button.Text = "Submit";
+            this.Submit_Button.UseVisualStyleBackColor = true;
+            // 
+            // Player_1_Score_Box
+            // 
+            this.Player_1_Score_Box.Location = new System.Drawing.Point(364, 163);
+            this.Player_1_Score_Box.Name = "Player_1_Score_Box";
+            this.Player_1_Score_Box.ReadOnly = true;
+            this.Player_1_Score_Box.Size = new System.Drawing.Size(121, 20);
+            this.Player_1_Score_Box.TabIndex = 25;
+            // 
+            // Player_2_Score_Box
+            // 
+            this.Player_2_Score_Box.Location = new System.Drawing.Point(491, 163);
+            this.Player_2_Score_Box.Name = "Player_2_Score_Box";
+            this.Player_2_Score_Box.ReadOnly = true;
+            this.Player_2_Score_Box.Size = new System.Drawing.Size(121, 20);
+            this.Player_2_Score_Box.TabIndex = 26;
+            // 
+            // Player_2_Score_Label
+            // 
+            this.Player_2_Score_Label.AutoSize = true;
+            this.Player_2_Score_Label.Location = new System.Drawing.Point(528, 147);
+            this.Player_2_Score_Label.Name = "Player_2_Score_Label";
+            this.Player_2_Score_Label.Size = new System.Drawing.Size(35, 13);
+            this.Player_2_Score_Label.TabIndex = 28;
+            this.Player_2_Score_Label.Text = "Score";
+            // 
+            // Clear_Button
+            // 
+            this.Clear_Button.Location = new System.Drawing.Point(270, 502);
+            this.Clear_Button.Name = "Clear_Button";
+            this.Clear_Button.Size = new System.Drawing.Size(59, 48);
+            this.Clear_Button.TabIndex = 29;
+            this.Clear_Button.Text = "Clear";
+            this.Clear_Button.UseVisualStyleBackColor = true;
+            // 
+            // Player_1_Words
+            // 
+            this.Player_1_Words.AutoSize = true;
+            this.Player_1_Words.Location = new System.Drawing.Point(406, 195);
+            this.Player_1_Words.Name = "Player_1_Words";
+            this.Player_1_Words.Size = new System.Drawing.Size(38, 13);
+            this.Player_1_Words.TabIndex = 30;
+            this.Player_1_Words.Text = "Words";
+            // 
+            // Player_1_Score_Label
+            // 
+            this.Player_1_Score_Label.AutoSize = true;
+            this.Player_1_Score_Label.Location = new System.Drawing.Point(406, 147);
+            this.Player_1_Score_Label.Name = "Player_1_Score_Label";
+            this.Player_1_Score_Label.Size = new System.Drawing.Size(35, 13);
+            this.Player_1_Score_Label.TabIndex = 27;
+            this.Player_1_Score_Label.Text = "Score";
+            // 
+            // Player_2_Words
+            // 
+            this.Player_2_Words.AutoSize = true;
+            this.Player_2_Words.Location = new System.Drawing.Point(528, 195);
+            this.Player_2_Words.Name = "Player_2_Words";
+            this.Player_2_Words.Size = new System.Drawing.Size(38, 13);
+            this.Player_2_Words.TabIndex = 31;
+            this.Player_2_Words.Text = "Words";
             // 
             // Boggle
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(685, 539);
-            this.Controls.Add(this.textBox5);
-            this.Controls.Add(this.textBox4);
-            this.Controls.Add(this.textBox3);
-            this.Controls.Add(this.textBox2);
+            this.ClientSize = new System.Drawing.Size(645, 560);
+            this.Controls.Add(this.Player_2_Words);
+            this.Controls.Add(this.Player_1_Words);
+            this.Controls.Add(this.Clear_Button);
+            this.Controls.Add(this.Player_2_Score_Label);
+            this.Controls.Add(this.Player_1_Score_Label);
+            this.Controls.Add(this.Player_2_Score_Box);
+            this.Controls.Add(this.Player_1_Score_Box);
+            this.Controls.Add(this.Submit_Button);
+            this.Controls.Add(this.Game_Status_Box);
+            this.Controls.Add(this.Game_Status_Label);
+            this.Controls.Add(this.Player_2_Name_Box);
+            this.Controls.Add(this.Player_1_Name_Box);
+            this.Controls.Add(this.Player_2_Words_Box);
+            this.Controls.Add(this.Player_1_Words_Box);
             this.Controls.Add(this.Player_2_Label);
             this.Controls.Add(this.Player_1_Label);
             this.Controls.Add(this.Request_Game_Button);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.Game_Length_Box);
             this.Controls.Add(this.Desired_Game_Length_Label);
             this.Controls.Add(this.Cancel_Game_Button);
             this.Controls.Add(this.Word_Entry_Label);
@@ -274,7 +387,7 @@
             this.Controls.Add(this.Time_Left_Box);
             this.Controls.Add(this.Cancel_Registration_Button);
             this.Controls.Add(this.Register_Button);
-            this.Controls.Add(this.boggleGrid);
+            this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.Server_Domain_Label);
             this.Controls.Add(this.Server_Domain_Box);
             this.Controls.Add(this.Player_Name_Label);
@@ -298,7 +411,7 @@
         private System.Windows.Forms.Label Player_Name_Label;
         private System.Windows.Forms.TextBox Server_Domain_Box;
         private System.Windows.Forms.Label Server_Domain_Label;
-        private System.Windows.Forms.TableLayoutPanel boggleGrid;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Button Register_Button;
         private System.Windows.Forms.Button Cancel_Registration_Button;
         private System.Windows.Forms.TextBox Time_Left_Box;
@@ -307,14 +420,24 @@
         private System.Windows.Forms.Label Word_Entry_Label;
         private System.Windows.Forms.Button Cancel_Game_Button;
         private System.Windows.Forms.Label Desired_Game_Length_Label;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox Game_Length_Box;
         private System.Windows.Forms.Button Request_Game_Button;
         private System.Windows.Forms.Label Player_1_Label;
         private System.Windows.Forms.Label Player_2_Label;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.TextBox textBox3;
-        private System.Windows.Forms.TextBox textBox4;
-        private System.Windows.Forms.TextBox textBox5;
+        private System.Windows.Forms.TextBox Player_1_Words_Box;
+        private System.Windows.Forms.TextBox Player_2_Words_Box;
+        private System.Windows.Forms.TextBox Player_1_Name_Box;
+        private System.Windows.Forms.TextBox Player_2_Name_Box;
+        private System.Windows.Forms.Label Game_Status_Label;
+        private System.Windows.Forms.TextBox Game_Status_Box;
+        private System.Windows.Forms.Button Submit_Button;
+        private System.Windows.Forms.TextBox Player_1_Score_Box;
+        private System.Windows.Forms.TextBox Player_2_Score_Box;
+        private System.Windows.Forms.Label Player_2_Score_Label;
+        private System.Windows.Forms.Button Clear_Button;
+        private System.Windows.Forms.Label Player_1_Words;
+        private System.Windows.Forms.Label Player_1_Score_Label;
+        private System.Windows.Forms.Label Player_2_Words;
     }
 }
 
