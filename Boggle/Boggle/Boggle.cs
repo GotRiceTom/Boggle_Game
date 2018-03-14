@@ -49,5 +49,40 @@ namespace Boggle
         {
             CancelRegisterUser?.Invoke();
         }
+
+        public void displayPlayer1Name()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void displayPlayer2Name()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void displayPlayer1Score(int newScore)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void displayPlayer2Score(int newScore)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void displayTimerLimit(int timeLimit)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void displayCurrentTime(int currentTime)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void displayGameStatus(string status)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

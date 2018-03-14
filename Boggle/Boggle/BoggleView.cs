@@ -25,6 +25,20 @@ namespace Boggle
 
         event Action ClearPlayWord;
 
+        void displayPlayer1Name();
+
+        void displayPlayer2Name();
+
+        void displayPlayer1Score(int newScore);
+
+        void displayPlayer2Score(int newScore);
+
+        void displayTimerLimit(int timeLimit);
+
+        void displayCurrentTime(int currentTime);
+
+        void displayGameStatus(string status);
+
 
     }
 }
