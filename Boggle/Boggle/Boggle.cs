@@ -40,5 +40,14 @@ namespace Boggle
         {
             RequestGame?.Invoke(Int32.Parse(Game_Length_Box.Text));
         }
+        private void Cancel_Game_Button_Click(object sender, EventArgs e)
+        {
+            CancelGame?.Invoke();
+        }
+
+        private void Cancel_Registration_Button_Click(object sender, EventArgs e)
+        {
+            CancelRegisterUser?.Invoke();
+        }
     }
 }

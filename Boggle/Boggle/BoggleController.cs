@@ -19,6 +19,7 @@ namespace Boggle
 
         private string userToken;
 
+        private string gameID;
         /// <summary>
         /// For canceling the current operation
         /// </summary>
@@ -31,6 +32,8 @@ namespace Boggle
 
             window.RegisterUser += HandleRegisterUser;
             window.RequestGame += HandleRequestGame;
+            window.CancelGame += HandleCancelGame;
+            window.CancelRegisterUser += HandleCancelUser;
         }
 
 
@@ -83,8 +86,6 @@ namespace Boggle
         private async void HandleRequestGame(int durationSec)
         {
 
-
-
             try
             {
 
@@ -107,8 +108,8 @@ namespace Boggle
                     {
                         String result = await response.Content.ReadAsStringAsync();
                         dynamic item = JsonConvert.DeserializeObject(result);
-                        userToken = (string)item.UserToken;
-                        MessageBox.Show("test registering: " + response.StatusCode + "\n" + "response.ReasonPhrase");
+                        gameID = (string)item.GameID;
+                        MessageBox.Show("test registering: " + response.StatusCode + "\n" + response.ReasonPhrase + "UserToken " + userToken);
 
                         // window.IsUserRegistered = true;
                     }
@@ -123,6 +124,51 @@ namespace Boggle
             }
         }
 
+        private async void HandleCancelGame()
+        {
+            try
+            {
+
+                using (HttpClient client = CreateClient())
+                {
+                    // Create the parameter
+                    dynamic user = new ExpandoObject();
+                    user.UserToken = userToken;
+                   
+
+
+
+                    // Compose and send the request.
+                    tokenSource = new CancellationTokenSource();
+                    StringContent content = new StringContent(JsonConvert.SerializeObject(user), Encoding.UTF8, "application/json");
+                    HttpResponseMessage response = await client.PutAsync("BoggleService.svc/games", content, tokenSource.Token);
+
+                    // Deal with the response
+                    if (response.IsSuccessStatusCode)
+                    {
+                        String result = await response.Content.ReadAsStringAsync();
+                      
+                        MessageBox.Show("Test Cancel: " + response.StatusCode + "\n" + "response.ReasonPhrase");
+
+                    }
+                    else
+                    {
+                        MessageBox.Show("Error cancelling: " + response.StatusCode + "\n" + response.ReasonPhrase + "UserToken " + userToken);
+                    }
+                }
+            }
+            catch (TaskCanceledException)
+            {
+            }
+        }
+
+
+
+
+        private  void HandleCancelUser()
+        {
+            tokenSource.Cancel();
+        }
 
 
         /// <summary>

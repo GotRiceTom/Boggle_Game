@@ -324,6 +324,7 @@
             this.Cancel_Registration_Button.TabIndex = 7;
             this.Cancel_Registration_Button.Text = "Cancel Registration";
             this.Cancel_Registration_Button.UseVisualStyleBackColor = true;
+            this.Cancel_Registration_Button.Click += new System.EventHandler(this.Cancel_Registration_Button_Click);
             // 
             // Time_Left_Box
             // 
@@ -369,6 +370,7 @@
             this.Cancel_Game_Button.TabIndex = 12;
             this.Cancel_Game_Button.Text = "Cancel Game";
             this.Cancel_Game_Button.UseVisualStyleBackColor = true;
+            this.Cancel_Game_Button.Click += new System.EventHandler(this.Cancel_Game_Button_Click);
             // 
             // Desired_Game_Length_Label
             // 
