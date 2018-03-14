@@ -26,6 +26,9 @@ namespace Boggle
         private CancellationTokenSource tokenSource;
 
 
+        private bool IsGridDisplay { get; set; }
+
+
         public BoggleController(BoggleView inputView)
         {
             this.window = inputView;
@@ -34,6 +37,8 @@ namespace Boggle
             window.RequestGame += HandleRequestGame;
             window.CancelGame += HandleCancelGame;
             window.CancelRegisterUser += HandleCancelUser;
+
+            IsGridDisplay = false;
         }
 
 
@@ -67,7 +72,7 @@ namespace Boggle
                         String result = await response.Content.ReadAsStringAsync();
                         dynamic item = JsonConvert.DeserializeObject(result);
                         userToken = (string)item.UserToken;
-                        MessageBox.Show("test registering: " + response.StatusCode + "\n" + "response.ReasonPhrase");
+                        MessageBox.Show("Your username is register to the server");
 
                         // window.IsUserRegistered = true;
                     }
@@ -109,7 +114,18 @@ namespace Boggle
                         String result = await response.Content.ReadAsStringAsync();
                         dynamic item = JsonConvert.DeserializeObject(result);
                         gameID = (string)item.GameID;
-                        MessageBox.Show("test registering: " + response.StatusCode + "\n" + response.ReasonPhrase + "UserToken " + userToken);
+
+                        if (response.StatusCode.ToString() == "Accepted")
+                        {
+                            MessageBox.Show("You're the host of this game server");
+                            HandleGameState();
+                        }
+                        else
+                        {
+                            MessageBox.Show("You've now player 2 on someone else server");
+                            HandleGameState();
+                        }
+                       
 
                         // window.IsUserRegistered = true;
                     }
@@ -134,9 +150,6 @@ namespace Boggle
                     // Create the parameter
                     dynamic user = new ExpandoObject();
                     user.UserToken = userToken;
-                   
-
-
 
                     // Compose and send the request.
                     tokenSource = new CancellationTokenSource();
@@ -146,7 +159,6 @@ namespace Boggle
                     // Deal with the response
                     if (response.IsSuccessStatusCode)
                     {
-                        String result = await response.Content.ReadAsStringAsync();
                       
                         MessageBox.Show("Test Cancel: " + response.StatusCode + "\n" + "response.ReasonPhrase");
 
@@ -170,6 +182,65 @@ namespace Boggle
             tokenSource.Cancel();
         }
 
+
+
+        private async void HandleGameState()
+        {
+            try
+            {
+
+                using (HttpClient client = CreateClient())
+                {
+                   
+                  //  StringContent content = new StringContent(JsonConvert.SerializeObject(user), Encoding.UTF8, "application/json");
+                    HttpResponseMessage response = await client.GetAsync("BoggleService.svc/games" + "/" + gameID);
+
+                    // Deal with the response
+                    if (response.IsSuccessStatusCode)
+                    {
+                        String result = await response.Content.ReadAsStringAsync();
+
+                        dynamic item = JsonConvert.DeserializeObject(result);
+
+                        window.displayGameStatus((string)item.GameState);
+
+                        // if game state is not pending
+
+                        if ((string)item.GameState != "pending")
+                        {
+
+
+
+                            // get letters on the board
+
+                            if (!IsGridDisplay)
+                            {
+                                //set the flag to true
+                                IsGridDisplay = true;
+                                window.displayGameBoard((string)item.Board);
+                            }
+
+                            window.displayCurrentTime((string)item.TimeLeft);
+                            window.displayPlayer1Name((string)item.Player1.Nickname);
+                            window.displayPlayer2Name((string)item.Player2.Nickname);
+
+                        }
+                      
+
+                    }
+                   
+                }
+            }
+            catch (TaskCanceledException)
+            {
+            }
+
+        }
+
+        private void StartTimer()
+        {
+            
+        }
 
         /// <summary>
         /// Creates an HttpClient for communicating with the server.

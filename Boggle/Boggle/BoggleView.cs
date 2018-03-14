@@ -10,9 +10,6 @@ namespace Boggle
     {
 
 
-
-
-
         event Action<string> RegisterUser;
 
         event Action CancelRegisterUser;
@@ -25,20 +22,24 @@ namespace Boggle
 
         event Action ClearPlayWord;
 
-        void displayPlayer1Name();
+        void displayPlayer1Name(string name);
 
-        void displayPlayer2Name();
+        void displayPlayer2Name(string names);
 
-        void displayPlayer1Score(int newScore);
+        void displayPlayer1Score(string newScore);
 
-        void displayPlayer2Score(int newScore);
+        void displayPlayer2Score(string newScore);
 
-        void displayTimerLimit(int timeLimit);
+        void displayTimerLimit(string timeLimit);
 
-        void displayCurrentTime(int currentTime);
+        void displayCurrentTime(string currentTime);
 
         void displayGameStatus(string status);
 
+        void displayPlayer1Words(string word);
 
+        void displayPlayer2Words(string word);
+
+        void displayGameBoard(string board);
     }
 }
