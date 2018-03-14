@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Timers;
 
 namespace Boggle
 {
@@ -20,6 +21,9 @@ namespace Boggle
         private string userToken;
 
         private string gameID;
+
+        private System.Threading.Timer timer;
+
         /// <summary>
         /// For canceling the current operation
         /// </summary>
@@ -213,12 +217,12 @@ namespace Boggle
 
                             // get letters on the board
 
-                            if (!IsGridDisplay)
-                            {
+                          //  if (!IsGridDisplay)
+                         //   {
                                 //set the flag to true
-                                IsGridDisplay = true;
+                                //IsGridDisplay = true;
                                 window.displayGameBoard((string)item.Board);
-                            }
+                           // }
 
                             window.displayCurrentTime((string)item.TimeLeft);
                             window.displayPlayer1Name((string)item.Player1.Nickname);

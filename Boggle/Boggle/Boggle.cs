@@ -29,6 +29,8 @@ namespace Boggle
 
         public event Action ClearPlayWord;
 
+        public event Action Time_Ticked;
+
         private void Register_Button_Click(object sender, EventArgs e)
         {
            
@@ -38,7 +40,17 @@ namespace Boggle
 
         private void Request_Game_Button_Click(object sender, EventArgs e)
         {
-            RequestGame?.Invoke(Int32.Parse(Game_Length_Box.Text));
+            try
+            {
+                
+                    RequestGame?.Invoke(Int32.Parse(Game_Length_Box.Text));
+                
+            }
+            catch (FormatException)
+            {
+                MessageBox.Show("You must enter a valid time");
+            }
+            
         }
         private void Cancel_Game_Button_Click(object sender, EventArgs e)
         {
@@ -181,6 +193,101 @@ namespace Boggle
 
             }
             
+        }
+
+        private void button0_Click(object sender, EventArgs e)
+        {
+            if (button0.BackColor.Equals(Color.Red))
+            {
+                button0.BackColor = Color.Empty;
+                Word_Entry_Box.Text = "";
+            }
+            else
+            {
+                button0.BackColor = Color.Red;
+                Word_Entry_Box.Text += button0.Text;
+            }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            button1.BackColor = Color.Red;
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            button2.BackColor = Color.Red;
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            button3.BackColor = Color.Red;
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            button4.BackColor = Color.Red;
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            button5.BackColor = Color.Red;
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            button6.BackColor = Color.Red;
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            button7.BackColor = Color.Red;
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            button8.BackColor = Color.Red;
+        }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+            button9.BackColor = Color.Red;
+        }
+
+        private void button10_Click(object sender, EventArgs e)
+        {
+            button10.BackColor = Color.Red;
+        }
+
+        private void button11_Click(object sender, EventArgs e)
+        {
+            button11.BackColor = Color.Red;
+        }
+
+        private void button12_Click(object sender, EventArgs e)
+        {
+            button12.BackColor = Color.Red;
+        }
+
+        private void button13_Click(object sender, EventArgs e)
+        {
+            button13.BackColor = Color.Red;
+        }
+
+        private void button14_Click(object sender, EventArgs e)
+        {
+            button14.BackColor = Color.Red;
+        }
+
+        private void button15_Click(object sender, EventArgs e)
+        {
+            button15.BackColor = Color.Red;
+        }
+
+
+        private void resetHighlightedButton()
+        {
+
         }
     }
 }

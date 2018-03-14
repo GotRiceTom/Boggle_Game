@@ -22,6 +22,7 @@ namespace Boggle
 
         event Action ClearPlayWord;
 
+
         void displayPlayer1Name(string name);
 
         void displayPlayer2Name(string names);
