@@ -4,6 +4,7 @@ using System.Windows.Forms;
 
 /// <summary>
 /// Created by Tom Nguyen and Eric Naegle for CS 3500
+/// 03/05/2018
 /// 
 /// This is used for a UI that allows the user to play boggle online through an API.
 /// This partial class handles the buttons, their inputs, and their behavior.
@@ -451,12 +452,16 @@ namespace Boggle
             }
         }
 
+        /// <summary>
+        /// Enters the letter on the button into the word entry box and changed the color of the button, or clears the board if the button has already been pressed.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button10_Click(object sender, EventArgs e)
         {
             if (button10.BackColor.Equals(Color.Red))
             {
                 button10.BackColor = Color.Empty;
-                
 
                 //call helper that clears the whole board
                 resetHighlightedButton();
@@ -468,12 +473,16 @@ namespace Boggle
             }
         }
 
+        /// <summary>
+        /// Enters the letter on the button into the word entry box and changed the color of the button, or clears the board if the button has already been pressed..
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button11_Click(object sender, EventArgs e)
         {
             if (button11.BackColor.Equals(Color.Red))
             {
                 button11.BackColor = Color.Empty;
-                
 
                 //call helper that clears the whole board
                 resetHighlightedButton();
@@ -485,12 +494,16 @@ namespace Boggle
             }
         }
 
+        /// <summary>
+        /// Enters the letter on the button into the word entry box and changed the color of the button, or clears the board if the button has already been pressed..
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button12_Click(object sender, EventArgs e)
         {
             if (button12.BackColor.Equals(Color.Red))
             {
                 button12.BackColor = Color.Empty;
-               
 
                 //call helper that clears the whole board
                 resetHighlightedButton();
@@ -502,12 +515,16 @@ namespace Boggle
             }
         }
 
+        /// <summary>
+        /// Enters the letter on the button into the word entry box and changed the color of the button, or clears the board if the button has already been pressed..
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button13_Click(object sender, EventArgs e)
         {
             if (button13.BackColor.Equals(Color.Red))
             {
                 button13.BackColor = Color.Empty;
-                
 
                 //call helper that clears the whole board
                 resetHighlightedButton();
@@ -519,12 +536,16 @@ namespace Boggle
             }
         }
 
+        /// <summary>
+        /// Enters the letter on the button into the word entry box and changed the color of the button, or clears the board if the button has already been pressed..
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button14_Click(object sender, EventArgs e)
         {
             if (button14.BackColor.Equals(Color.Red))
             {
                 button14.BackColor = Color.Empty;
-                
 
                 //call helper that clears the whole board
                 resetHighlightedButton();
@@ -536,12 +557,16 @@ namespace Boggle
             }
         }
 
+        /// <summary>
+        /// Enters the letter on the button into the word entry box and changed the color of the button, or clears the board if the button has already been pressed..
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button15_Click(object sender, EventArgs e)
         {
             if (button15.BackColor.Equals(Color.Red))
             {
                 button15.BackColor = Color.Empty;
-                
 
                 //call helper that clears the whole board
                 resetHighlightedButton();
@@ -553,7 +578,11 @@ namespace Boggle
             }
         }
 
-
+        /// <summary>
+        /// If a the 'Clear' button is clicked, or if a grid button is clicked that has already been clicked, this method is called.
+        /// It clears all of the buttons back to their default color and clears the word in the entry box so that the user can
+        /// stary over with a new word.
+        /// </summary>
         private void resetHighlightedButton()
         {
             button0.BackColor = Color.Empty;
@@ -575,25 +604,41 @@ namespace Boggle
             Word_Entry_Box.Text = "";
         }
 
+        /// <summary>
+        /// This calls resetHighlightedButton to clear the grid and the entry box.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Clear_Button_Click(object sender, EventArgs e)
         {
             resetHighlightedButton();
             Word_Entry_Box.Text = "";
         }
 
+        /// <summary>
+        /// If someone clicks the submit button, this method tells the controller so that it can talk to the API, 
+        /// and then it clears the board so that the user can select a new word.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Submit_Button_Click(object sender, EventArgs e)
         {
-            
             SubmitPlayWord?.Invoke(Word_Entry_Box.Text);
             resetHighlightedButton();
-
         }
 
+        /// <summary>
+        /// This is for the display of the maximum time limit shown over the grid. It takes in a time limit as a string and displays it.
+        /// </summary>
+        /// <param name="timeLimit"></param>
         public void displayTimeLimit(string timeLimit)
         {
             Time_Limit_Box.Text = timeLimit;
         }
 
+        /// <summary>
+        /// This resets the game board by clearing the grid and all of the boxes that display time and player information.
+        /// </summary>
         public void resetGame()
         {
             Player_1_Name_Box.Text = "";
@@ -609,12 +654,20 @@ namespace Boggle
 
         }
 
+        /// <summary>
+        /// You shouldn't be able to request a game until you have registered a name with a server, so this makes sure that the 'Request Game' button
+        /// can be pressed after that is taken care of.
+        /// </summary>
         public void enableRequestGameControls()
         {
             Request_Game_Button.Enabled = true;
             Cancel_Game_Button.Enabled = true;
         }
 
+        /// <summary>
+        /// The game controls include the grid buttons (with the letters) and the submit and clear buttons. If a game isn't going on, those controls
+        /// should be locked, so this method can unlock them when a game starts.
+        /// </summary>
         public void enablePlayGameControls()
         {
             Submit_Button.Enabled = true;
@@ -637,6 +690,10 @@ namespace Boggle
             button15.Enabled = true;
         }
 
+        /// <summary>
+        /// The game controls include the grid buttons (with the letters) and the submit and clear buttons. If a game isn't going on, those controls
+        /// should be locked, so this method locks them.
+        /// </summary>
         public void disablePlayGameControls()
         {
             Submit_Button.Enabled = false;
@@ -659,6 +716,12 @@ namespace Boggle
             button15.Enabled = false;
         }
 
+        /// <summary>
+        /// This is the help text box that appears when the help button is clicked in the top left of the window. It displays information on how to play the game
+        /// and use the interface.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void helpToolStripMenuItem_Click(object sender, EventArgs e)
         {
             MessageBox.Show("Welcome to Tom and Eric's Boggle game." + System.Environment.NewLine + System.Environment.NewLine +
