@@ -77,6 +77,8 @@
             this.Player_1_Words = new System.Windows.Forms.Label();
             this.Player_1_Score_Label = new System.Windows.Forms.Label();
             this.Player_2_Words = new System.Windows.Forms.Label();
+            this.Time_Limit_Box = new System.Windows.Forms.TextBox();
+            this.Time_Limit_Label = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             this.BogglePanel.SuspendLayout();
             this.SuspendLayout();
@@ -347,7 +349,7 @@
             // 
             // Time_Left_Box
             // 
-            this.Time_Left_Box.Location = new System.Drawing.Point(149, 142);
+            this.Time_Left_Box.Location = new System.Drawing.Point(203, 142);
             this.Time_Left_Box.Name = "Time_Left_Box";
             this.Time_Left_Box.ReadOnly = true;
             this.Time_Left_Box.Size = new System.Drawing.Size(46, 20);
@@ -357,7 +359,7 @@
             // Time_Left_Label
             // 
             this.Time_Left_Label.AutoSize = true;
-            this.Time_Left_Label.Location = new System.Drawing.Point(146, 126);
+            this.Time_Left_Label.Location = new System.Drawing.Point(198, 127);
             this.Time_Left_Label.Name = "Time_Left_Label";
             this.Time_Left_Label.Size = new System.Drawing.Size(51, 13);
             this.Time_Left_Label.TabIndex = 9;
@@ -566,12 +568,32 @@
             this.Player_2_Words.TabIndex = 31;
             this.Player_2_Words.Text = "Words";
             // 
+            // Time_Limit_Box
+            // 
+            this.Time_Limit_Box.Location = new System.Drawing.Point(95, 142);
+            this.Time_Limit_Box.Name = "Time_Limit_Box";
+            this.Time_Limit_Box.ReadOnly = true;
+            this.Time_Limit_Box.Size = new System.Drawing.Size(46, 20);
+            this.Time_Limit_Box.TabIndex = 32;
+            this.Time_Limit_Box.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // Time_Limit_Label
+            // 
+            this.Time_Limit_Label.AutoSize = true;
+            this.Time_Limit_Label.Location = new System.Drawing.Point(92, 126);
+            this.Time_Limit_Label.Name = "Time_Limit_Label";
+            this.Time_Limit_Label.Size = new System.Drawing.Size(54, 13);
+            this.Time_Limit_Label.TabIndex = 33;
+            this.Time_Limit_Label.Text = "Time Limit";
+            // 
             // Boggle
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.ClientSize = new System.Drawing.Size(645, 560);
+            this.Controls.Add(this.Time_Limit_Label);
+            this.Controls.Add(this.Time_Limit_Box);
             this.Controls.Add(this.Player_2_Words);
             this.Controls.Add(this.Player_1_Words);
             this.Controls.Add(this.Clear_Button);
@@ -666,6 +688,8 @@
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button0;
+        private System.Windows.Forms.TextBox Time_Limit_Box;
+        private System.Windows.Forms.Label Time_Limit_Label;
     }
 }
 
