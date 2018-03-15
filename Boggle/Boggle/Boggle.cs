@@ -1,13 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
+/// <summary>
+/// Created by Tom Nguyen and Eric Naegle for CS 3500
+/// 
+/// This is used for a UI that allows the user to play boggle online through an API.
+/// This partial class handles the buttons, their inputs, and their behavior.
+/// It calls other methods on the controller.
+/// </summary>
 namespace Boggle
 {
     public partial class Boggle : Form, BoggleView
@@ -27,87 +28,139 @@ namespace Boggle
 
         public event Action<string> SubmitPlayWord;
 
-       
-
+       /// <summary>
+       /// If the register user button is clicked, then we need to call the register user method on the controller to communicate with the API
+       /// </summary>
+       /// <param name="sender"></param>
+       /// <param name="e"></param>
         private void Register_Button_Click(object sender, EventArgs e)
-        {
-           
+        {    
             RegisterUser?.Invoke(Player_Name_Box.Text.Trim(), Server_Domain_Box.Text.Trim());
-
         }
 
+        /// <summary>
+        /// If the Request game button is clicked, then we need to call the register user method on the controller to communicate with the API
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Request_Game_Button_Click(object sender, EventArgs e)
         {
             try
             {
-                
                 RequestGame?.Invoke(Int32.Parse(Game_Length_Box.Text));
                 
             }
+
+            //time can only be between 5 and 20 seconds.
             catch (FormatException)
             {
-                MessageBox.Show("You must enter a valid time");
+                MessageBox.Show("You must enter a valid time bewtwen 5 and 120 seconds.");
             }
             
         }
+
+        /// <summary>
+        /// If the cancel game button is clicked, then we need to call the register user method on the controller to communicate with the API
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Cancel_Game_Button_Click(object sender, EventArgs e)
         {
             CancelGame?.Invoke();
         }
 
+        /// <summary>
+        /// If the cancel registration button is clicked, then we need to call the register user method on the controller to communicate with the API
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Cancel_Registration_Button_Click(object sender, EventArgs e)
         {
             CancelRegisterUser?.Invoke();
         }
 
+        /// <summary>
+        /// Displays player 1's name in the player 1 box of the UI
+        /// </summary>
+        /// <param name="name"></param>
         public void displayPlayer1Name(string name)
         {
             Player_1_Name_Box.Text = name;
         }
 
+        /// <summary>
+        /// Displays player 2's name in the player 1 box of the UI
+        /// </summary>
+        /// <param name="name"></param>
         public void displayPlayer2Name(string name)
         {
             Player_2_Name_Box.Text = name;
             
         }
 
+        /// <summary>
+        /// Displays player 1's score in the player 1 score box
+        /// </summary>
+        /// <param name="newScore"></param>
         public void displayPlayer1Score(string newScore)
         {
             Player_1_Score_Box.Text = newScore;
         }
 
+        /// <summary>
+        /// DIsplays player 2's name in the player 2 score box.
+        /// </summary>
+        /// <param name="newScore"></param>
         public void displayPlayer2Score(string newScore)
         {
             Player_2_Score_Box.Text = newScore;
         }
 
-        public void displayTimerLimit(string timeLimit)
-        {
-            throw new NotImplementedException();
-        }
-
+        /// <summary>
+        /// Displays how much time is left in the game
+        /// </summary>
+        /// <param name="currentTime"></param>
         public void displayCurrentTime(string currentTime)
         {
             Time_Left_Box.Text = currentTime;
         }
 
+        /// <summary>
+        /// Displays the game status as "pending," "active," or "completed"
+        /// </summary>
+        /// <param name="status"></param>
         public void displayGameStatus(string status)
         {
             Game_Status_Box.Text = status;
         }
 
+        /// <summary>
+        /// At the end of the game, displays each word that player 1 played in the player 1 words box.
+        /// </summary>
+        /// <param name="word"></param>
+        /// <param name="score"></param>
         public void displayPlayer1Words(string word, string score)
         {
             Player_1_Words_Box.Text += word +" " + score + System.Environment.NewLine;
         }
 
+        /// <summary>
+        /// At the end of the game, displays each word that player 2 played in the player 2 words box.
+        /// </summary>
+        /// <param name="word"></param>
+        /// <param name="score"></param>
         public void displayPlayer2Words(string word, string score)
         {
             Player_2_Words_Box.Text += word + " " + score + System.Environment.NewLine;
         }
 
+        /// <summary>
+        /// There are 16 buttons on the Boggle grid that all need to be blank if the game isn't running or contain letters if the game is active.
+        /// </summary>
+        /// <param name="board"></param>
         public void displayGameBoard(string board)
         {
+            //set each box to contain the proper contents given the board contents from the UI
             for (int i = 0; i < board.Length; i++)
             {
                 string temp =  board[i].ToString();
@@ -182,24 +235,23 @@ namespace Boggle
                     case 15:
                         button15.Text = temp;
                         break;
-
-
                 }
-
-                
-
-
             }
-            
         }
 
+        // These methods are used to build words by clicking buttons. If a button is clicked twice, it clears the board.
+
+        /// <summary>
+        /// Enters the letter on the button into the word entry box and changed the color of the button, or clears the board if the button has already been pressed..
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button0_Click(object sender, EventArgs e)
         {
             if (button0.BackColor.Equals(Color.Red))
             {
                 button0.BackColor = Color.Empty;
                 
-
                 //call helper that clears the whole board
                 resetHighlightedButton();
             }
@@ -210,13 +262,17 @@ namespace Boggle
             }
         }
 
+        /// <summary>
+        /// Enters the letter on the button into the word entry box and changed the color of the button, or clears the board if the button has already been pressed..
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button1_Click(object sender, EventArgs e)
         {
             if (button1.BackColor.Equals(Color.Red))
             {
                 button1.BackColor = Color.Empty;
                 
-
                 //call helper that clears the whole board
                 resetHighlightedButton();
             }
@@ -227,12 +283,16 @@ namespace Boggle
             }
         }
 
+        /// <summary>
+        /// Enters the letter on the button into the word entry box and changed the color of the button, or clears the board if the button has already been pressed..
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button2_Click(object sender, EventArgs e)
         {
             if (button2.BackColor.Equals(Color.Red))
             {
                 button2.BackColor = Color.Empty;
-                
 
                 //call helper that clears the whole board
                 resetHighlightedButton();
@@ -244,12 +304,16 @@ namespace Boggle
             }
         }
 
+        /// <summary>
+        /// Enters the letter on the button into the word entry box and changed the color of the button, or clears the board if the button has already been pressed..
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button3_Click(object sender, EventArgs e)
         {
             if (button3.BackColor.Equals(Color.Red))
             {
                 button3.BackColor = Color.Empty;
-                
 
                 //call helper that clears the whole board
                 resetHighlightedButton();
@@ -261,12 +325,16 @@ namespace Boggle
             }
         }
 
+        /// <summary>
+        /// Enters the letter on the button into the word entry box and changed the color of the button, or clears the board if the button has already been pressed..
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button4_Click(object sender, EventArgs e)
         {
             if (button4.BackColor.Equals(Color.Red))
             {
                 button4.BackColor = Color.Empty;
-                
 
                 //call helper that clears the whole board
                 resetHighlightedButton();
@@ -278,12 +346,16 @@ namespace Boggle
             }
         }
 
+        /// <summary>
+        /// Enters the letter on the button into the word entry box and changed the color of the button, or clears the board if the button has already been pressed..
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button5_Click(object sender, EventArgs e)
         {
             if (button5.BackColor.Equals(Color.Red))
             {
                 button5.BackColor = Color.Empty;
-                
 
                 //call helper that clears the whole board
                 resetHighlightedButton();
@@ -295,12 +367,16 @@ namespace Boggle
             }
         }
 
+        /// <summary>
+        /// Enters the letter on the button into the word entry box and changed the color of the button, or clears the board if the button has already been pressed..
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button6_Click(object sender, EventArgs e)
         {
             if (button6.BackColor.Equals(Color.Red))
             {
                 button6.BackColor = Color.Empty;
-                
 
                 //call helper that clears the whole board
                 resetHighlightedButton();
@@ -312,13 +388,17 @@ namespace Boggle
             }
         }
 
+        /// <summary>
+        /// Enters the letter on the button into the word entry box and changed the color of the button, or clears the board if the button has already been pressed..
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button7_Click(object sender, EventArgs e)
         {
             if (button7.BackColor.Equals(Color.Red))
             {
                 button7.BackColor = Color.Empty;
                 
-
                 //call helper that clears the whole board
                 resetHighlightedButton();
             }
@@ -329,13 +409,17 @@ namespace Boggle
             }
         }
 
+        /// <summary>
+        /// Enters the letter on the button into the word entry box and changed the color of the button, or clears the board if the button has already been pressed..
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button8_Click(object sender, EventArgs e)
         {
             if (button8.BackColor.Equals(Color.Red))
             {
                 button8.BackColor = Color.Empty;
                 
-
                 //call helper that clears the whole board
                 resetHighlightedButton();
             }
@@ -346,13 +430,17 @@ namespace Boggle
             }
         }
 
+        /// <summary>
+        /// Enters the letter on the button into the word entry box and changed the color of the button, or clears the board if the button has already been pressed..
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button9_Click(object sender, EventArgs e)
         {
             if (button9.BackColor.Equals(Color.Red))
             {
                 button9.BackColor = Color.Empty;
                 
-
                 //call helper that clears the whole board
                 resetHighlightedButton();
             }

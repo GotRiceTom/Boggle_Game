@@ -29,8 +29,6 @@ namespace Boggle
 
         void displayPlayer2Score(string newScore);
 
-        void displayTimerLimit(string timeLimit);
-
         void displayCurrentTime(string currentTime);
 
         void displayGameStatus(string status);
