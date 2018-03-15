@@ -40,5 +40,9 @@ namespace Boggle
         void displayPlayer2Words(string word, string score);
 
         void displayGameBoard(string board);
+
+        void displayTimeLimit(string timeLimit);
+
+        void resetGame();
     }
 }

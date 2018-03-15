@@ -113,9 +113,10 @@ namespace Boggle
 
         }
 
-        private async void HandleRequestGame(int durationSec)
+        private async void HandleRequestGame(int gameLength)
         {
-
+            //reset board, players name, score and words
+            window.resetGame();
             try
             {
 
@@ -127,7 +128,7 @@ namespace Boggle
                         // Create the parameter
                         dynamic user = new ExpandoObject();
                         user.UserToken = userToken;
-                        user.TimeLimit = durationSec;
+                        user.TimeLimit = gameLength;
 
 
 
@@ -145,7 +146,7 @@ namespace Boggle
 
                             if (response.StatusCode.ToString() == "Accepted")
                             {
-                                MessageBox.Show("You are hosting a game.");
+                                MessageBox.Show("You are playe 1");
                                 HandleGameState();
                             }
                             else
@@ -173,6 +174,12 @@ namespace Boggle
         {
             try
             {
+                timer1.Stop();
+                window.displayGameStatus("");
+
+
+                //If you are canceling pending game, tell the server
+                // if you're canceling during a game, stop talking to the server and clear the board.
 
                 using (HttpClient client = CreateClient(this.domain))
                 {
@@ -246,6 +253,7 @@ namespace Boggle
                        
 
                             window.displayCurrentTime((string)item.TimeLeft);
+                            window.displayTimeLimit((string)item.TimeLimit);
                             window.displayPlayer1Name((string)item.Player1.Nickname);
                             window.displayPlayer2Name((string)item.Player2.Nickname);
                             window.displayPlayer1Score((string)item.Player1.Score);

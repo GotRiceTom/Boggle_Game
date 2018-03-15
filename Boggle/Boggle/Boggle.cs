@@ -500,5 +500,24 @@ namespace Boggle
             resetHighlightedButton();
 
         }
+
+        public void displayTimeLimit(string timeLimit)
+        {
+            Time_Limit_Box.Text = timeLimit;
+        }
+
+        public void resetGame()
+        {
+            Player_1_Name_Box.Text = "";
+            Player_2_Name_Box.Text = "";
+            Player_1_Words_Box.Text = "";
+            Player_2_Words_Box.Text = "";
+            Player_1_Score_Box.Text = "";
+            Player_2_Score_Box.Text = "";
+            Time_Left_Box.Text = "";
+            Time_Limit_Box.Text = "";
+            Word_Entry_Box.Text = "";
+
+        }
     }
 }
