@@ -499,6 +499,7 @@
             this.Submit_Button.TabIndex = 24;
             this.Submit_Button.Text = "Submit";
             this.Submit_Button.UseVisualStyleBackColor = true;
+            this.Submit_Button.Click += new System.EventHandler(this.Submit_Button_Click);
             // 
             // Player_1_Score_Box
             // 
@@ -535,6 +536,7 @@
             this.Clear_Button.TabIndex = 29;
             this.Clear_Button.Text = "Clear";
             this.Clear_Button.UseVisualStyleBackColor = true;
+            this.Clear_Button.Click += new System.EventHandler(this.Clear_Button_Click);
             // 
             // Player_1_Words
             // 

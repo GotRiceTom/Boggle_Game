@@ -28,8 +28,7 @@ namespace Boggle
         public event Action<string> SubmitPlayWord;
 
         public event Action ClearPlayWord;
-
-        public event Action Time_Ticked;
+       
 
         private void Register_Button_Click(object sender, EventArgs e)
         {
@@ -43,7 +42,7 @@ namespace Boggle
             try
             {
                 
-                    RequestGame?.Invoke(Int32.Parse(Game_Length_Box.Text));
+                RequestGame?.Invoke(Int32.Parse(Game_Length_Box.Text));
                 
             }
             catch (FormatException)
@@ -201,6 +200,9 @@ namespace Boggle
             {
                 button0.BackColor = Color.Empty;
                 Word_Entry_Box.Text = "";
+
+                //call helper that clears the whole board
+                resetHighlightedButton();
             }
             else
             {
@@ -211,83 +213,290 @@ namespace Boggle
 
         private void button1_Click(object sender, EventArgs e)
         {
-            button1.BackColor = Color.Red;
+            if (button1.BackColor.Equals(Color.Red))
+            {
+                button1.BackColor = Color.Empty;
+                Word_Entry_Box.Text = "";
+
+                //call helper that clears the whole board
+                resetHighlightedButton();
+            }
+            else
+            {
+                button1.BackColor = Color.Red;
+                Word_Entry_Box.Text += button1.Text;
+            }
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            button2.BackColor = Color.Red;
+            if (button2.BackColor.Equals(Color.Red))
+            {
+                button2.BackColor = Color.Empty;
+                Word_Entry_Box.Text = "";
+
+                //call helper that clears the whole board
+                resetHighlightedButton();
+            }
+            else
+            {
+                button2.BackColor = Color.Red;
+                Word_Entry_Box.Text += button2.Text;
+            }
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
-            button3.BackColor = Color.Red;
+            if (button3.BackColor.Equals(Color.Red))
+            {
+                button3.BackColor = Color.Empty;
+                Word_Entry_Box.Text = "";
+
+                //call helper that clears the whole board
+                resetHighlightedButton();
+            }
+            else
+            {
+                button3.BackColor = Color.Red;
+                Word_Entry_Box.Text += button3.Text;
+            }
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
-            button4.BackColor = Color.Red;
+            if (button4.BackColor.Equals(Color.Red))
+            {
+                button4.BackColor = Color.Empty;
+                Word_Entry_Box.Text = "";
+
+                //call helper that clears the whole board
+                resetHighlightedButton();
+            }
+            else
+            {
+                button4.BackColor = Color.Red;
+                Word_Entry_Box.Text += button4.Text;
+            }
         }
 
         private void button5_Click(object sender, EventArgs e)
         {
-            button5.BackColor = Color.Red;
+            if (button5.BackColor.Equals(Color.Red))
+            {
+                button5.BackColor = Color.Empty;
+                Word_Entry_Box.Text = "";
+
+                //call helper that clears the whole board
+                resetHighlightedButton();
+            }
+            else
+            {
+                button5.BackColor = Color.Red;
+                Word_Entry_Box.Text += button5.Text;
+            }
         }
 
         private void button6_Click(object sender, EventArgs e)
         {
-            button6.BackColor = Color.Red;
+            if (button6.BackColor.Equals(Color.Red))
+            {
+                button6.BackColor = Color.Empty;
+                Word_Entry_Box.Text = "";
+
+                //call helper that clears the whole board
+                resetHighlightedButton();
+            }
+            else
+            {
+                button6.BackColor = Color.Red;
+                Word_Entry_Box.Text += button6.Text;
+            }
         }
 
         private void button7_Click(object sender, EventArgs e)
         {
-            button7.BackColor = Color.Red;
+            if (button7.BackColor.Equals(Color.Red))
+            {
+                button7.BackColor = Color.Empty;
+                Word_Entry_Box.Text = "";
+
+                //call helper that clears the whole board
+                resetHighlightedButton();
+            }
+            else
+            {
+                button7.BackColor = Color.Red;
+                Word_Entry_Box.Text += button7.Text;
+            }
         }
 
         private void button8_Click(object sender, EventArgs e)
         {
-            button8.BackColor = Color.Red;
+            if (button8.BackColor.Equals(Color.Red))
+            {
+                button8.BackColor = Color.Empty;
+                Word_Entry_Box.Text = "";
+
+                //call helper that clears the whole board
+                resetHighlightedButton();
+            }
+            else
+            {
+                button8.BackColor = Color.Red;
+                Word_Entry_Box.Text += button8.Text;
+            }
         }
 
         private void button9_Click(object sender, EventArgs e)
         {
-            button9.BackColor = Color.Red;
+            if (button9.BackColor.Equals(Color.Red))
+            {
+                button9.BackColor = Color.Empty;
+                Word_Entry_Box.Text = "";
+
+                //call helper that clears the whole board
+                resetHighlightedButton();
+            }
+            else
+            {
+                button9.BackColor = Color.Red;
+                Word_Entry_Box.Text += button9.Text;
+            }
         }
 
         private void button10_Click(object sender, EventArgs e)
         {
-            button10.BackColor = Color.Red;
+            if (button10.BackColor.Equals(Color.Red))
+            {
+                button10.BackColor = Color.Empty;
+                Word_Entry_Box.Text = "";
+
+                //call helper that clears the whole board
+                resetHighlightedButton();
+            }
+            else
+            {
+                button10.BackColor = Color.Red;
+                Word_Entry_Box.Text += button10.Text;
+            }
         }
 
         private void button11_Click(object sender, EventArgs e)
         {
-            button11.BackColor = Color.Red;
+            if (button11.BackColor.Equals(Color.Red))
+            {
+                button11.BackColor = Color.Empty;
+                Word_Entry_Box.Text = "";
+
+                //call helper that clears the whole board
+                resetHighlightedButton();
+            }
+            else
+            {
+                button11.BackColor = Color.Red;
+                Word_Entry_Box.Text += button11.Text;
+            }
         }
 
         private void button12_Click(object sender, EventArgs e)
         {
-            button12.BackColor = Color.Red;
+            if (button12.BackColor.Equals(Color.Red))
+            {
+                button12.BackColor = Color.Empty;
+                Word_Entry_Box.Text = "";
+
+                //call helper that clears the whole board
+                resetHighlightedButton();
+            }
+            else
+            {
+                button12.BackColor = Color.Red;
+                Word_Entry_Box.Text += button12.Text;
+            }
         }
 
         private void button13_Click(object sender, EventArgs e)
         {
-            button13.BackColor = Color.Red;
+            if (button13.BackColor.Equals(Color.Red))
+            {
+                button13.BackColor = Color.Empty;
+                Word_Entry_Box.Text = "";
+
+                //call helper that clears the whole board
+                resetHighlightedButton();
+            }
+            else
+            {
+                button13.BackColor = Color.Red;
+                Word_Entry_Box.Text += button13.Text;
+            }
         }
 
         private void button14_Click(object sender, EventArgs e)
         {
-            button14.BackColor = Color.Red;
+            if (button14.BackColor.Equals(Color.Red))
+            {
+                button14.BackColor = Color.Empty;
+                Word_Entry_Box.Text = "";
+
+                //call helper that clears the whole board
+                resetHighlightedButton();
+            }
+            else
+            {
+                button14.BackColor = Color.Red;
+                Word_Entry_Box.Text += button14.Text;
+            }
         }
 
         private void button15_Click(object sender, EventArgs e)
         {
-            button15.BackColor = Color.Red;
+            if (button15.BackColor.Equals(Color.Red))
+            {
+                button15.BackColor = Color.Empty;
+                Word_Entry_Box.Text = "";
+
+                //call helper that clears the whole board
+                resetHighlightedButton();
+            }
+            else
+            {
+                button15.BackColor = Color.Red;
+                Word_Entry_Box.Text += button15.Text;
+            }
         }
 
 
         private void resetHighlightedButton()
         {
+            button0.BackColor = Color.Empty;
+            button1.BackColor = Color.Empty;
+            button2.BackColor = Color.Empty;
+            button3.BackColor = Color.Empty;
+            button4.BackColor = Color.Empty;
+            button5.BackColor = Color.Empty;
+            button6.BackColor = Color.Empty;
+            button7.BackColor = Color.Empty;
+            button8.BackColor = Color.Empty;
+            button9.BackColor = Color.Empty;
+            button10.BackColor = Color.Empty;
+            button11.BackColor = Color.Empty;
+            button12.BackColor = Color.Empty;
+            button13.BackColor = Color.Empty;
+            button14.BackColor = Color.Empty;
+            button15.BackColor = Color.Empty;
+        }
 
+        private void Clear_Button_Click(object sender, EventArgs e)
+        {
+            resetHighlightedButton();
+            Word_Entry_Box.Text = "";
+        }
+
+        private void Submit_Button_Click(object sender, EventArgs e)
+        {
+            resetHighlightedButton();
+            SubmitPlayWord?.Invoke(Word_Entry_Box.Text);
         }
     }
 }

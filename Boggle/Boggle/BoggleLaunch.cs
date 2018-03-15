@@ -23,9 +23,6 @@ namespace Boggle
             new BoggleController(view);
           
             Application.Run(view);
-
-
-            Application.Run(view);
         }
     }
 }

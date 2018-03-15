@@ -8,7 +8,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Timers;
 
 namespace Boggle
 {
@@ -22,7 +21,7 @@ namespace Boggle
 
         private string gameID;
 
-        private System.Threading.Timer timer;
+        private System.Windows.Forms.Timer timer1;
 
         /// <summary>
         /// For canceling the current operation
@@ -41,8 +40,14 @@ namespace Boggle
             window.RequestGame += HandleRequestGame;
             window.CancelGame += HandleCancelGame;
             window.CancelRegisterUser += HandleCancelUser;
+            window.SubmitPlayWord += HandleSubmit;
 
             IsGridDisplay = false;
+
+            timer1 = new System.Windows.Forms.Timer();
+            timer1.Tick += new EventHandler(CallHandleGameState);
+            timer1.Interval = 1000; // in miliseconds
+            timer1.Start();
         }
 
 
@@ -76,7 +81,7 @@ namespace Boggle
                         String result = await response.Content.ReadAsStringAsync();
                         dynamic item = JsonConvert.DeserializeObject(result);
                         userToken = (string)item.UserToken;
-                        MessageBox.Show("Your username is register to the server");
+                        MessageBox.Show(name + " is register to the server.");
 
                         // window.IsUserRegistered = true;
                     }
@@ -121,12 +126,12 @@ namespace Boggle
 
                         if (response.StatusCode.ToString() == "Accepted")
                         {
-                            MessageBox.Show("You're the host of this game server");
+                            MessageBox.Show("You are hosting a game.");
                             HandleGameState();
                         }
                         else
                         {
-                            MessageBox.Show("You've now player 2 on someone else server");
+                            MessageBox.Show("You have joined another game.");
                             HandleGameState();
                         }
                        
@@ -164,7 +169,7 @@ namespace Boggle
                     if (response.IsSuccessStatusCode)
                     {
                       
-                        MessageBox.Show("Test Cancel: " + response.StatusCode + "\n" + "response.ReasonPhrase");
+                        MessageBox.Show("Test Cancel: " + response.StatusCode + "\n" + response.ReasonPhrase);
 
                     }
                     else
@@ -186,7 +191,10 @@ namespace Boggle
             tokenSource.Cancel();
         }
 
-
+        private void CallHandleGameState(object bs, EventArgs bs2)
+        {
+            HandleGameState();
+        }
 
         private async void HandleGameState()
         {
@@ -227,7 +235,8 @@ namespace Boggle
                             window.displayCurrentTime((string)item.TimeLeft);
                             window.displayPlayer1Name((string)item.Player1.Nickname);
                             window.displayPlayer2Name((string)item.Player2.Nickname);
-
+                            window.displayPlayer1Score((string)item.Player1.Score);
+                            window.displayPlayer2Score((string)item.Player2.Score);
                         }
                       
 
@@ -241,9 +250,39 @@ namespace Boggle
 
         }
 
-        private void StartTimer()
+        private async void HandleSubmit(string word)
         {
-            
+            try
+            {
+
+                using (HttpClient client = CreateClient())
+                {
+                    // Create the parameter
+                    dynamic user = new ExpandoObject();
+                    user.UserToken = userToken;
+                    user.Word = word;
+
+                    // Compose and send the request.
+                    tokenSource = new CancellationTokenSource();
+                    StringContent content = new StringContent(JsonConvert.SerializeObject(user), Encoding.UTF8, "application/json");
+                    HttpResponseMessage response = await client.PutAsync("BoggleService.svc/games" +"/"+gameID, content, tokenSource.Token);
+
+                    // Deal with the response
+                    if (response.IsSuccessStatusCode)
+                    {
+                      
+                        MessageBox.Show("Test Cancel: " + response.StatusCode + "\n" + response.ReasonPhrase);
+
+                    }
+                    else
+                    {
+                        MessageBox.Show("Error submitting: " + response.StatusCode + "\n" + response.ReasonPhrase + "UserToken " + userToken);
+                    }
+                }
+            }
+            catch (TaskCanceledException)
+            {
+            }
         }
 
         /// <summary>
