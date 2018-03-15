@@ -44,5 +44,11 @@ namespace Boggle
         void displayTimeLimit(string timeLimit);
 
         void resetGame();
+
+        void enableRequestGameControls();
+
+        void enablePlayGameControls();
+
+        void disablePlayGameControls();
     }
 }

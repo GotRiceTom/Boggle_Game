@@ -76,8 +76,6 @@ namespace Boggle
                     if (!isBadURL)
                     {
 
-
-
                         // Create the parameter
                         dynamic user = new ExpandoObject();
                         user.Nickname = name;
@@ -92,6 +90,10 @@ namespace Boggle
                         // Deal with the response
                         if (response.IsSuccessStatusCode)
                         {
+                            //enable the game request controller buttons
+
+                            window.enableRequestGameControls();
+
                             String result = await response.Content.ReadAsStringAsync();
                             dynamic item = JsonConvert.DeserializeObject(result);
                             userToken = (string)item.UserToken;
@@ -140,13 +142,16 @@ namespace Boggle
                         // Deal with the response
                         if (response.IsSuccessStatusCode)
                         {
+                            //enable request control buttons
+                           
+
                             String result = await response.Content.ReadAsStringAsync();
                             dynamic item = JsonConvert.DeserializeObject(result);
                             gameID = (string)item.GameID;
 
                             if (response.StatusCode.ToString() == "Accepted")
                             {
-                                MessageBox.Show("You are playe 1");
+                                MessageBox.Show("You are player 1");
                                 HandleGameState();
                             }
                             else
@@ -154,9 +159,6 @@ namespace Boggle
                                 MessageBox.Show("You have joined another game.");
                                 HandleGameState();
                             }
-
-
-                            // window.IsUserRegistered = true;
                         }
                         else
                         {
@@ -176,6 +178,7 @@ namespace Boggle
             {
                 timer1.Stop();
                 window.displayGameStatus("");
+                window.disablePlayGameControls();
 
 
                 //If you are canceling pending game, tell the server
@@ -244,14 +247,13 @@ namespace Boggle
 
                         window.displayGameStatus((string)item.GameState);
 
-                        // if game state is not pending
+                        // if game state is active
 
-                        if ((string)item.GameState != "pending")
+                        if ((string)item.GameState == "active")
                         {
-
+                            //enable the play game control
+                            window.enablePlayGameControls();
                             window.displayGameBoard((string)item.Board);
-                       
-
                             window.displayCurrentTime((string)item.TimeLeft);
                             window.displayTimeLimit((string)item.TimeLimit);
                             window.displayPlayer1Name((string)item.Player1.Nickname);
@@ -263,6 +265,8 @@ namespace Boggle
                         if ((string)item.GameState == "completed")
                         {
                             timer1.Stop();
+                            
+                            window.disablePlayGameControls();
 
 
                            foreach(dynamic currentItem in item.Player1.WordsPlayed)
@@ -276,7 +280,7 @@ namespace Boggle
                             }
 
 
-                            MessageBox.Show("The game is completed");
+                            MessageBox.Show("The game is now completed. If you want to play again, please press Request Game");
                         }
                       
 
