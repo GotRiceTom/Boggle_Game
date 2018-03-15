@@ -570,5 +570,18 @@ namespace Boggle
             button14.Enabled = false;
             button15.Enabled = false;
         }
+
+        private void helpToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Welcome to Tom and Eric's Boggle game." + System.Environment.NewLine + System.Environment.NewLine +
+                "To start, enter your name and desired server, and click 'Register.' If it takes too long, you can click 'Cancel Registration.'" + System.Environment.NewLine + System.Environment.NewLine +
+                "Next, enter your desired game length and click 'Request Game'" + System.Environment.NewLine + System.Environment.NewLine +
+                "When the grid fills with new letters, the game has begun. Before that, you can click 'Cancel Game' to stop searching for one." + System.Environment.NewLine + System.Environment.NewLine +
+                "In the middle of a game, you can also press 'Cancel Game' to leave the game." + System.Environment.NewLine + System.Environment.NewLine +
+                "This game is played with the mouse. Click the letters that you want, in the order that you want them, to build a word. Then press 'Submit'" + System.Environment.NewLine + System.Environment.NewLine +
+                "To cancel the word, click a box that has already been clicked, or click the 'Clear' box." + System.Environment.NewLine + System.Environment.NewLine +
+                "The timer can be seen above the grid, and the score can be seen to the right." + System.Environment.NewLine + System.Environment.NewLine
+                );
+        }
     }
 }
