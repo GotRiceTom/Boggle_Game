@@ -10,7 +10,7 @@ namespace Boggle
     {
 
 
-        event Action<string> RegisterUser;
+        event Action<string, string> RegisterUser;
 
         event Action CancelRegisterUser;
 
@@ -19,10 +19,6 @@ namespace Boggle
         event Action<int> RequestGame;
 
         event Action<string> SubmitPlayWord;
-
-        event Action ClearPlayWord;
-
-      
 
 
         void displayPlayer1Name(string name);
@@ -39,9 +35,9 @@ namespace Boggle
 
         void displayGameStatus(string status);
 
-        void displayPlayer1Words(string word);
+        void displayPlayer1Words(string word, string score);
 
-        void displayPlayer2Words(string word);
+        void displayPlayer2Words(string word, string score);
 
         void displayGameBoard(string board);
     }

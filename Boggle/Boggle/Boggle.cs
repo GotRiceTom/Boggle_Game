@@ -17,7 +17,7 @@ namespace Boggle
             InitializeComponent();
         }
 
-        public event Action<string> RegisterUser;
+        public event Action<string, string> RegisterUser;
 
         public event Action CancelRegisterUser;
 
@@ -27,13 +27,12 @@ namespace Boggle
 
         public event Action<string> SubmitPlayWord;
 
-        public event Action ClearPlayWord;
        
 
         private void Register_Button_Click(object sender, EventArgs e)
         {
            
-            RegisterUser?.Invoke(Player_Name_Box.Text.Trim());
+            RegisterUser?.Invoke(Player_Name_Box.Text.Trim(), Server_Domain_Box.Text.Trim());
 
         }
 
@@ -97,14 +96,14 @@ namespace Boggle
             Game_Status_Box.Text = status;
         }
 
-        public void displayPlayer1Words(string word)
+        public void displayPlayer1Words(string word, string score)
         {
-            throw new NotImplementedException();
+            Player_1_Words_Box.Text += word +" " + score + System.Environment.NewLine;
         }
 
-        public void displayPlayer2Words(string word)
+        public void displayPlayer2Words(string word, string score)
         {
-            throw new NotImplementedException();
+            Player_2_Words_Box.Text += word + " " + score + System.Environment.NewLine;
         }
 
         public void displayGameBoard(string board)
