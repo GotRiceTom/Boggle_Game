@@ -485,6 +485,7 @@ namespace Boggle
             button13.BackColor = Color.Empty;
             button14.BackColor = Color.Empty;
             button15.BackColor = Color.Empty;
+            Word_Entry_Box.Text = "";
         }
 
         private void Clear_Button_Click(object sender, EventArgs e)
@@ -495,8 +496,8 @@ namespace Boggle
 
         private void Submit_Button_Click(object sender, EventArgs e)
         {
-            resetHighlightedButton();
             SubmitPlayWord?.Invoke(Word_Entry_Box.Text);
+            resetHighlightedButton();
         }
     }
 }
