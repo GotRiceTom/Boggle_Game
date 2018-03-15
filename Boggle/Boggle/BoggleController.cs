@@ -13,8 +13,6 @@ namespace Boggle
 {
     class BoggleController
     {
-
-
         private BoggleView window;
 
         private string userToken;
@@ -26,6 +24,8 @@ namespace Boggle
         private bool isBadURL;
 
         private System.Windows.Forms.Timer timer1;
+
+        private string currentGameState;
 
         /// <summary>
         /// For canceling the current operation
@@ -97,7 +97,7 @@ namespace Boggle
                             String result = await response.Content.ReadAsStringAsync();
                             dynamic item = JsonConvert.DeserializeObject(result);
                             userToken = (string)item.UserToken;
-                            MessageBox.Show(name + " is register to the server.");
+                            MessageBox.Show(name + " successfully registered to" + domain);
 
                             // window.IsUserRegistered = true;
                         }
@@ -117,6 +117,9 @@ namespace Boggle
 
         private async void HandleRequestGame(int gameLength)
         {
+            if (currentGameState == "active" || currentGameState == "pending")
+                return;
+
             //reset board, players name, score and words
             window.resetGame();
             try
@@ -151,12 +154,12 @@ namespace Boggle
 
                             if (response.StatusCode.ToString() == "Accepted")
                             {
-                                MessageBox.Show("You are player 1");
+                                MessageBox.Show("The game will start when another player is found.");
                                 HandleGameState();
                             }
                             else
                             {
-                                MessageBox.Show("You have joined another game.");
+                                MessageBox.Show("You have joined another player.");
                                 HandleGameState();
                             }
                         }
@@ -174,37 +177,45 @@ namespace Boggle
 
         private async void HandleCancelGame()
         {
+            if (currentGameState != "active" || currentGameState != "pending")
+            {
+                MessageBox.Show("There is no game to cancel.");
+                return;
+            }
+
             try
             {
                 timer1.Stop();
                 window.displayGameStatus("");
                 window.disablePlayGameControls();
 
-
-                //If you are canceling pending game, tell the server
-                // if you're canceling during a game, stop talking to the server and clear the board.
-
-                using (HttpClient client = CreateClient(this.domain))
+                if (currentGameState != "active")
                 {
-                    // Create the parameter
-                    dynamic user = new ExpandoObject();
-                    user.UserToken = userToken;
+                    //If you are canceling pending game, tell the server
+                    // if you're canceling during a game, stop talking to the server and clear the board.
 
-                    // Compose and send the request.
-                    tokenSource = new CancellationTokenSource();
-                    StringContent content = new StringContent(JsonConvert.SerializeObject(user), Encoding.UTF8, "application/json");
-                    HttpResponseMessage response = await client.PutAsync("BoggleService.svc/games", content, tokenSource.Token);
-
-                    // Deal with the response
-                    if (response.IsSuccessStatusCode)
+                    using (HttpClient client = CreateClient(this.domain))
                     {
-                      
-                        MessageBox.Show("Test Cancel: " + response.StatusCode + "\n" + response.ReasonPhrase);
+                        // Create the parameter
+                        dynamic user = new ExpandoObject();
+                        user.UserToken = userToken;
 
-                    }
-                    else
-                    {
-                        MessageBox.Show("Error cancelling: " + response.StatusCode + "\n" + response.ReasonPhrase + "UserToken " + userToken);
+                        // Compose and send the request.
+                        tokenSource = new CancellationTokenSource();
+                        StringContent content = new StringContent(JsonConvert.SerializeObject(user), Encoding.UTF8, "application/json");
+                        HttpResponseMessage response = await client.PutAsync("BoggleService.svc/games", content, tokenSource.Token);
+
+                        // Deal with the response
+                        if (response.IsSuccessStatusCode)
+                        {
+
+                            MessageBox.Show("Cancel Successful:" + response.StatusCode + "\n");
+
+                        }
+                        else
+                        {
+                            MessageBox.Show("Error cancelling: " + response.StatusCode + "\n" + response.ReasonPhrase + "UserToken " + userToken);
+                        }
                     }
                 }
             }
@@ -245,6 +256,8 @@ namespace Boggle
 
                         dynamic item = JsonConvert.DeserializeObject(result);
 
+                        currentGameState = (string)item.GameState;
+
                         window.displayGameStatus((string)item.GameState);
 
                         // if game state is active
@@ -280,7 +293,7 @@ namespace Boggle
                             }
 
 
-                            MessageBox.Show("The game is now completed. If you want to play again, please press Request Game");
+                            MessageBox.Show("Game over. To play again, press 'Request Game.'");
                         }
                       
 
@@ -314,9 +327,7 @@ namespace Boggle
                     // Deal with the response
                     if (!response.IsSuccessStatusCode)
                     {
-
                         MessageBox.Show("Error submitting: " + response.StatusCode + "\n" + response.ReasonPhrase + "UserToken " + userToken);
-
                     }
                   
                 }
@@ -349,7 +360,7 @@ namespace Boggle
             }
             catch (Exception)
             {
-                MessageBox.Show("Bad domain url");
+                MessageBox.Show("Nickname or domain url was bad.");
                 isBadURL = true;
                 
             }
