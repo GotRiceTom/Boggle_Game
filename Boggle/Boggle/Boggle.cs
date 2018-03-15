@@ -199,7 +199,7 @@ namespace Boggle
             if (button0.BackColor.Equals(Color.Red))
             {
                 button0.BackColor = Color.Empty;
-                Word_Entry_Box.Text = "";
+                
 
                 //call helper that clears the whole board
                 resetHighlightedButton();
@@ -216,7 +216,7 @@ namespace Boggle
             if (button1.BackColor.Equals(Color.Red))
             {
                 button1.BackColor = Color.Empty;
-                Word_Entry_Box.Text = "";
+                
 
                 //call helper that clears the whole board
                 resetHighlightedButton();
@@ -233,7 +233,7 @@ namespace Boggle
             if (button2.BackColor.Equals(Color.Red))
             {
                 button2.BackColor = Color.Empty;
-                Word_Entry_Box.Text = "";
+                
 
                 //call helper that clears the whole board
                 resetHighlightedButton();
@@ -250,7 +250,7 @@ namespace Boggle
             if (button3.BackColor.Equals(Color.Red))
             {
                 button3.BackColor = Color.Empty;
-                Word_Entry_Box.Text = "";
+                
 
                 //call helper that clears the whole board
                 resetHighlightedButton();
@@ -267,7 +267,7 @@ namespace Boggle
             if (button4.BackColor.Equals(Color.Red))
             {
                 button4.BackColor = Color.Empty;
-                Word_Entry_Box.Text = "";
+                
 
                 //call helper that clears the whole board
                 resetHighlightedButton();
@@ -284,7 +284,7 @@ namespace Boggle
             if (button5.BackColor.Equals(Color.Red))
             {
                 button5.BackColor = Color.Empty;
-                Word_Entry_Box.Text = "";
+                
 
                 //call helper that clears the whole board
                 resetHighlightedButton();
@@ -301,7 +301,7 @@ namespace Boggle
             if (button6.BackColor.Equals(Color.Red))
             {
                 button6.BackColor = Color.Empty;
-                Word_Entry_Box.Text = "";
+                
 
                 //call helper that clears the whole board
                 resetHighlightedButton();
@@ -318,7 +318,7 @@ namespace Boggle
             if (button7.BackColor.Equals(Color.Red))
             {
                 button7.BackColor = Color.Empty;
-                Word_Entry_Box.Text = "";
+                
 
                 //call helper that clears the whole board
                 resetHighlightedButton();
@@ -335,7 +335,7 @@ namespace Boggle
             if (button8.BackColor.Equals(Color.Red))
             {
                 button8.BackColor = Color.Empty;
-                Word_Entry_Box.Text = "";
+                
 
                 //call helper that clears the whole board
                 resetHighlightedButton();
@@ -352,7 +352,7 @@ namespace Boggle
             if (button9.BackColor.Equals(Color.Red))
             {
                 button9.BackColor = Color.Empty;
-                Word_Entry_Box.Text = "";
+                
 
                 //call helper that clears the whole board
                 resetHighlightedButton();
@@ -369,7 +369,7 @@ namespace Boggle
             if (button10.BackColor.Equals(Color.Red))
             {
                 button10.BackColor = Color.Empty;
-                Word_Entry_Box.Text = "";
+                
 
                 //call helper that clears the whole board
                 resetHighlightedButton();
@@ -386,7 +386,7 @@ namespace Boggle
             if (button11.BackColor.Equals(Color.Red))
             {
                 button11.BackColor = Color.Empty;
-                Word_Entry_Box.Text = "";
+                
 
                 //call helper that clears the whole board
                 resetHighlightedButton();
@@ -403,7 +403,7 @@ namespace Boggle
             if (button12.BackColor.Equals(Color.Red))
             {
                 button12.BackColor = Color.Empty;
-                Word_Entry_Box.Text = "";
+               
 
                 //call helper that clears the whole board
                 resetHighlightedButton();
@@ -420,7 +420,7 @@ namespace Boggle
             if (button13.BackColor.Equals(Color.Red))
             {
                 button13.BackColor = Color.Empty;
-                Word_Entry_Box.Text = "";
+                
 
                 //call helper that clears the whole board
                 resetHighlightedButton();
@@ -437,7 +437,7 @@ namespace Boggle
             if (button14.BackColor.Equals(Color.Red))
             {
                 button14.BackColor = Color.Empty;
-                Word_Entry_Box.Text = "";
+                
 
                 //call helper that clears the whole board
                 resetHighlightedButton();
@@ -454,7 +454,7 @@ namespace Boggle
             if (button15.BackColor.Equals(Color.Red))
             {
                 button15.BackColor = Color.Empty;
-                Word_Entry_Box.Text = "";
+                
 
                 //call helper that clears the whole board
                 resetHighlightedButton();
@@ -485,6 +485,7 @@ namespace Boggle
             button13.BackColor = Color.Empty;
             button14.BackColor = Color.Empty;
             button15.BackColor = Color.Empty;
+            Word_Entry_Box.Text = "";
         }
 
         private void Clear_Button_Click(object sender, EventArgs e)
@@ -495,8 +496,10 @@ namespace Boggle
 
         private void Submit_Button_Click(object sender, EventArgs e)
         {
-            resetHighlightedButton();
+            
             SubmitPlayWord?.Invoke(Word_Entry_Box.Text);
+            resetHighlightedButton();
+
         }
     }
 }

@@ -221,22 +221,20 @@ namespace Boggle
                         if ((string)item.GameState != "pending")
                         {
 
-
-
-                            // get letters on the board
-
-                          //  if (!IsGridDisplay)
-                         //   {
-                                //set the flag to true
-                                //IsGridDisplay = true;
-                                window.displayGameBoard((string)item.Board);
-                           // }
+                            window.displayGameBoard((string)item.Board);
+                       
 
                             window.displayCurrentTime((string)item.TimeLeft);
                             window.displayPlayer1Name((string)item.Player1.Nickname);
                             window.displayPlayer2Name((string)item.Player2.Nickname);
                             window.displayPlayer1Score((string)item.Player1.Score);
                             window.displayPlayer2Score((string)item.Player2.Score);
+                        }
+
+                        if ((string)item.GameState == "completed")
+                        {
+                            timer1.Stop();
+                            MessageBox.Show("The game is completed");
                         }
                       
 
@@ -268,16 +266,13 @@ namespace Boggle
                     HttpResponseMessage response = await client.PutAsync("BoggleService.svc/games" +"/"+gameID, content, tokenSource.Token);
 
                     // Deal with the response
-                    if (response.IsSuccessStatusCode)
+                    if (!response.IsSuccessStatusCode)
                     {
-                      
-                        MessageBox.Show("Test Cancel: " + response.StatusCode + "\n" + response.ReasonPhrase);
+
+                        MessageBox.Show("Error submitting: " + response.StatusCode + "\n" + response.ReasonPhrase + "UserToken " + userToken);
 
                     }
-                    else
-                    {
-                        MessageBox.Show("Error submitting: " + response.StatusCode + "\n" + response.ReasonPhrase + "UserToken " + userToken);
-                    }
+                  
                 }
             }
             catch (TaskCanceledException)
