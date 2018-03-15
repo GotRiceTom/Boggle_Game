@@ -21,6 +21,10 @@ namespace Boggle
 
         private string gameID;
 
+        private string domain;
+
+        private bool isBadURL;
+
         private System.Windows.Forms.Timer timer1;
 
         /// <summary>
@@ -47,7 +51,10 @@ namespace Boggle
             timer1 = new System.Windows.Forms.Timer();
             timer1.Tick += new EventHandler(CallHandleGameState);
             timer1.Interval = 1000; // in miliseconds
-            timer1.Start();
+
+            this.domain = "";
+
+            isBadURL = false;
         }
 
 
@@ -57,39 +64,48 @@ namespace Boggle
         /// <summary>
         /// Registers a user with the given name and email.
         /// </summary>
-        private async void HandleRegisterUser(string name)
+        private async void HandleRegisterUser(string name, string domain)
         {
             try
             {
+                this.domain = domain;
 
-                using (HttpClient client = CreateClient())
+                using (HttpClient client = CreateClient(this.domain))
                 {
-                    // Create the parameter
-                    dynamic user = new ExpandoObject();
-                    user.Nickname = name;
-                    
 
-
-                    // Compose and send the request.
-                    tokenSource = new CancellationTokenSource();
-                    StringContent content = new StringContent(JsonConvert.SerializeObject(user), Encoding.UTF8, "application/json");
-                    HttpResponseMessage response = await client.PostAsync("BoggleService.svc/users", content, tokenSource.Token);
-
-                    // Deal with the response
-                    if (response.IsSuccessStatusCode)
+                    if (!isBadURL)
                     {
-                        String result = await response.Content.ReadAsStringAsync();
-                        dynamic item = JsonConvert.DeserializeObject(result);
-                        userToken = (string)item.UserToken;
-                        MessageBox.Show(name + " is register to the server.");
 
-                        // window.IsUserRegistered = true;
-                    }
-                    else
-                    {
-                        MessageBox.Show("Error registering: " + response.StatusCode + "\n" + response.ReasonPhrase);
+
+
+                        // Create the parameter
+                        dynamic user = new ExpandoObject();
+                        user.Nickname = name;
+
+
+
+                        // Compose and send the request.
+                        tokenSource = new CancellationTokenSource();
+                        StringContent content = new StringContent(JsonConvert.SerializeObject(user), Encoding.UTF8, "application/json");
+                        HttpResponseMessage response = await client.PostAsync("BoggleService.svc/users", content, tokenSource.Token);
+
+                        // Deal with the response
+                        if (response.IsSuccessStatusCode)
+                        {
+                            String result = await response.Content.ReadAsStringAsync();
+                            dynamic item = JsonConvert.DeserializeObject(result);
+                            userToken = (string)item.UserToken;
+                            MessageBox.Show(name + " is register to the server.");
+
+                            // window.IsUserRegistered = true;
+                        }
+                        else
+                        {
+                            MessageBox.Show("Error registering: " + response.StatusCode + "\n" + response.ReasonPhrase);
+                        }
                     }
                 }
+                
             }
             catch (TaskCanceledException)
             {
@@ -103,46 +119,50 @@ namespace Boggle
             try
             {
 
-                using (HttpClient client = CreateClient())
+                using (HttpClient client = CreateClient(this.domain))
                 {
-                    // Create the parameter
-                    dynamic user = new ExpandoObject();
-                    user.UserToken = userToken;
-                    user.TimeLimit = durationSec;
+                 
+
+
+                        // Create the parameter
+                        dynamic user = new ExpandoObject();
+                        user.UserToken = userToken;
+                        user.TimeLimit = durationSec;
 
 
 
-                    // Compose and send the request.
-                    tokenSource = new CancellationTokenSource();
-                    StringContent content = new StringContent(JsonConvert.SerializeObject(user), Encoding.UTF8, "application/json");
-                    HttpResponseMessage response = await client.PostAsync("BoggleService.svc/games", content, tokenSource.Token);
+                        // Compose and send the request.
+                        tokenSource = new CancellationTokenSource();
+                        StringContent content = new StringContent(JsonConvert.SerializeObject(user), Encoding.UTF8, "application/json");
+                        HttpResponseMessage response = await client.PostAsync("BoggleService.svc/games", content, tokenSource.Token);
 
-                    // Deal with the response
-                    if (response.IsSuccessStatusCode)
-                    {
-                        String result = await response.Content.ReadAsStringAsync();
-                        dynamic item = JsonConvert.DeserializeObject(result);
-                        gameID = (string)item.GameID;
-
-                        if (response.StatusCode.ToString() == "Accepted")
+                        // Deal with the response
+                        if (response.IsSuccessStatusCode)
                         {
-                            MessageBox.Show("You are hosting a game.");
-                            HandleGameState();
+                            String result = await response.Content.ReadAsStringAsync();
+                            dynamic item = JsonConvert.DeserializeObject(result);
+                            gameID = (string)item.GameID;
+
+                            if (response.StatusCode.ToString() == "Accepted")
+                            {
+                                MessageBox.Show("You are hosting a game.");
+                                HandleGameState();
+                            }
+                            else
+                            {
+                                MessageBox.Show("You have joined another game.");
+                                HandleGameState();
+                            }
+
+
+                            // window.IsUserRegistered = true;
                         }
                         else
                         {
-                            MessageBox.Show("You have joined another game.");
-                            HandleGameState();
+                            MessageBox.Show("Error registering: " + response.StatusCode + "\n" + response.ReasonPhrase);
                         }
-                       
-
-                        // window.IsUserRegistered = true;
                     }
-                    else
-                    {
-                        MessageBox.Show("Error registering: " + response.StatusCode + "\n" + response.ReasonPhrase);
-                    }
-                }
+                
             }
             catch (TaskCanceledException)
             {
@@ -154,7 +174,7 @@ namespace Boggle
             try
             {
 
-                using (HttpClient client = CreateClient())
+                using (HttpClient client = CreateClient(this.domain))
                 {
                     // Create the parameter
                     dynamic user = new ExpandoObject();
@@ -201,7 +221,7 @@ namespace Boggle
             try
             {
 
-                using (HttpClient client = CreateClient())
+                using (HttpClient client = CreateClient(this.domain))
                 {
                    
                   //  StringContent content = new StringContent(JsonConvert.SerializeObject(user), Encoding.UTF8, "application/json");
@@ -210,6 +230,7 @@ namespace Boggle
                     // Deal with the response
                     if (response.IsSuccessStatusCode)
                     {
+                        timer1.Start();
                         String result = await response.Content.ReadAsStringAsync();
 
                         dynamic item = JsonConvert.DeserializeObject(result);
@@ -234,6 +255,19 @@ namespace Boggle
                         if ((string)item.GameState == "completed")
                         {
                             timer1.Stop();
+
+
+                           foreach(dynamic currentItem in item.Player1.WordsPlayed)
+                            {
+                                window.displayPlayer1Words((string) currentItem.Word, (string) currentItem.Score);
+                            }
+
+                            foreach (dynamic currentItem in item.Player2.WordsPlayed)
+                            {
+                                window.displayPlayer2Words((string)currentItem.Word, (string)currentItem.Score);
+                            }
+
+
                             MessageBox.Show("The game is completed");
                         }
                       
@@ -253,7 +287,7 @@ namespace Boggle
             try
             {
 
-                using (HttpClient client = CreateClient())
+                using (HttpClient client = CreateClient(this.domain))
                 {
                     // Create the parameter
                     dynamic user = new ExpandoObject();
@@ -283,18 +317,33 @@ namespace Boggle
         /// <summary>
         /// Creates an HttpClient for communicating with the server.
         /// </summary>
-        private static HttpClient CreateClient()
+        private  HttpClient CreateClient(string domain)
         {
-            // Create a client whose base address is the GitHub server
-            HttpClient client = new HttpClient();
-            client.BaseAddress = new Uri("http://ice.eng.utah.edu/");
+            
+                // Create a client whose base address is the GitHub server
+                HttpClient client = new HttpClient();
+            try
+            {
 
-            // Tell the server that the client will accept this particular type of response data
-            client.DefaultRequestHeaders.Accept.Clear();
-            client.DefaultRequestHeaders.Add("Accept", "application/json");
 
+                client.BaseAddress = new Uri(domain);
+
+                // Tell the server that the client will accept this particular type of response data
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Add("Accept", "application/json");
+                isBadURL = false;
+
+                return client;
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Bad domain url");
+                isBadURL = true;
+                
+            }
             // There is more client configuration to do, depending on the request.
             return client;
+            
         }
 
     }

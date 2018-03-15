@@ -101,7 +101,7 @@
             // 
             this.Player_Name_Box.Location = new System.Drawing.Point(95, 36);
             this.Player_Name_Box.Name = "Player_Name_Box";
-            this.Player_Name_Box.Size = new System.Drawing.Size(113, 20);
+            this.Player_Name_Box.Size = new System.Drawing.Size(201, 20);
             this.Player_Name_Box.TabIndex = 1;
             this.Player_Name_Box.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -118,8 +118,9 @@
             // 
             this.Server_Domain_Box.Location = new System.Drawing.Point(95, 63);
             this.Server_Domain_Box.Name = "Server_Domain_Box";
-            this.Server_Domain_Box.Size = new System.Drawing.Size(113, 20);
+            this.Server_Domain_Box.Size = new System.Drawing.Size(201, 20);
             this.Server_Domain_Box.TabIndex = 3;
+            this.Server_Domain_Box.Text = "http://ice.eng.utah.edu/";
             this.Server_Domain_Box.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // Server_Domain_Label
