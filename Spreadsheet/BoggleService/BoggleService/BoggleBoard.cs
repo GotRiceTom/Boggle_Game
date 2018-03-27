@@ -6,6 +6,7 @@ namespace Boggle
 {
     /// <summary>
     /// Represents a Boggle board. lol
+    /// //;ladskjf;lkdsajaf;lksad
     /// </summary>
     public class BoggleBoard
     {
