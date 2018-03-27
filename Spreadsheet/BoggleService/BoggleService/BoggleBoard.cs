@@ -5,7 +5,7 @@ using System;
 namespace Boggle
 {
     /// <summary>
-    /// Represents a Boggle board.
+    /// Represents a Boggle board. lol
     /// </summary>
     public class BoggleBoard
     {
