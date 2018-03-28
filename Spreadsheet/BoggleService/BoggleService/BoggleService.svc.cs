@@ -63,7 +63,21 @@ namespace Boggle
 
         public int JoinGame(string UserToken, int TimeLimit)
         {
-            throw new NotImplementedException();
+            lock (sync)
+            {
+                if (TimeLimit < 5 || TimeLimit > 120)
+                {
+                    SetStatus(Forbidden);
+                    return 0;
+                }
+
+                // check if the userToken is already in a pending game
+                // must response to a 409(Conflict)
+
+
+
+            ///
+            }
         }
 
         public void CancelJoinRequest(string UserToken)
@@ -81,6 +95,13 @@ namespace Boggle
         public string PlayWord(string UserToken, string Word)
         {
             throw new NotImplementedException();
+        }
+
+
+
+        private void checkPendingGame()
+        {
+
         }
 
         /// <summary>
