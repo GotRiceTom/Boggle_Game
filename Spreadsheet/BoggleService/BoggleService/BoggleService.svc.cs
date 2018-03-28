@@ -30,6 +30,31 @@ namespace Boggle
             return File.OpenRead(AppDomain.CurrentDomain.BaseDirectory + "index.html");
         }
 
+        public void CancelJoinRequest(string UserToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string CreateUser(string Nickname)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetGameStatus(string Brief)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int JoinGame(string UserToken, int TimeLimit)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string PlayWord(string UserToken, string Word)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Demo.  You can delete this.
         /// </summary>
