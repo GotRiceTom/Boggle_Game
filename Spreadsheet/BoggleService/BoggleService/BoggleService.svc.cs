@@ -19,7 +19,7 @@ namespace Boggle
         private static Game pendingGame;
 
         //count the games so we know what the gameID will be
-        private int gameCounter;
+        private static int gameCounter;
 
         // Keep track of the users that are waiting for a game or in an active one.
         private static HashSet<string> activePlayers = new HashSet<string>();
@@ -102,7 +102,9 @@ namespace Boggle
                         SetStatus(Created);
 
                         pendingGame.Player2.Nickname = nickname;
-                        pendingGame.player1ID = joiningGame.UserToken;
+
+                        pendingGame.Player2.UserToken = joiningGame.UserToken;
+
                         activePlayers.Add(joiningGame.UserToken);
 
                         pendingGame.maxTime = (pendingGame.maxTime + joiningGame.TimeLimit) / 2;
@@ -127,7 +129,9 @@ namespace Boggle
                         SetStatus(Accepted);
 
                         pendingGame.Player1.Nickname = nickname;
-                        pendingGame.player1ID = joiningGame.UserToken;
+
+                        pendingGame.Player1.UserToken = joiningGame.UserToken;
+
                         activePlayers.Add(joiningGame.UserToken);
 
                         pendingGame.maxTime = joiningGame.TimeLimit;
@@ -145,7 +149,7 @@ namespace Boggle
         public void CancelJoinRequest(string UserToken)
         {
             // If the usertoken is invalid or the user isn't in a pending game, return forbidden
-            if ( !activePlayers.Contains(UserToken) || pendingGame.player1ID != UserToken)
+            if ( !activePlayers.Contains(UserToken) || pendingGame.Player1.UserToken != UserToken)
             {
                 SetStatus(Forbidden);
                 return;
@@ -155,40 +159,42 @@ namespace Boggle
             else
             {
                 pendingGame = new Game("pending");
+                SetStatus(OK);
             }
         }
 
-        public string PlayWord(WordPlayed wordPlayed, string GameID)
+        public int PlayWord(WordPlayed wordPlayed, string GameID)
         {
             // check if Word is null or empty or longer than 30 characters when trimmed, or if GameID or UserToken is invalid
             if (wordPlayed.Word == null || wordPlayed.Word.Trim().Length > 30 || wordPlayed.Word.Trim().Length == 0 || !activeGames.ContainsKey(GameID)
                 || !activePlayers.Contains(wordPlayed.UserToken))
             {
                 SetStatus(Forbidden);
-                return null;
+                return 0;
             }
 
             //grab the game associated with the gameID
             if (activeGames.TryGetValue(GameID, out Game game))
             {
                 //check if the usertoken is not a player in the gameID
-                if (game.player1ID != wordPlayed.UserToken && game.player2ID != wordPlayed.UserToken)
+                if (game.Player1.UserToken != wordPlayed.UserToken && game.Player2.UserToken != wordPlayed.UserToken)
                 {
                     SetStatus(Forbidden);
-                    return null;
+                    return 0;
                 }
 
                 //check if the game is set to something other than active
                 if (game.currentState != "active")
                 {
                     SetStatus(Conflict);
-                    return null;
+                    return 0;
                 }
 
                 // records the trimmed Word as being played by UserToken in the game identified by GameID. Returns the score for Word in the context of the game
+
             }
 
-            return null;
+            return 0;
         }
 
 
@@ -208,7 +214,7 @@ namespace Boggle
                 return true;
             }
 
-            else return false;
+            return false;
         }
 
         /// <summary>

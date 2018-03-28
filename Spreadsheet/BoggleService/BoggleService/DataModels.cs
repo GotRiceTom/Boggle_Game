@@ -18,6 +18,7 @@ namespace Boggle
     {
         public string Nickname { get; set; }
         public int Score { get; set; }
+        public string UserToken { get; set; }
 
         Dictionary<string, int> WordsPlayed = new Dictionary<string, int>();
     }
@@ -52,13 +53,6 @@ namespace Boggle
 
         public Player Player1;
         public Player Player2;
-
-        public string player1ID;
-        public string player2ID;
-
-        public int player1Score { get; set; }
-
-        public int player2Score { get; set; }
 
         public int timeLeft { get; set; }
 

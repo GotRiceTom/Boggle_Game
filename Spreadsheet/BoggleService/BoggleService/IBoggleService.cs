@@ -44,7 +44,7 @@ namespace Boggle
         /// <param name="UserToken"></param>
         /// <param name="Word"></param>
         [WebInvoke(Method = "PUT", UriTemplate = "/games/{GameID}")]
-        string PlayWord (WordPlayed wordPlayed, string GameID);
+        int PlayWord (WordPlayed wordPlayed, string GameID);
 
         /// <summary>
         /// Getting the game status
