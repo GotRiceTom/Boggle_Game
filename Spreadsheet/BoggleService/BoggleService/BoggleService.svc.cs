@@ -10,11 +10,19 @@ namespace Boggle
     public class BoggleService : IBoggleService
     {
 
-
-        private readonly static Dictionary<String, String> users = new Dictionary<string, String>();
-        private readonly static Dictionary<String, GameState> activeGames = new Dictionary<string, GameState>();
-        private readonly static Dictionary<String, GameState> completeGames = new Dictionary<string, GameState>();
+        private readonly static Dictionary<String, String> users = new Dictionary<String, String>();
+        private readonly static Dictionary<string, Game> activeGames = new Dictionary<string, Game>();
+        private readonly static Dictionary<string, Game> completeGames = new Dictionary<string, Game>();
         private readonly static BoggleBoard board;
+
+        //only keep track of one pending game at a time
+        private static Game pendingGame;
+
+        //count the games so we know what the gameID will be
+        private int gameCounter;
+
+        // Keep track of the users that are waiting for a game or in an active one.
+        private static HashSet<string> activePlayers = new HashSet<string>();
 
         private readonly static object sync = new object();
         /// <summary>
@@ -39,69 +47,168 @@ namespace Boggle
         }
 
 
-        public string CreateUser(string Nickname)
+        public string CreateUser(User user)
         {
             lock (sync)
             {
-              
-                if (Nickname == null || Nickname.Trim().Length == 0 || Nickname.Trim().Length > 50)
+                if (user.NickName == null || user.NickName.Trim().Length == 0 || user.NickName.Trim().Length > 50)
                 {
                     SetStatus(Forbidden);
                     return null;
                 }
+
                 else
                 {
                     string userID = Guid.NewGuid().ToString();
-                    users.Add(userID, Nickname);
+                    users.Add(userID, user.NickName);
                     SetStatus(Created);
                     return userID;
                 }
             }
         }
 
-
-
-        public int JoinGame(string UserToken, int TimeLimit)
+        public int JoinGame(JoiningGame joiningGame)
         {
+            // Make sure there's a pending game.
+            if (pendingGame == null)
+            {
+                pendingGame = new Game("pending");
+            }
+
             lock (sync)
             {
-                if (TimeLimit < 5 || TimeLimit > 120)
+                // If the time limit they entered is bad, reply forbidden and don't start a game.
+                if (joiningGame.TimeLimit < 5 || joiningGame.TimeLimit > 120)
                 {
                     SetStatus(Forbidden);
                     return 0;
                 }
 
-                // check if the userToken is already in a pending game
-                // must response to a 409(Conflict)
+                // If the user token is already in a game, respond with conflict
+                if (activePlayers.Contains(joiningGame.UserToken))
+                {
+                    SetStatus(Conflict);
+                    return 0;
+                }
 
+                // If there's already somebody waiting for the game, then we need to add UserToken as the second player
+                // average the max time, activate the pending game, and create a new pending game.
+                if (checkPendingGame() == true)
+                {
+                    pendingGame.Player2 = new Player();
 
+                    if (users.TryGetValue(joiningGame.UserToken, out string nickname))
+                    {
+                        SetStatus(Created);
 
-            ///
+                        pendingGame.Player2.Nickname = nickname;
+                        pendingGame.player1ID = joiningGame.UserToken;
+                        activePlayers.Add(joiningGame.UserToken);
+
+                        pendingGame.maxTime = (pendingGame.maxTime + joiningGame.TimeLimit) / 2;
+
+                        pendingGame.currentState = "active";
+
+                        activeGames.Add(gameCounter.ToString(), pendingGame);
+
+                        pendingGame = new Game("pending");
+
+                        return gameCounter;
+                    }
+                }
+
+                // If there's nobody in the pending game, then add them to the pending game and increments the game counter.
+                if (checkPendingGame() == false)
+                {
+                    pendingGame.Player1 = new Player();
+
+                    if (users.TryGetValue(joiningGame.UserToken, out string nickname))
+                    {
+                        SetStatus(Accepted);
+
+                        pendingGame.Player1.Nickname = nickname;
+                        pendingGame.player1ID = joiningGame.UserToken;
+                        activePlayers.Add(joiningGame.UserToken);
+
+                        pendingGame.maxTime = joiningGame.TimeLimit;
+
+                        gameCounter++;
+                        return gameCounter;
+                    }
+                }
+            
+                // Unreachable code to please the constructor
+                return 0;
             }
         }
 
         public void CancelJoinRequest(string UserToken)
         {
-            throw new NotImplementedException();
+            // If the usertoken is invalid or the user isn't in a pending game, return forbidden
+            if ( !activePlayers.Contains(UserToken) || pendingGame.player1ID != UserToken)
+            {
+                SetStatus(Forbidden);
+                return;
+            }
+
+            // otherwise, reset the pending game
+            else
+            {
+                pendingGame = new Game("pending");
+            }
         }
+
+        public string PlayWord(WordPlayed wordPlayed, string GameID)
+        {
+            // check if Word is null or empty or longer than 30 characters when trimmed, or if GameID or UserToken is invalid
+            if (wordPlayed.Word == null || wordPlayed.Word.Trim().Length > 30 || wordPlayed.Word.Trim().Length == 0 || !activeGames.ContainsKey(GameID)
+                || !activePlayers.Contains(wordPlayed.UserToken))
+            {
+                SetStatus(Forbidden);
+                return null;
+            }
+
+            //grab the game associated with the gameID
+            if (activeGames.TryGetValue(GameID, out Game game))
+            {
+                //check if the usertoken is not a player in the gameID
+                if (game.player1ID != wordPlayed.UserToken && game.player2ID != wordPlayed.UserToken)
+                {
+                    SetStatus(Forbidden);
+                    return null;
+                }
+
+                //check if the game is set to something other than active
+                if (game.currentState != "active")
+                {
+                    SetStatus(Conflict);
+                    return null;
+                }
+
+                // records the trimmed Word as being played by UserToken in the game identified by GameID. Returns the score for Word in the context of the game
+            }
+
+            return null;
+        }
+
 
         public string GetGameStatus(string Brief)
         {
             throw new NotImplementedException();
         }
 
-        
-
-        public string PlayWord(string UserToken, string Word)
+        /// <summary>
+        /// Returns true if there is a player in the pending game that is waiting. Returns false if the pending game is empty.
+        /// </summary>
+        /// <returns></returns>
+        private Boolean checkPendingGame()
         {
-            throw new NotImplementedException();
-        }
+            if (pendingGame.Player1 != null)
+            {
+                return true;
+            }
 
-
-
-        private void checkPendingGame()
-        {
-
+            else return false;
         }
 
         /// <summary>

@@ -5,13 +5,12 @@ using System.Web;
 
 namespace Boggle
 {
+    /// <summary>
+    /// This is the object that is used when someone tries to register themselves as a user.
+    /// </summary>
     public class User
     {
         public string NickName { get; set; }
-
-        public string UserToken { get; set; }
-
-        public int userTime { get; set; }
     }
 
 
@@ -23,11 +22,30 @@ namespace Boggle
         Dictionary<string, int> WordsPlayed = new Dictionary<string, int>();
     }
 
-
-
-
-    public class GameState
+    /// <summary>
+    /// This is the object that is passed in when a player tries to play a word.
+    /// </summary>
+    public class WordPlayed
     {
+        public string UserToken { get; set; }
+
+        public string Word { get; set; }
+    }
+
+    /// <summary>
+    /// This is the object that is passed in when a player tries to join a game.
+    /// </summary>
+    public class JoiningGame
+    {
+        public string UserToken { get; set; }
+        public int TimeLimit { get; set; }
+    }
+
+
+    public class Game
+    {
+        public BoggleBoard board;
+
         public int maxTime { get; set; }
 
         public string currentState { get; set; }
@@ -35,12 +53,19 @@ namespace Boggle
         public Player Player1;
         public Player Player2;
 
+        public string player1ID;
+        public string player2ID;
+
         public int player1Score { get; set; }
 
         public int player2Score { get; set; }
 
         public int timeLeft { get; set; }
 
-
+        //constructor to make sure status is pending when a game is created
+        public Game (string gameState)
+        {
+            currentState = gameState;
+        }
     }
 }

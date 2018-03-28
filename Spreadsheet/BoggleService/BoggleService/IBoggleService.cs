@@ -20,7 +20,7 @@ namespace Boggle
         /// <param name="nickName"></param>
         /// <returns></returns>
         [WebInvoke(Method = "POST", UriTemplate = "/users")]
-        string CreateUser (string Nickname);
+        string CreateUser (User user);
 
         /// <summary>
         /// Join Game
@@ -29,7 +29,7 @@ namespace Boggle
         /// <param name="TimeLimit"></param>
         /// <returns></returns>
         [WebInvoke(Method = "POST", UriTemplate = "/games")]
-        int JoinGame (string UserToken, int TimeLimit);
+        int JoinGame (JoiningGame joiningGame);
 
         /// <summary>
         /// Cancel Join Request
@@ -44,7 +44,7 @@ namespace Boggle
         /// <param name="UserToken"></param>
         /// <param name="Word"></param>
         [WebInvoke(Method = "PUT", UriTemplate = "/games/{GameID}")]
-        string PlayWord (string UserToken, string Word);
+        string PlayWord (WordPlayed wordPlayed, string GameID);
 
         /// <summary>
         /// Getting the game status
