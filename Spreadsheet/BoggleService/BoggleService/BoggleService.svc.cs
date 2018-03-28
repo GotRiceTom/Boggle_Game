@@ -14,6 +14,7 @@ namespace Boggle
         private readonly static Dictionary<String, String> users = new Dictionary<string, String>();
         private readonly static Dictionary<String, GameState> activeGames = new Dictionary<string, GameState>();
         private readonly static Dictionary<String, GameState> completeGames = new Dictionary<string, GameState>();
+        private readonly static BoggleBoard board;
 
         private readonly static object sync = new object();
         /// <summary>
