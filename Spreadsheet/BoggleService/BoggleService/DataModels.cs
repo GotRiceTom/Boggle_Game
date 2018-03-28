@@ -34,7 +34,7 @@ namespace Boggle
 
         public Player Player1;
         public Player Player2;
-
+        
         public int player1Score { get; set; }
 
         public int player2Score { get; set; }
