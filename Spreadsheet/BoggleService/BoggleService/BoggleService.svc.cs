@@ -102,7 +102,7 @@ namespace Boggle
 
                 // If there's already somebody waiting for the game, then we need to add UserToken as the second player
                 // average the max time, activate the pending game, and create a new pending game.
-                if (checkPendingGame() == true)
+                if (pendingGame.Player1 != null)
                 {
                     pendingGame.Player2 = new Player();
 
@@ -120,13 +120,22 @@ namespace Boggle
 
                         pendingGame.GameState = "active";
 
+                        pendingGame.StartingTime = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
+
                         activeGames.Add(gameCounter.ToString(), pendingGame);
+
+                        pendingGame.FullBoard = new BoggleBoard();
+
+                        pendingGame.Board = pendingGame.FullBoard.ToString();
 
                         pendingGame = new Game();
                         pendingGame.GameState = "pending";
 
+                       
 
                         temp.GameID = gameCounter.ToString();
+
+                        gameCounter++;
 
                         pendingGameID = (gameCounter + 1).ToString();
 
@@ -137,7 +146,7 @@ namespace Boggle
                 }
 
                 // If there's nobody in the pending game, then add them to the pending game and increments the game counter.
-                if (checkPendingGame() == false)
+                if (pendingGame.Player1 == null)
                 {
                     pendingGame.Player1 = new Player();
 
@@ -152,8 +161,6 @@ namespace Boggle
                         activePlayers.Add(joiningGame.UserToken);
 
                         pendingGame.TimeLimit = joiningGame.TimeLimit;
-
-                        gameCounter++;
 
                         temp.GameID = gameCounter.ToString();
 
@@ -223,20 +230,33 @@ namespace Boggle
 
 
                     //if word cannot be formed on the board, score of the word is -1
-                    if (!game.Board.CanBeFormed(wordPlayed.Word))
+                    if (!game.FullBoard.CanBeFormed(wordPlayed.Word))
                     {
                         //score is -1
+                    }
+
+                    // check for duplicates
+
+                    if ()
+                    {
+
                     }
 
                     Boolean equals = false;
 
                     //if the word is not in the dictionary, the score is -1
-                    foreach (string line in File.ReadLines("../../dictionary.txt", Encoding.UTF8)) //@ sign may bu unnecessary!
+                    string line;
+
+                    using (StreamReader file = new System.IO.StreamReader(AppDomain.CurrentDomain.BaseDirectory + "dictionary.txt"))
                     {
-                        if (wordPlayed.Word.ToUpper() == line)
+                        while ((line = file.ReadLine()) != null)
                         {
-                            equals = true;
-                            break;
+
+                            if (line == wordPlayed.Word)
+                            {
+                                equals = true;
+                                break;
+                            }
                         }
                     }
 
@@ -419,18 +439,15 @@ namespace Boggle
         {
             lock (sync)
             {
-
-                /// if the game id doesn't exist 
-                try
+                //check for null
+                if (GameID == null)
                 {
-                    if (Int32.Parse(GameID) > Int32.Parse(pendingGameID))
-                    {
-                        SetStatus(Forbidden);
-                        return null;
-                    }
+                    SetStatus(Forbidden);
+                    return null;
                 }
 
-                catch (Exception)
+                //Make sure that the game ID matches to an active or completed game or the pending game
+                if (!(activeGames.ContainsKey(GameID) || completeGames.ContainsKey(GameID) || pendingGameID == GameID))
                 {
                     SetStatus(Forbidden);
                     return null;
@@ -439,6 +456,12 @@ namespace Boggle
 
                 // set status code to (OK)
                 SetStatus(OK);
+
+                //if the game is pending
+                if (pendingGameID == GameID)
+                {
+                    return pendingGame;
+                }
 
                 //use the GameID to check which dict it's in
                 // active or complete dictionary
@@ -449,84 +472,46 @@ namespace Boggle
                 {
                     return completeGame;
                 }
-                
-               
-                // at this point the game is in a active status
-                
 
-                activeGames.TryGetValue(GameID.ToUpper(), out Game value);
+                int currentTime;
+
+                // at this point the game is in a active status
+                if (activeGames.TryGetValue(GameID.ToUpper(), out Game activeGame))
+                {
+                    currentTime = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
+
+                    activeGame.TimeLeft = activeGame.TimeLimit - (currentTime - activeGame.StartingTime);
+
+                    // then check the status of the game
+                    //if timeleft is zero
+                    // the game is compltete status and add to the dictionary
+                    // remove this game key and value off the active game
+                    if (activeGame.TimeLeft <= 0)
+                    {
+                        activeGame.TimeLeft = 0;
+
+                        //set value game to complete
+                        activeGame.GameState = "completed";
+
+                        activePlayers.Remove(activeGame.Player1.UserToken);
+                        activePlayers.Remove(activeGame.Player2.UserToken);
+
+                        completeGames.Add(GameID, activeGame);
+
+                        activeGames.Remove(GameID);
+
+                        return activeGame;
+                    }
+
+                    return activeGame;
+                }
 
                 //need to figure out how to keep track of time
 
-                // then check the status of the game
-                //if timeleft is zero
-                // the game is compltete status and add to the dictionary
-                // remove this game key and value off the active game
-                if (value.TimeLeft == 0)
-                {
-
-                    //set value game to complete
-                    value.GameState = "completed";
-
-                    completeGames.Add(GameID, value);
-
-                    activeGames.Remove(GameID);
-
-                    return value;
-
-                }
-
-
-                return value;
+                return null;
             }
 
         }
 
-        /// <summary>
-        /// Returns true if there is a player in the pending game that is waiting. Returns false if the pending game is empty.
-        /// </summary>
-        /// <returns></returns>
-        private Boolean checkPendingGame()
-        {
-            if (pendingGame.Player1 != null)
-            {
-                return true;
-            }
-
-            return false;
-        }
-
-        /// <summary>
-        /// Demo.  You can delete this.
-        /// </summary>
-        //public string WordAtIndex(int n)
-        //{
-        //    if (n < 0)
-        //    {
-        //        SetStatus(Forbidden);
-        //        return null;
-        //    }
-
-        //    string line;
-        //    using (StreamReader file = new System.IO.StreamReader(AppDomain.CurrentDomain.BaseDirectory + "dictionary.txt"))
-        //    {
-        //        while ((line = file.ReadLine()) != null)
-        //        {
-        //            if (n == 0) break;
-        //            n--;
-        //        }
-        //    }
-
-        //    if (n == 0)
-        //    {
-        //        SetStatus(OK);
-        //        return line;
-        //    }
-        //    else
-        //    {
-        //        SetStatus(Forbidden);
-        //        return null;
-        //    }
-        //}
     }
 }

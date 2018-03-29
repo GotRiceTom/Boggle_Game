@@ -71,15 +71,19 @@ namespace Boggle
 
     public class Game
     {
-        public BoggleBoard Board;
+        public BoggleBoard FullBoard { get; set; }
+
+        public string Board { get; set; }
 
         public int TimeLimit { get; set; }
 
         public string GameState { get; set; }
 
-        public Player Player1;
-        public Player Player2;
+        public Player Player1 { get; set; }
+        public Player Player2 { get; set; }
 
         public int TimeLeft { get; set; }
+
+        public int StartingTime { get; set; }
     }
 }
