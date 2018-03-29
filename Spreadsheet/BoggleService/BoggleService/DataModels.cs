@@ -81,13 +81,5 @@ namespace Boggle
         public Player Player2;
 
         public int TimeLeft { get; set; }
-
-        //constructor to make sure status is pending when a game is created
-        public Game (string gameState)
-        {
-            GameState = gameState;
-
-            Board = new BoggleBoard();
-        }
     }
 }

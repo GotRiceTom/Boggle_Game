@@ -14,7 +14,6 @@ namespace Boggle
         private readonly static Dictionary<String, String> users = new Dictionary<String, String>();
         private readonly static Dictionary<string, Game> activeGames = new Dictionary<string, Game>();
         private readonly static Dictionary<string, Game> completeGames = new Dictionary<string, Game>();
-        private readonly static BoggleBoard board;
 
         //only keep track of one pending game at a time
         private static Game pendingGame;
@@ -78,7 +77,8 @@ namespace Boggle
                 // Make sure there's a pending game.
                 if (pendingGame == null)
                 {
-                    pendingGame = new Game("pending");
+                    pendingGame = new Game();
+                    pendingGame.GameState = "pending";
                     pendingGameID = 1.ToString();
                 }
 
@@ -122,9 +122,10 @@ namespace Boggle
 
                         activeGames.Add(gameCounter.ToString(), pendingGame);
 
-                        pendingGame = new Game("pending");
+                        pendingGame = new Game();
+                        pendingGame.GameState = "pending";
 
-                        
+
                         temp.GameID = gameCounter.ToString();
 
                         pendingGameID = (gameCounter + 1).ToString();
@@ -180,7 +181,8 @@ namespace Boggle
                 else
                 {
                     activePlayers.Remove(UserToken.UserToken);
-                    pendingGame = new Game("pending");
+                    pendingGame = new Game();
+                    pendingGame.GameState = "pending";
                     SetStatus(OK);
                 }
             }
