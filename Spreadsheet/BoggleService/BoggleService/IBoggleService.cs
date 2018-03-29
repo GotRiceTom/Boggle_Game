@@ -20,7 +20,7 @@ namespace Boggle
         /// <param name="nickName"></param>
         /// <returns></returns>
         [WebInvoke(Method = "POST", UriTemplate = "/users")]
-        string CreateUser (string Nickname);
+        Token CreateUser (User user);
 
         /// <summary>
         /// Join Game
@@ -29,14 +29,14 @@ namespace Boggle
         /// <param name="TimeLimit"></param>
         /// <returns></returns>
         [WebInvoke(Method = "POST", UriTemplate = "/games")]
-        int JoinGame (string UserToken, int TimeLimit);
+        TheGameID JoinGame (JoiningGame joiningGame);
 
         /// <summary>
         /// Cancel Join Request
         /// </summary>
         /// <param name="UserToken"></param>
         [WebInvoke(Method = "PUT", UriTemplate = "/games")]
-        void CancelJoinRequest (string UserToken);
+        void CancelJoinRequest (Token UserToken);
 
         /// <summary>
         /// Play word
@@ -44,14 +44,13 @@ namespace Boggle
         /// <param name="UserToken"></param>
         /// <param name="Word"></param>
         [WebInvoke(Method = "PUT", UriTemplate = "/games/{GameID}")]
-        string PlayWord (string UserToken, string Word);
+        ScoreObject PlayWord (WordPlayed wordPlayed, string GameID);
 
         /// <summary>
         /// Getting the game status
         /// </summary>
-        /// <param name="Brief"></param>
         /// <returns></returns>
-        [WebInvoke(Method = "GET", UriTemplate = "/games/{GameID}")]
-        string GetGameStatus (string Brief);
+        [WebGet(UriTemplate ="/games/{GameID}?Brief={Brief}")]
+        Game GetGameStatus (string Brief, string GameID);
     }
 }
