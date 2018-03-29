@@ -48,11 +48,11 @@ namespace Boggle
         }
 
 
-        public string CreateUser(User user)
+        public Token CreateUser(User user)
         {
             lock (sync)
             {
-                if (user.NickName == null || user.NickName.Trim().Length == 0 || user.NickName.Trim().Length > 50)
+                if (user.Nickname == null || user.Nickname.Trim().Length == 0 || user.Nickname.Trim().Length > 50)
                 {
                     SetStatus(Forbidden);
                     return null;
@@ -61,14 +61,16 @@ namespace Boggle
                 else
                 {
                     string userID = Guid.NewGuid().ToString();
-                    users.Add(userID, user.NickName);
+                    users.Add(userID, user.Nickname);
                     SetStatus(Created);
-                    return userID;
+                    Token tempToken = new Token();
+                    tempToken.UserToken = userID;
+                    return tempToken;
                 }
             }
         }
 
-        public int JoinGame(JoiningGame joiningGame)
+        public TheGameID JoinGame(JoiningGame joiningGame)
         {
             // Make sure there's a pending game.
             if (pendingGame == null)
@@ -82,15 +84,19 @@ namespace Boggle
                 if (joiningGame.TimeLimit < 5 || joiningGame.TimeLimit > 120)
                 {
                     SetStatus(Forbidden);
-                    return 0;
+                    return null;
                 }
 
                 // If the user token is already in a game, respond with conflict
                 if (activePlayers.Contains(joiningGame.UserToken))
                 {
                     SetStatus(Conflict);
-                    return 0;
+                    return null;
                 }
+
+
+                TheGameID temp = new TheGameID();
+
 
                 // If there's already somebody waiting for the game, then we need to add UserToken as the second player
                 // average the max time, activate the pending game, and create a new pending game.
@@ -116,7 +122,10 @@ namespace Boggle
 
                         pendingGame = new Game("pending");
 
-                        return gameCounter;
+                        
+                        temp.GameID = gameCounter.ToString();
+
+                        return temp;
                     }
                 }
 
@@ -138,19 +147,22 @@ namespace Boggle
                         pendingGame.maxTime = joiningGame.TimeLimit;
 
                         gameCounter++;
-                        return gameCounter;
+
+                        temp.GameID = gameCounter.ToString();
+
+                        return temp;
                     }
                 }
             
                 // Unreachable code to please the constructor
-                return 0;
+                return null;
             }
         }
 
-        public void CancelJoinRequest(string UserToken)
+        public void CancelJoinRequest(Token UserToken)
         {
             // If the usertoken is invalid or the user isn't in a pending game, return forbidden
-            if ( !activePlayers.Contains(UserToken) || pendingGame.Player1.UserToken != UserToken)
+            if ( !activePlayers.Contains(UserToken.UserToken) || pendingGame.Player1.UserToken != UserToken.UserToken)
             {
                 SetStatus(Forbidden);
                 return;
@@ -159,6 +171,7 @@ namespace Boggle
             // otherwise, reset the pending game
             else
             {
+                activePlayers.Remove(UserToken.UserToken);
                 pendingGame = new Game("pending");
                 SetStatus(OK);
             }
@@ -386,7 +399,7 @@ namespace Boggle
         }
 
 
-        public string GetGameStatus(string Brief)
+        public Game GetGameStatus(string Brief, string GameID)
         {
             throw new NotImplementedException();
         }

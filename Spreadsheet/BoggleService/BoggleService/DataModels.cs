@@ -10,7 +10,12 @@ namespace Boggle
     /// </summary>
     public class User
     {
-        public string NickName { get; set; }
+        public string Nickname { get; set; }
+    }
+
+    public class BriefObject
+    {
+        public string Brief { get; set; }
     }
 
 
@@ -22,6 +27,17 @@ namespace Boggle
 
         public List<WordList> WordsPlayed = new List<WordList>();
     }
+
+    public class Token
+    {
+        public string UserToken { get; set; }
+    }
+
+    public class TheGameID
+    {
+        public string GameID { get; set; }
+    }
+    
 
     /// <summary>
     /// This is the object that is passed in when a player tries to play a word.
