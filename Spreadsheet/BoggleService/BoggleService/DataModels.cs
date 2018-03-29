@@ -71,23 +71,23 @@ namespace Boggle
 
     public class Game
     {
-        public BoggleBoard board;
+        public BoggleBoard Board;
 
-        public int maxTime { get; set; }
+        public int TimeLimit { get; set; }
 
-        public string currentState { get; set; }
+        public string GameState { get; set; }
 
         public Player Player1;
         public Player Player2;
 
-        public int timeLeft { get; set; }
+        public int TimeLeft { get; set; }
 
         //constructor to make sure status is pending when a game is created
         public Game (string gameState)
         {
-            currentState = gameState;
+            GameState = gameState;
 
-            board = new BoggleBoard();
+            Board = new BoggleBoard();
         }
     }
 }

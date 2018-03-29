@@ -116,9 +116,9 @@ namespace Boggle
 
                         activePlayers.Add(joiningGame.UserToken);
 
-                        pendingGame.maxTime = (pendingGame.maxTime + joiningGame.TimeLimit) / 2;
+                        pendingGame.TimeLimit = (pendingGame.TimeLimit + joiningGame.TimeLimit) / 2;
 
-                        pendingGame.currentState = "active";
+                        pendingGame.GameState = "active";
 
                         activeGames.Add(gameCounter.ToString(), pendingGame);
 
@@ -148,7 +148,7 @@ namespace Boggle
 
                         activePlayers.Add(joiningGame.UserToken);
 
-                        pendingGame.maxTime = joiningGame.TimeLimit;
+                        pendingGame.TimeLimit = joiningGame.TimeLimit;
 
                         gameCounter++;
 
@@ -209,7 +209,7 @@ namespace Boggle
                     }
 
                     //check if the game is set to something other than active
-                    if (game.currentState != "active")
+                    if (game.GameState != "active")
                     {
                         SetStatus(Conflict);
                         return null;
@@ -219,7 +219,7 @@ namespace Boggle
 
 
                     //if word cannot be formed on the board, score of the word is -1
-                    if (!game.board.CanBeFormed(wordPlayed.Word))
+                    if (!game.Board.CanBeFormed(wordPlayed.Word))
                     {
                         //score is -1
                     }
@@ -415,6 +415,8 @@ namespace Boggle
         {
             lock (sync)
             {
+
+                /// if the game id doesn't exist 
                 try
                 {
                     if (Int32.Parse(GameID) > Int32.Parse(pendingGameID))
@@ -429,9 +431,21 @@ namespace Boggle
                     SetStatus(Forbidden);
                     return null;
                 }
+
+
+                // set status code to (OK)
+                SetStatus(OK);
+
+                //check the Game from the active and complete dict
+
+                activeGames.TryGetValue(GameID.ToUpper(), out Game value);
+
+                // then check the status of the game
+
+
+                return value;
             }
 
-            return null;
         }
 
         /// <summary>
