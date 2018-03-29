@@ -49,9 +49,8 @@ namespace Boggle
         /// <summary>
         /// Getting the game status
         /// </summary>
-        /// <param name="Brief"></param>
         /// <returns></returns>
-        //[WebInvoke(Method = "GET", UriTemplate = "/games/{GameID}")]
-        //Game GetGameStatus (string Brief, string GameID);
+        [WebGet(UriTemplate ="/games/{GameID}?Brief={Brief}")]
+        Game GetGameStatus (string Brief, string GameID);
     }
 }

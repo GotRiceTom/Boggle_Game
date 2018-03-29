@@ -18,6 +18,7 @@ namespace Boggle
 
         //only keep track of one pending game at a time
         private static Game pendingGame;
+        private static string pendingGameID;
 
         //count the games so we know what the gameID will be
         private static int gameCounter;
@@ -72,14 +73,15 @@ namespace Boggle
 
         public TheGameID JoinGame(JoiningGame joiningGame)
         {
-            // Make sure there's a pending game.
-            if (pendingGame == null)
-            {
-                pendingGame = new Game("pending");
-            }
-
             lock (sync)
             {
+                // Make sure there's a pending game.
+                if (pendingGame == null)
+                {
+                    pendingGame = new Game("pending");
+                    pendingGameID = 1.ToString();
+                }
+
                 // If the time limit they entered is bad, reply forbidden and don't start a game.
                 if (joiningGame.TimeLimit < 5 || joiningGame.TimeLimit > 120)
                 {
@@ -125,6 +127,8 @@ namespace Boggle
                         
                         temp.GameID = gameCounter.ToString();
 
+                        pendingGameID = (gameCounter + 1).ToString();
+
                         return temp;
                     }
                 }
@@ -150,6 +154,8 @@ namespace Boggle
 
                         temp.GameID = gameCounter.ToString();
 
+                        pendingGameID = gameCounter.ToString();
+
                         return temp;
                     }
                 }
@@ -161,235 +167,241 @@ namespace Boggle
 
         public void CancelJoinRequest(Token UserToken)
         {
-            // If the usertoken is invalid or the user isn't in a pending game, return forbidden
-            if ( !activePlayers.Contains(UserToken.UserToken) || pendingGame.Player1.UserToken != UserToken.UserToken)
+            lock (sync)
             {
-                SetStatus(Forbidden);
-                return;
-            }
+                // If the usertoken is invalid or the user isn't in a pending game, return forbidden
+                if (!activePlayers.Contains(UserToken.UserToken) || pendingGame.Player1.UserToken != UserToken.UserToken)
+                {
+                    SetStatus(Forbidden);
+                    return;
+                }
 
-            // otherwise, reset the pending game
-            else
-            {
-                activePlayers.Remove(UserToken.UserToken);
-                pendingGame = new Game("pending");
-                SetStatus(OK);
+                // otherwise, reset the pending game
+                else
+                {
+                    activePlayers.Remove(UserToken.UserToken);
+                    pendingGame = new Game("pending");
+                    SetStatus(OK);
+                }
             }
         }
 
         public ScoreObject PlayWord(WordPlayed wordPlayed, string GameID)
         {
-            // check if Word is null or empty or longer than 30 characters when trimmed, or if GameID or UserToken is invalid
-            if (wordPlayed.Word == null || wordPlayed.Word.Trim().Length > 30 || wordPlayed.Word.Trim().Length == 0 || !activeGames.ContainsKey(GameID)
-                || !activePlayers.Contains(wordPlayed.UserToken))
+            lock (sync)
             {
-                SetStatus(Forbidden);
-                return null;
-            }
-
-            //grab the game associated with the gameID
-            if (activeGames.TryGetValue(GameID, out Game game))
-            {
-                //check if the usertoken is not a player in the gameID
-                if (game.Player1.UserToken != wordPlayed.UserToken && game.Player2.UserToken != wordPlayed.UserToken)
+                // check if Word is null or empty or longer than 30 characters when trimmed, or if GameID or UserToken is invalid
+                if (wordPlayed.Word == null || wordPlayed.Word.Trim().Length > 30 || wordPlayed.Word.Trim().Length == 0 || !activeGames.ContainsKey(GameID)
+                    || !activePlayers.Contains(wordPlayed.UserToken))
                 {
                     SetStatus(Forbidden);
                     return null;
                 }
 
-                //check if the game is set to something other than active
-                if (game.currentState != "active")
+                //grab the game associated with the gameID
+                if (activeGames.TryGetValue(GameID, out Game game))
                 {
-                    SetStatus(Conflict);
-                    return null;
-                }
-
-                // records the trimmed Word as being played by UserToken in the game identified by GameID. Returns the score for Word in the context of the game
-
-               
-                //if word cannot be formed on the board, score of the word is -1
-                if (!game.board.CanBeFormed(wordPlayed.Word))
-                {
-                    //score is -1
-                }
-
-                Boolean equals = false;
-
-                //if the word is not in the dictionary, the score is -1
-                foreach (string line in File.ReadLines("../../dictionary.txt", Encoding.UTF8)) //@ sign may bu unnecessary!
-                {
-                    if (wordPlayed.Word.ToUpper() == line)
+                    //check if the usertoken is not a player in the gameID
+                    if (game.Player1.UserToken != wordPlayed.UserToken && game.Player2.UserToken != wordPlayed.UserToken)
                     {
-                        equals = true;
-                        break;
-                    }
-                }
-
-                if (equals == true)
-                {
-                    Player currentPlayer;
-
-                    if(game.Player1.UserToken == wordPlayed.UserToken)
-                    {
-                        currentPlayer = game.Player1;
-                    }
-                    
-                    else
-                    {
-                        currentPlayer = game.Player2;
+                        SetStatus(Forbidden);
+                        return null;
                     }
 
-                    ScoreObject scoreObject = new ScoreObject();
-                    SetStatus(OK);
-
-                    //if the word can be formed, and it is in the dictioniary, award points accordingly 
-                    //Three- and four-letter words are worth one point,
-                    //five -letter words are worth two points, 
-                    //six -letter words are worth three points,
-                    //seven -letter words are worth five points,
-                    //and longer words are worth 11 points)
-                    if (wordPlayed.Word.Length == 3 || wordPlayed.Word.Length == 4)
+                    //check if the game is set to something other than active
+                    if (game.currentState != "active")
                     {
-                        if(game.Player1.UserToken == wordPlayed.UserToken)
+                        SetStatus(Conflict);
+                        return null;
+                    }
+
+                    // records the trimmed Word as being played by UserToken in the game identified by GameID. Returns the score for Word in the context of the game
+
+
+                    //if word cannot be formed on the board, score of the word is -1
+                    if (!game.board.CanBeFormed(wordPlayed.Word))
+                    {
+                        //score is -1
+                    }
+
+                    Boolean equals = false;
+
+                    //if the word is not in the dictionary, the score is -1
+                    foreach (string line in File.ReadLines("../../dictionary.txt", Encoding.UTF8)) //@ sign may bu unnecessary!
+                    {
+                        if (wordPlayed.Word.ToUpper() == line)
                         {
-                            //award to player 1
-                            WordList temp = new WordList();
-                            temp.Word = wordPlayed.Word;
-                            temp.Score = 1;
-                            currentPlayer.WordsPlayed.Add(temp);
-
-                            game.Player1.Score += 1;
-                            scoreObject.Score = 1;
-                            return scoreObject;
-                        }
-
-                        else
-                        {
-                            //award to player 2
-                            WordList temp = new WordList();
-                            temp.Word = wordPlayed.Word;
-                            temp.Score = 1;
-                            currentPlayer.WordsPlayed.Add(temp);
-
-                            game.Player2.Score += 1;
-                            scoreObject.Score = 1;
-                            return scoreObject;
+                            equals = true;
+                            break;
                         }
                     }
 
-                    if (wordPlayed.Word.Length == 5)
+                    if (equals == true)
                     {
+                        Player currentPlayer;
+
                         if (game.Player1.UserToken == wordPlayed.UserToken)
                         {
-                            //award to player 1
-                            WordList temp = new WordList();
-                            temp.Word = wordPlayed.Word;
-                            temp.Score = 2;
-                            currentPlayer.WordsPlayed.Add(temp);
-
-                            game.Player1.Score += 2;
-                            scoreObject.Score = 2;
-                            return scoreObject;
+                            currentPlayer = game.Player1;
                         }
 
                         else
                         {
-                            //award to player 2
-                            WordList temp = new WordList();
-                            temp.Word = wordPlayed.Word;
-                            temp.Score = 2;
-                            currentPlayer.WordsPlayed.Add(temp);
-
-                            game.Player2.Score += 2;
-                            scoreObject.Score = 2;
-                            return scoreObject;
-                        }
-                    }
-
-                    if (wordPlayed.Word.Length == 6)
-                    {
-                        if (game.Player1.UserToken == wordPlayed.UserToken)
-                        {
-                            //award to player 1
-                            WordList temp = new WordList();
-                            temp.Word = wordPlayed.Word;
-                            temp.Score = 3;
-                            currentPlayer.WordsPlayed.Add(temp);
-
-                            game.Player1.Score += 3;
-                            scoreObject.Score = 3;
-                            return scoreObject;
+                            currentPlayer = game.Player2;
                         }
 
-                        else
+                        ScoreObject scoreObject = new ScoreObject();
+                        SetStatus(OK);
+
+                        //if the word can be formed, and it is in the dictioniary, award points accordingly 
+                        //Three- and four-letter words are worth one point,
+                        //five -letter words are worth two points, 
+                        //six -letter words are worth three points,
+                        //seven -letter words are worth five points,
+                        //and longer words are worth 11 points)
+                        if (wordPlayed.Word.Length == 3 || wordPlayed.Word.Length == 4)
                         {
-                            //award to player 2
-                            WordList temp = new WordList();
-                            temp.Word = wordPlayed.Word;
-                            temp.Score = 3;
-                            currentPlayer.WordsPlayed.Add(temp);
+                            if (game.Player1.UserToken == wordPlayed.UserToken)
+                            {
+                                //award to player 1
+                                WordList temp = new WordList();
+                                temp.Word = wordPlayed.Word;
+                                temp.Score = 1;
+                                currentPlayer.WordsPlayed.Add(temp);
 
-                            game.Player2.Score += 3;
-                            scoreObject.Score = 3;
-                            return scoreObject;
-                        }
-                    }
+                                game.Player1.Score += 1;
+                                scoreObject.Score = 1;
+                                return scoreObject;
+                            }
 
-                    if (wordPlayed.Word.Length == 7)
-                    {
-                        if (game.Player1.UserToken == wordPlayed.UserToken)
-                        {
-                            //award to player 1
-                            WordList temp = new WordList();
-                            temp.Word = wordPlayed.Word;
-                            temp.Score = 5;
-                            currentPlayer.WordsPlayed.Add(temp);
+                            else
+                            {
+                                //award to player 2
+                                WordList temp = new WordList();
+                                temp.Word = wordPlayed.Word;
+                                temp.Score = 1;
+                                currentPlayer.WordsPlayed.Add(temp);
 
-                            game.Player1.Score += 5;
-                            scoreObject.Score = 5;
-                            return scoreObject;
-                        }
-
-                        else
-                        {
-                            //award to player 2
-                            WordList temp = new WordList();
-                            temp.Word = wordPlayed.Word;
-                            temp.Score = 5;
-                            currentPlayer.WordsPlayed.Add(temp);
-
-                            game.Player2.Score += 5;
-                            scoreObject.Score = 5;
-                            return scoreObject;
-                        }
-                    }
-
-                    if (wordPlayed.Word.Length > 7)
-                    {
-                        if (game.Player1.UserToken == wordPlayed.UserToken)
-                        {
-                            //award to player 1
-                            WordList temp = new WordList();
-                            temp.Word = wordPlayed.Word;
-                            temp.Score = 11;
-                            currentPlayer.WordsPlayed.Add(temp);
-
-                            game.Player1.Score += 11;
-                            scoreObject.Score = 11;
-                            return scoreObject;
+                                game.Player2.Score += 1;
+                                scoreObject.Score = 1;
+                                return scoreObject;
+                            }
                         }
 
-                        else
+                        if (wordPlayed.Word.Length == 5)
                         {
-                            //award to player 2
-                            WordList temp = new WordList();
-                            temp.Word = wordPlayed.Word;
-                            temp.Score = 11;
-                            currentPlayer.WordsPlayed.Add(temp);
+                            if (game.Player1.UserToken == wordPlayed.UserToken)
+                            {
+                                //award to player 1
+                                WordList temp = new WordList();
+                                temp.Word = wordPlayed.Word;
+                                temp.Score = 2;
+                                currentPlayer.WordsPlayed.Add(temp);
 
-                            game.Player2.Score += 11;
-                            scoreObject.Score = 11;
-                            return scoreObject;
+                                game.Player1.Score += 2;
+                                scoreObject.Score = 2;
+                                return scoreObject;
+                            }
+
+                            else
+                            {
+                                //award to player 2
+                                WordList temp = new WordList();
+                                temp.Word = wordPlayed.Word;
+                                temp.Score = 2;
+                                currentPlayer.WordsPlayed.Add(temp);
+
+                                game.Player2.Score += 2;
+                                scoreObject.Score = 2;
+                                return scoreObject;
+                            }
+                        }
+
+                        if (wordPlayed.Word.Length == 6)
+                        {
+                            if (game.Player1.UserToken == wordPlayed.UserToken)
+                            {
+                                //award to player 1
+                                WordList temp = new WordList();
+                                temp.Word = wordPlayed.Word;
+                                temp.Score = 3;
+                                currentPlayer.WordsPlayed.Add(temp);
+
+                                game.Player1.Score += 3;
+                                scoreObject.Score = 3;
+                                return scoreObject;
+                            }
+
+                            else
+                            {
+                                //award to player 2
+                                WordList temp = new WordList();
+                                temp.Word = wordPlayed.Word;
+                                temp.Score = 3;
+                                currentPlayer.WordsPlayed.Add(temp);
+
+                                game.Player2.Score += 3;
+                                scoreObject.Score = 3;
+                                return scoreObject;
+                            }
+                        }
+
+                        if (wordPlayed.Word.Length == 7)
+                        {
+                            if (game.Player1.UserToken == wordPlayed.UserToken)
+                            {
+                                //award to player 1
+                                WordList temp = new WordList();
+                                temp.Word = wordPlayed.Word;
+                                temp.Score = 5;
+                                currentPlayer.WordsPlayed.Add(temp);
+
+                                game.Player1.Score += 5;
+                                scoreObject.Score = 5;
+                                return scoreObject;
+                            }
+
+                            else
+                            {
+                                //award to player 2
+                                WordList temp = new WordList();
+                                temp.Word = wordPlayed.Word;
+                                temp.Score = 5;
+                                currentPlayer.WordsPlayed.Add(temp);
+
+                                game.Player2.Score += 5;
+                                scoreObject.Score = 5;
+                                return scoreObject;
+                            }
+                        }
+
+                        if (wordPlayed.Word.Length > 7)
+                        {
+                            if (game.Player1.UserToken == wordPlayed.UserToken)
+                            {
+                                //award to player 1
+                                WordList temp = new WordList();
+                                temp.Word = wordPlayed.Word;
+                                temp.Score = 11;
+                                currentPlayer.WordsPlayed.Add(temp);
+
+                                game.Player1.Score += 11;
+                                scoreObject.Score = 11;
+                                return scoreObject;
+                            }
+
+                            else
+                            {
+                                //award to player 2
+                                WordList temp = new WordList();
+                                temp.Word = wordPlayed.Word;
+                                temp.Score = 11;
+                                currentPlayer.WordsPlayed.Add(temp);
+
+                                game.Player2.Score += 11;
+                                scoreObject.Score = 11;
+                                return scoreObject;
+                            }
                         }
                     }
                 }
@@ -401,7 +413,25 @@ namespace Boggle
 
         public Game GetGameStatus(string Brief, string GameID)
         {
-            throw new NotImplementedException();
+            lock (sync)
+            {
+                try
+                {
+                    if (Int32.Parse(GameID) > Int32.Parse(pendingGameID))
+                    {
+                        SetStatus(Forbidden);
+                        return null;
+                    }
+                }
+
+                catch (Exception)
+                {
+                    SetStatus(Forbidden);
+                    return null;
+                }
+            }
+
+            return null;
         }
 
         /// <summary>
