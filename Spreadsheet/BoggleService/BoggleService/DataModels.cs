@@ -20,7 +20,7 @@ namespace Boggle
         public int Score { get; set; }
         public string UserToken { get; set; }
 
-        Dictionary<string, int> WordsPlayed = new Dictionary<string, int>();
+        public List<WordList> WordsPlayed = new List<WordList>();
     }
 
     /// <summary>
@@ -42,6 +42,16 @@ namespace Boggle
         public int TimeLimit { get; set; }
     }
 
+    public class ScoreObject
+    {
+        public int Score { get; set; }
+    }
+
+    public class WordList
+    {
+        public string Word { get; set; }
+        public int Score { get; set; }
+    }
 
     public class Game
     {
@@ -60,6 +70,8 @@ namespace Boggle
         public Game (string gameState)
         {
             currentState = gameState;
+
+            board = new BoggleBoard();
         }
     }
 }
