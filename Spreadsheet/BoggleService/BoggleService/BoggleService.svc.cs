@@ -123,11 +123,12 @@ namespace Boggle
                         activeGames.Add(gameCounter.ToString(), pendingGame);
 
                         pendingGame = new Game("pending");
-
-                        
+  
                         temp.GameID = gameCounter.ToString();
 
                         pendingGameID = (gameCounter + 1).ToString();
+
+                        
 
                         return temp;
                     }
@@ -436,11 +437,41 @@ namespace Boggle
                 // set status code to (OK)
                 SetStatus(OK);
 
-                //check the Game from the active and complete dict
+                //use the GameID to check which dict it's in
+                // active or complete dictionary
+
+
+                //if the Game is in the complete game dictionary 
+                if (completeGames.TryGetValue(GameID.ToUpper(), out Game completeGame))
+                {
+                    return completeGame;
+                }
+                
+               
+                // at this point the game is in a active status
+                
 
                 activeGames.TryGetValue(GameID.ToUpper(), out Game value);
 
+                //need to figure out how to keep track of time
+
                 // then check the status of the game
+                //if timeleft is zero
+                // the game is compltete status and add to the dictionary
+                // remove this game key and value off the active game
+                if (value.TimeLeft == 0)
+                {
+
+                    //set value game to complete
+                    value.GameState = "completed";
+
+                    completeGames.Add(GameID, value);
+
+                    activeGames.Remove(GameID);
+
+                    return value;
+
+                }
 
 
                 return value;
