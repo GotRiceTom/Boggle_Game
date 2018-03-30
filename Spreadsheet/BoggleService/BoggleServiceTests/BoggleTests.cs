@@ -3,6 +3,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static System.Net.HttpStatusCode;
 using System.Diagnostics;
 using Newtonsoft.Json;
+using System.Dynamic;
+using System.IO;
 
 namespace Boggle
 {
@@ -70,17 +72,186 @@ namespace Boggle
         /// the response Stats and the deserialized JSON response (if any).  See RestTestClient.cs
         /// for details.
         /// </summary>
+        //[TestMethod]
+        //public void TestMethod1()
+        //{
+        //    Response r = client.DoGetAsync("word?index={0}", "-5").Result;
+        //    Assert.AreEqual(Forbidden, r.Status);
+
+        //    r = client.DoGetAsync("word?index={0}", "5").Result;
+        //    Assert.AreEqual(OK, r.Status);
+
+        //    string word = (string) r.Data;
+        //    Assert.AreEqual("AAL", word);
+        //}
+
+
         [TestMethod]
-        public void TestMethod1()
+        public void TestMehtod1()
         {
-            Response r = client.DoGetAsync("word?index={0}", "-5").Result;
-            Assert.AreEqual(Forbidden, r.Status);
+            dynamic Player1 = new ExpandoObject();
 
-            r = client.DoGetAsync("word?index={0}", "5").Result;
-            Assert.AreEqual(OK, r.Status);
+            Player1.Nickname = "Tom";
 
-            string word = (string) r.Data;
-            Assert.AreEqual("AAL", word);
+            Response Player1R = client.DoPostAsync("users", Player1).Result;
+
+            Assert.AreEqual(Created, Player1R.Status);
+
+
+            dynamic Player2 = new ExpandoObject();
+
+            Player2.Nickname = "Eric";
+
+            Response Player2R = client.DoPostAsync("users", Player2).Result;
+
+            Assert.AreEqual(Created, Player2R.Status);
+
+            dynamic Player3 = new ExpandoObject();
+
+            Player3.Nickname = "Player3";
+
+            Response Player3R = client.DoPostAsync("users", Player3).Result;
+
+            Assert.AreEqual(Created, Player3R.Status);
+
+
+
+
+
+            string userToken = Player1R.Data.UserToken;
+
+            int timeLimit = 0;
+
+
+            dynamic TomJoiningGame = new ExpandoObject();
+
+            TomJoiningGame.UserToken = userToken;
+            TomJoiningGame.TimeLimit = timeLimit;
+
+            Response TomJoinGame = client.DoPostAsync("games", TomJoiningGame).Result;
+
+            // if status return a forbidden if time limit is bad
+            Assert.AreEqual(Forbidden, TomJoinGame.Status);
+
+            dynamic Temp = new ExpandoObject();
+            timeLimit = 30;
+
+            Temp.UserToken = userToken;
+            Temp.TimeLimit = timeLimit;
+
+            Response TomJoinGame2 = client.DoPostAsync("games", Temp).Result;
+            Assert.AreEqual(Accepted, TomJoinGame2.Status);
+
+
+            //cancel game
+            dynamic Temp2 = new ExpandoObject();
+
+            Temp2.UserToken = userToken;
+
+            Response TomCancelGame = client.DoPutAsync( Temp2 , "games").Result;
+            Assert.AreEqual(OK, TomCancelGame.Status);
+
+
+
+            // Tom join game again
+
+
+            dynamic Temp3 = new ExpandoObject();
+            timeLimit = 30;
+
+            Temp3.UserToken = userToken;
+            Temp3.TimeLimit = timeLimit;
+
+            Response TomJoinGameAgain = client.DoPostAsync("games", Temp3).Result;
+            Assert.AreEqual(Accepted, TomJoinGameAgain.Status);
+
+
+            // Eric join in a game
+
+            dynamic Temp4 = new ExpandoObject();
+            timeLimit = 30;
+
+            String EricUserToken = Player2R.Data.UserToken;
+
+            Temp4.UserToken = EricUserToken;
+            Temp4.TimeLimit = timeLimit;
+
+            Response EricJoinGame= client.DoPostAsync("games", Temp4).Result;
+            Assert.AreEqual(Created, EricJoinGame.Status);
+
+
+            string TomGameID = TomJoinGameAgain.Data.GameID;
+
+            Response TomStatus = client.DoGetAsync("games/{0}", TomGameID).Result;
+
+
+
+            // Tom play word
+
+            string TomBoard = TomStatus.Data.Board;
+
+            string TomWordGoingToPlay = FindWordThatWorks(TomBoard);
+
+
+            dynamic Temp5 = new ExpandoObject();
+
+            Temp5.UserToken = userToken;
+            Temp5.Word = TomWordGoingToPlay;
+
+            Response TomPlayWord = client.DoPutAsync(Temp5, "games/{TomGameID}").Result;
+
+            Assert.AreEqual(Forbidden, TomPlayWord.Status);
+
+            //register 3 users 
+            // Tom search for game
+            // Tom Cancel Search 
+            // Tom search again and hosting
+
+            //Eric join game
+
+            // loop through words in the dictionary, that can be form
+            // Tom enter a good word ,and enter agin
+            // get game status
+
+            // Tom then enter a bad word then enter again
+
+            // Eric do same step as Tom
+
+
+
+
+        }
+
+
+
+
+
+        private string FindWordThatWorks(string input)
+        {
+
+           
+            string line;
+
+            BoggleBoard board = new BoggleBoard(input);
+            //access the dictionary.txt
+            using (StreamReader file = new System.IO.StreamReader(AppDomain.CurrentDomain.BaseDirectory + "dictionary.txt"))
+            {
+                while ((line = file.ReadLine()) != null)
+                {
+                    // if word exist, set playWordFound to true and break out the loopo 
+                    if (board.CanBeFormed(line))
+                    {
+                        if (line.Length > 2)
+                        {
+                            return line.ToUpper();
+                        }
+
+                        
+                    }
+                }
+            }
+
+            return null;
         }
     }
 }

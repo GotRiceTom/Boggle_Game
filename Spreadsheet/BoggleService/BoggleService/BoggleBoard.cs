@@ -1,6 +1,7 @@
 ﻿// Written by Joe Zachary for CS 3500, November 2012.
 
 using System;
+using System.Collections.Generic;
 
 namespace Boggle
 {
@@ -10,6 +11,10 @@ namespace Boggle
     /// </summary>
     public class BoggleBoard
     {
+
+        static HashSet<string> theDictionary;
+
+
         // The 4x4 Boggle board
         private char[,] board;
 
