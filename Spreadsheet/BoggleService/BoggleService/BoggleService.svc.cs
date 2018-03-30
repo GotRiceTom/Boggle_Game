@@ -229,18 +229,99 @@ namespace Boggle
                     // records the trimmed Word as being played by UserToken in the game identified by GameID. Returns the score for Word in the context of the game
 
 
+                    Player currentPlayer;
+                    ScoreObject scoreObject = new ScoreObject();
+
+                    if (game.Player1.UserToken == wordPlayed.UserToken)
+                    {
+                        currentPlayer = game.Player1;
+                    }
+                    else
+                    {
+                        currentPlayer = game.Player2;
+                    }
+
+
                     //if word cannot be formed on the board, score of the word is -1
                     if (!game.FullBoard.CanBeFormed(wordPlayed.Word))
                     {
-                        //score is -1
+                        
+
+                        if (game.Player1.UserToken == wordPlayed.UserToken)
+                        {
+                            currentPlayer = game.Player1;
+                        }
+                        else
+                        {
+                            currentPlayer = game.Player2;
+                        }
+
+                        if (game.Player1.UserToken == wordPlayed.UserToken)
+                        {
+
+                            foreach (WordList badword in game.Player1.WordsPlayed)
+                            {
+                                if (badword.Word == wordPlayed.Word)
+                                {
+                                    WordList badwordTemp = new WordList();
+                                    badwordTemp.Word = wordPlayed.Word;
+                                    badwordTemp.Score = -1;
+                                    currentPlayer.WordsPlayed.Add(badwordTemp);
+
+                                    game.Player1.Score -= 1;
+                                    scoreObject.Score = -1;
+
+                                    return scoreObject;
+                                }
+                            }
+
+                            
+                            //deduct to player 1
+                            WordList temp = new WordList();
+                            temp.Word = wordPlayed.Word;
+                            temp.Score = -1;
+                            currentPlayer.WordsPlayed.Add(temp);
+
+                            game.Player1.Score -= 1;
+                            scoreObject.Score = -1;
+
+
+
+                            return scoreObject;
+                        }
+
+                        else
+                        {
+
+                            foreach (WordList badword in game.Player2.WordsPlayed)
+                            {
+                                if (badword.Word == wordPlayed.Word)
+                                {
+                                    WordList badwordTemp = new WordList();
+                                    badwordTemp.Word = wordPlayed.Word;
+                                    badwordTemp.Score = -1;
+                                    currentPlayer.WordsPlayed.Add(badwordTemp);
+
+                                    game.Player2.Score -= 1;
+                                    scoreObject.Score = -1;
+
+                                    return scoreObject;
+                                }
+                            }
+
+                            //deduct to player 2
+                            WordList temp = new WordList();
+                            temp.Word = wordPlayed.Word;
+                            temp.Score = -1;
+                            currentPlayer.WordsPlayed.Add(temp);
+
+                            game.Player2.Score -= 1;
+                            scoreObject.Score = -1;
+                            return scoreObject;
+                        }
                     }
 
-                    // check for duplicates
 
-                    if ()
-                    {
-
-                    }
 
                     Boolean equals = false;
 
@@ -258,11 +339,80 @@ namespace Boggle
                                 break;
                             }
                         }
+
+                        //the word doesn't exit in the dictionary
+
                     }
+ 
+                    // check for duplicates
+
+                    if (game.Player1.UserToken == wordPlayed.UserToken)
+                    {
+                        foreach (WordList dup in game.Player1.WordsPlayed)
+                        {
+                            if (dup.Word == wordPlayed.Word)
+                            {
+                                WordList dupTemp = new WordList();
+                                dupTemp.Word = wordPlayed.Word;
+
+                                if (equals == false)
+                                {
+                                    dupTemp.Score = -1;
+                                    currentPlayer.WordsPlayed.Add(dupTemp);
+
+                                    game.Player1.Score -= 1;
+                                    scoreObject.Score = -1;
+
+                                    return scoreObject;
+                                }
+
+                                dupTemp.Score = 0;
+                                currentPlayer.WordsPlayed.Add(dupTemp);
+
+                                game.Player1.Score +=0;
+                                scoreObject.Score = 0;
+
+                                return scoreObject;
+                            }
+                        }
+
+
+                    }
+
+                    else
+                    {
+                        foreach (WordList dup in game.Player2.WordsPlayed)
+                        {
+                            if (dup.Word == wordPlayed.Word)
+                            {
+                                WordList dupTemp = new WordList();
+                                dupTemp.Word = wordPlayed.Word;
+                                if (equals == false)
+                                {
+                                    dupTemp.Score = -1;
+                                    currentPlayer.WordsPlayed.Add(dupTemp);
+
+                                    game.Player2.Score -= 1;
+                                    scoreObject.Score = -1;
+
+                                    return scoreObject;
+                                }
+
+                                dupTemp.Score = 0;
+                                currentPlayer.WordsPlayed.Add(dupTemp);
+
+                                game.Player2.Score += 0;
+                                scoreObject.Score = 0;
+
+                                return scoreObject;
+                            }
+                        }
+                    }
+
 
                     if (equals == true)
                     {
-                        Player currentPlayer;
+                      
 
                         if (game.Player1.UserToken == wordPlayed.UserToken)
                         {
@@ -274,7 +424,7 @@ namespace Boggle
                             currentPlayer = game.Player2;
                         }
 
-                        ScoreObject scoreObject = new ScoreObject();
+                       
                         SetStatus(OK);
 
                         //if the word can be formed, and it is in the dictioniary, award points accordingly 
@@ -428,6 +578,70 @@ namespace Boggle
                             }
                         }
                     }
+
+
+                    /// at this point, the word doesn't exist on the dictionary
+                    /// 
+                    if (game.Player1.UserToken == wordPlayed.UserToken)
+                    {
+                        foreach (WordList badword in game.Player1.WordsPlayed)
+                        {
+                            if (badword.Word == wordPlayed.Word)
+                            {
+                                WordList badwordTemp = new WordList();
+                                badwordTemp.Word = wordPlayed.Word;
+                                badwordTemp.Score = -1;
+                                currentPlayer.WordsPlayed.Add(badwordTemp);
+
+                                game.Player1.Score -= 1;
+                                scoreObject.Score = -1;
+
+                                return scoreObject;
+                            }
+                        }
+                        //award to player 1
+                        WordList temp = new WordList();
+                        temp.Word = wordPlayed.Word;
+                        temp.Score = -1;
+                        currentPlayer.WordsPlayed.Add(temp);
+
+                        game.Player1.Score -= 1;
+                        scoreObject.Score = 1;
+                        return scoreObject;
+                    }
+
+                    else
+                    {
+                        foreach (WordList badword in game.Player2.WordsPlayed)
+                        {
+                            if (badword.Word == wordPlayed.Word)
+                            {
+                                WordList badwordTemp = new WordList();
+                                badwordTemp.Word = wordPlayed.Word;
+                                badwordTemp.Score = -1;
+                                currentPlayer.WordsPlayed.Add(badwordTemp);
+
+                                game.Player2.Score -= 1;
+                                scoreObject.Score = -1;
+
+                                return scoreObject;
+                            }
+                        }
+
+                        //award to player 2
+                        WordList temp = new WordList();
+                        temp.Word = wordPlayed.Word;
+                        temp.Score = -1;
+                        currentPlayer.WordsPlayed.Add(temp);
+
+                        game.Player2.Score -= 1;
+                        scoreObject.Score = 1;
+                        return scoreObject;
+                    }
+
+
+                    
+
                 }
             }
 
