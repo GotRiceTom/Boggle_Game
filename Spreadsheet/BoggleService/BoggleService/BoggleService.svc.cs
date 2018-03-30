@@ -615,6 +615,84 @@ namespace Boggle
                         }
                     }
 
+
+                    /// at this point, the word doesn't exist on the dictionary
+                    if (game.Player1.UserToken == wordPlayed.UserToken)
+                    {
+                        foreach (WordList badword in game.Player1.WordsPlayed)
+                        {
+                            if (badword.Word == wordPlayed.Word)
+                            {
+                                WordList badwordTemp = new WordList();
+
+                                badwordTemp.Word = wordPlayed.Word;
+
+                                badwordTemp.Score = -1;
+
+                                currentPlayer.WordsPlayed.Add(badwordTemp);
+
+                                game.Player1.Score -= 1;
+
+                                scoreObject.Score = -1;
+
+                                return scoreObject;
+                            }
+                        }
+                        //deduct to player 1
+                        WordList temp = new WordList();
+
+                        temp.Word = wordPlayed.Word;
+
+                        temp.Score = -1;
+                        currentPlayer.WordsPlayed.Add(temp);
+
+                        game.Player1.Score -= 1;
+
+                        scoreObject.Score = 1;
+
+                        return scoreObject;
+                    }
+
+                    else
+                    {
+                        foreach (WordList badword in game.Player2.WordsPlayed)
+                        {
+                            if (badword.Word == wordPlayed.Word)
+                            {
+                                WordList badwordTemp = new WordList();
+
+                                badwordTemp.Word = wordPlayed.Word;
+
+                                badwordTemp.Score = -1;
+
+                                currentPlayer.WordsPlayed.Add(badwordTemp);
+
+                                game.Player2.Score -= 1;
+
+                                scoreObject.Score = -1;
+
+                                return scoreObject;
+                            }
+                        }
+
+                        //deduct to player 2
+                        WordList temp = new WordList();
+
+                        temp.Word = wordPlayed.Word;
+
+                        temp.Score = -1;
+
+                        currentPlayer.WordsPlayed.Add(temp);
+
+                        game.Player2.Score -= 1;
+
+                        scoreObject.Score = 1;
+                        return scoreObject;
+                    }
+
+
+                    
+
                 }
             }
 
