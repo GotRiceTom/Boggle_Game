@@ -15,7 +15,7 @@ namespace Boggle
         Stream API();
 
         /// <summary>
-        /// Create User
+        /// If a user tries to register with the server, this is used.
         /// </summary>
         /// <param name="nickName"></param>
         /// <returns></returns>
@@ -23,7 +23,7 @@ namespace Boggle
         Token CreateUser (User user);
 
         /// <summary>
-        /// Join Game
+        /// If a user with a token tries to join a game, this is used to handle it.
         /// </summary>
         /// <param name="UserToken"></param>
         /// <param name="TimeLimit"></param>
@@ -32,14 +32,14 @@ namespace Boggle
         TheGameID JoinGame (JoiningGame joiningGame);
 
         /// <summary>
-        /// Cancel Join Request
+        /// This is only sent when a pending player tries to cancel their game search
         /// </summary>
         /// <param name="UserToken"></param>
         [WebInvoke(Method = "PUT", UriTemplate = "/games")]
         void CancelJoinRequest (Token UserToken);
 
         /// <summary>
-        /// Play word
+        /// This handles when a user passes in a word
         /// </summary>
         /// <param name="UserToken"></param>
         /// <param name="Word"></param>
@@ -47,7 +47,11 @@ namespace Boggle
         ScoreObject PlayWord (WordPlayed wordPlayed, string GameID);
 
         /// <summary>
-        /// Getting the game status
+        /// This is used once per second to get the status of the game.
+        /// </summary>
+        /// <param name="Brief"></param>
+        /// <param name="GameID"></param>
+        /// <returns></returns>
         [WebGet(UriTemplate = "/games/{GameID}?Brief={Brief}")]
         Game GetGameStatus (string Brief, string GameID);
     }
