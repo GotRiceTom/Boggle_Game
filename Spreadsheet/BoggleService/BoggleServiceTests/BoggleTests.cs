@@ -202,6 +202,22 @@ namespace Boggle
 
             Assert.AreEqual(OK, TomPlayWord.Status);
 
+
+
+            // Eric play word
+
+            string EricWordGoingToPlay = FindWordThatWorks(TomBoard);
+
+
+            dynamic Temp6 = new ExpandoObject();
+
+            Temp6.UserToken = EricUserToken;
+            Temp6.Word = EricWordGoingToPlay;
+
+            Response EricPlayWord = client.DoPutAsync(Temp6, "games/" + currentGameID).Result;
+
+            Assert.AreEqual(OK, TomPlayWord.Status);
+
             //register 3 users 
             // Tom search for game
             // Tom Cancel Search 
