@@ -230,8 +230,12 @@ namespace Boggle
 
 
                     Player currentPlayer;
+
                     ScoreObject scoreObject = new ScoreObject();
 
+                    SetStatus(OK);
+
+                    // check who's userToken is this belong to
                     if (game.Player1.UserToken == wordPlayed.UserToken)
                     {
                         currentPlayer = game.Player1;
@@ -245,102 +249,119 @@ namespace Boggle
                     //if word cannot be formed on the board, score of the word is -1
                     if (!game.FullBoard.CanBeFormed(wordPlayed.Word))
                     {
-                        
-
-                        if (game.Player1.UserToken == wordPlayed.UserToken)
-                        {
-                            currentPlayer = game.Player1;
-                        }
-                        else
-                        {
-                            currentPlayer = game.Player2;
-                        }
-
+                     
+                        //if userToken is player1 token
                         if (game.Player1.UserToken == wordPlayed.UserToken)
                         {
 
+                            //check if this bad word is already in the list
+                            // if so, deduct player 1 score by -1
+                            // check the content of WordsPlayed list from Player 1
                             foreach (WordList badword in game.Player1.WordsPlayed)
                             {
                                 if (badword.Word == wordPlayed.Word)
                                 {
+                                    // a temp variable
                                     WordList badwordTemp = new WordList();
+
                                     badwordTemp.Word = wordPlayed.Word;
+
                                     badwordTemp.Score = -1;
+
+                                    // add the WordList object to the current player WordsPlayed
                                     currentPlayer.WordsPlayed.Add(badwordTemp);
 
+                                    //deduct player 1 score by -1
                                     game.Player1.Score -= 1;
+
                                     scoreObject.Score = -1;
 
                                     return scoreObject;
                                 }
                             }
 
-                            
-                            //deduct to player 1
+                            // at this point, this  bad word is player 1 enounter
+                            //deduct -1 to player 1
                             WordList temp = new WordList();
+
                             temp.Word = wordPlayed.Word;
+
                             temp.Score = -1;
+
+                            // add the WordList object to the current player WordsPlayed
                             currentPlayer.WordsPlayed.Add(temp);
 
                             game.Player1.Score -= 1;
+
                             scoreObject.Score = -1;
-
-
 
                             return scoreObject;
                         }
 
                         else
                         {
-
+                            // else, this current player is player 2
+                            // check the content of WordsPlayed list from Player 2
                             foreach (WordList badword in game.Player2.WordsPlayed)
                             {
+                                //check if this bad word is already in the list
+                                // if so, deduct player 2 score by -1
                                 if (badword.Word == wordPlayed.Word)
                                 {
                                     WordList badwordTemp = new WordList();
+
                                     badwordTemp.Word = wordPlayed.Word;
+
                                     badwordTemp.Score = -1;
+
+                                    // add the WordList object to the current player WordsPlayed
                                     currentPlayer.WordsPlayed.Add(badwordTemp);
 
                                     game.Player2.Score -= 1;
+
                                     scoreObject.Score = -1;
 
                                     return scoreObject;
                                 }
                             }
 
-                            //deduct to player 2
+                            //deduct -1 to player 2
                             WordList temp = new WordList();
+
                             temp.Word = wordPlayed.Word;
+
                             temp.Score = -1;
+
+                            // add the WordList object to the current player WordsPlayed
                             currentPlayer.WordsPlayed.Add(temp);
 
                             game.Player2.Score -= 1;
+
                             scoreObject.Score = -1;
+
                             return scoreObject;
                         }
                     }
 
+                    // AT THIS POINT, THE PLAYWORD CAN BE FORM
+                    // flag if playWord exist in the dictionary 
+                    Boolean playWordFound = false;
 
-
-                    Boolean equals = false;
-
-                    //if the word is not in the dictionary, the score is -1
+                  
                     string line;
 
+                    //access the dictionary.txt
                     using (StreamReader file = new System.IO.StreamReader(AppDomain.CurrentDomain.BaseDirectory + "dictionary.txt"))
                     {
                         while ((line = file.ReadLine()) != null)
                         {
-
+                            // if word exist, set playWordFound to true and break out the loopo 
                             if (line == wordPlayed.Word)
                             {
-                                equals = true;
+                                playWordFound = true;
                                 break;
                             }
                         }
-
-                        //the word doesn't exit in the dictionary
 
                     }
  
@@ -348,28 +369,40 @@ namespace Boggle
 
                     if (game.Player1.UserToken == wordPlayed.UserToken)
                     {
+                        // check the content of WordsPlayed list from Player 1
                         foreach (WordList dup in game.Player1.WordsPlayed)
                         {
+
+                            //if there is a existing word in Player1 WordsPlayed
                             if (dup.Word == wordPlayed.Word)
                             {
                                 WordList dupTemp = new WordList();
+
                                 dupTemp.Word = wordPlayed.Word;
 
-                                if (equals == false)
+                                // if the word doesn't exist on the dictionary.txt
+                                // deduct point by - 1
+                                if (playWordFound == false)
                                 {
                                     dupTemp.Score = -1;
+
                                     currentPlayer.WordsPlayed.Add(dupTemp);
 
                                     game.Player1.Score -= 1;
+
                                     scoreObject.Score = -1;
 
                                     return scoreObject;
                                 }
 
+                                // if Player1 already contain the word in the WordsPlayed, 
+                                // give 0 point to Player1
                                 dupTemp.Score = 0;
+
                                 currentPlayer.WordsPlayed.Add(dupTemp);
 
                                 game.Player1.Score +=0;
+
                                 scoreObject.Score = 0;
 
                                 return scoreObject;
@@ -381,27 +414,42 @@ namespace Boggle
 
                     else
                     {
+
+                        // check the content of WordsPlayed list from Player 2
                         foreach (WordList dup in game.Player2.WordsPlayed)
                         {
+
+                            //if there is a existing word in Player2 WordsPlayed
                             if (dup.Word == wordPlayed.Word)
                             {
                                 WordList dupTemp = new WordList();
+
                                 dupTemp.Word = wordPlayed.Word;
-                                if (equals == false)
+
+
+                                // if the word doesn't exist on the dictionary.txt
+                                // deduct point by - 1
+                                if (playWordFound == false)
                                 {
                                     dupTemp.Score = -1;
+
                                     currentPlayer.WordsPlayed.Add(dupTemp);
 
                                     game.Player2.Score -= 1;
+
                                     scoreObject.Score = -1;
 
                                     return scoreObject;
                                 }
 
+                                // if Player1 already contain the word in the WordsPlayed, 
+                                // give 0 point to Player1
                                 dupTemp.Score = 0;
+
                                 currentPlayer.WordsPlayed.Add(dupTemp);
 
                                 game.Player2.Score += 0;
+
                                 scoreObject.Score = 0;
 
                                 return scoreObject;
@@ -410,22 +458,10 @@ namespace Boggle
                     }
 
 
-                    if (equals == true)
+                    if (playWordFound == true)
                     {
-                      
 
-                        if (game.Player1.UserToken == wordPlayed.UserToken)
-                        {
-                            currentPlayer = game.Player1;
-                        }
-
-                        else
-                        {
-                            currentPlayer = game.Player2;
-                        }
-
-                       
-                        SetStatus(OK);
+                        
 
                         //if the word can be formed, and it is in the dictioniary, award points accordingly 
                         //Three- and four-letter words are worth one point,
@@ -578,69 +614,6 @@ namespace Boggle
                             }
                         }
                     }
-
-
-                    /// at this point, the word doesn't exist on the dictionary
-                    /// 
-                    if (game.Player1.UserToken == wordPlayed.UserToken)
-                    {
-                        foreach (WordList badword in game.Player1.WordsPlayed)
-                        {
-                            if (badword.Word == wordPlayed.Word)
-                            {
-                                WordList badwordTemp = new WordList();
-                                badwordTemp.Word = wordPlayed.Word;
-                                badwordTemp.Score = -1;
-                                currentPlayer.WordsPlayed.Add(badwordTemp);
-
-                                game.Player1.Score -= 1;
-                                scoreObject.Score = -1;
-
-                                return scoreObject;
-                            }
-                        }
-                        //award to player 1
-                        WordList temp = new WordList();
-                        temp.Word = wordPlayed.Word;
-                        temp.Score = -1;
-                        currentPlayer.WordsPlayed.Add(temp);
-
-                        game.Player1.Score -= 1;
-                        scoreObject.Score = 1;
-                        return scoreObject;
-                    }
-
-                    else
-                    {
-                        foreach (WordList badword in game.Player2.WordsPlayed)
-                        {
-                            if (badword.Word == wordPlayed.Word)
-                            {
-                                WordList badwordTemp = new WordList();
-                                badwordTemp.Word = wordPlayed.Word;
-                                badwordTemp.Score = -1;
-                                currentPlayer.WordsPlayed.Add(badwordTemp);
-
-                                game.Player2.Score -= 1;
-                                scoreObject.Score = -1;
-
-                                return scoreObject;
-                            }
-                        }
-
-                        //award to player 2
-                        WordList temp = new WordList();
-                        temp.Word = wordPlayed.Word;
-                        temp.Score = -1;
-                        currentPlayer.WordsPlayed.Add(temp);
-
-                        game.Player2.Score -= 1;
-                        scoreObject.Score = 1;
-                        return scoreObject;
-                    }
-
-
-                    
 
                 }
             }
