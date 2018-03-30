@@ -180,9 +180,9 @@ namespace Boggle
             Assert.AreEqual(Created, EricJoinGame.Status);
 
 
-            string TomGameID = TomJoinGameAgain.Data.GameID;
+            string currentGameID = TomJoinGameAgain.Data.GameID;
 
-            Response TomStatus = client.DoGetAsync("games/{0}", TomGameID).Result;
+            Response TomStatus = client.DoGetAsync("games/{0}", currentGameID).Result;
 
 
 
@@ -198,9 +198,9 @@ namespace Boggle
             Temp5.UserToken = userToken;
             Temp5.Word = TomWordGoingToPlay;
 
-            Response TomPlayWord = client.DoPutAsync(Temp5, "games/{TomGameID}").Result;
+            Response TomPlayWord = client.DoPutAsync(Temp5, "games/" + currentGameID).Result;
 
-            Assert.AreEqual(Forbidden, TomPlayWord.Status);
+            Assert.AreEqual(OK, TomPlayWord.Status);
 
             //register 3 users 
             // Tom search for game

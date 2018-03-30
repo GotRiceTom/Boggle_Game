@@ -12,9 +12,6 @@ namespace Boggle
     public class BoggleBoard
     {
 
-        static HashSet<string> theDictionary;
-
-
         // The 4x4 Boggle board
         private char[,] board;
 
