@@ -52,6 +52,7 @@ namespace Boggle
         {
             lock (sync)
             {
+
                 if (user.Nickname == null || user.Nickname.Trim().Length == 0 || user.Nickname.Trim().Length > 50)
                 {
                     SetStatus(Forbidden);
@@ -81,6 +82,15 @@ namespace Boggle
                     pendingGame.GameState = "pending";
                     pendingGameID = 1.ToString();
                 }
+
+
+                //CHECK IF THE USERTOKEN DOES EXIST IN THE SERVER
+                if (!users.ContainsKey(joiningGame.UserToken))
+                {
+                    SetStatus(Forbidden);
+                    return null;
+                }
+
 
                 // If the time limit they entered is bad, reply forbidden and don't start a game.
                 if (joiningGame.TimeLimit < 5 || joiningGame.TimeLimit > 120)
@@ -179,6 +189,15 @@ namespace Boggle
         {
             lock (sync)
             {
+                //check for nulls
+
+
+                if (pendingGame.Player1 == null)
+                {
+                    SetStatus(Forbidden);
+                    return;
+                }
+
                 // If the usertoken is invalid or the user isn't in a pending game, return forbidden
                 if (!activePlayers.Contains(UserToken.UserToken) || pendingGame.Player1.UserToken != UserToken.UserToken)
                 {
@@ -201,6 +220,19 @@ namespace Boggle
         {
             lock (sync)
             {
+                if (! (activeGames.ContainsKey(GameID) || completeGames.ContainsKey(GameID) || pendingGameID == GameID))
+                {
+                    SetStatus(Forbidden);
+                    return null;
+                }
+
+                // check 
+                if (pendingGameID == GameID || !activeGames.ContainsKey(GameID) || completeGames.ContainsKey(GameID))
+                {
+                    SetStatus(Conflict);
+                    return null;
+                }
+
                 // check if Word is null or empty or longer than 30 characters when trimmed, or if GameID or UserToken is invalid
                 if (wordPlayed.Word == null || wordPlayed.Word.Trim().Length > 30 || wordPlayed.Word.Trim().Length == 0 || !activeGames.ContainsKey(GameID)
                     || !activePlayers.Contains(wordPlayed.UserToken))
@@ -245,6 +277,24 @@ namespace Boggle
                         currentPlayer = game.Player2;
                     }
 
+                    if (wordPlayed.Word.Length < 3)
+                    {
+                        WordList wordIsTooShort = new WordList();
+
+                        wordIsTooShort.Word = wordPlayed.Word;
+
+                        wordIsTooShort.Score = 0;
+
+                        // add the WordList object to the current player WordsPlayed
+                        currentPlayer.WordsPlayed.Add(wordIsTooShort);
+
+                        //deduct player 1 score by 0
+                        game.Player1.Score += 0;
+
+                        scoreObject.Score = 0;
+
+                        return scoreObject;
+                    }
 
                     //if word cannot be formed on the board, score of the word is -1
                     if (!game.FullBoard.CanBeFormed(wordPlayed.Word))
@@ -770,7 +820,7 @@ namespace Boggle
                     }
 
                     // at this point the game is in a active status
-                    if (activeGames.TryGetValue(GameID.ToUpper(), out Game activeGame))
+                    if (activeGames.TryGetValue(GameID, out Game activeGame))
                     {
                         currentTime = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
 
