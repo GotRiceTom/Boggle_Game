@@ -220,7 +220,39 @@ namespace Boggle
         {
             lock (sync)
             {
-                if (! (activeGames.ContainsKey(GameID) || completeGames.ContainsKey(GameID) || pendingGameID == GameID))
+
+                if ((activeGames.TryGetValue(GameID, out Game activeGame)))
+                {
+                    int currentTime;
+
+                    currentTime = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
+
+                    activeGame.TimeLeft = (int)activeGame.TimeLimit - (currentTime - activeGame.StartingTime);
+
+                    // then check the status of the game
+                    //if timeleft is zero
+                    // the game is compltete status and add to the dictionary
+                    // remove this game key and value off the active game
+                    if (activeGame.TimeLeft <= 0)
+                    {
+                        activeGame.TimeLeft = 0;
+
+                        //set value game to complete
+                        activeGame.GameState = "completed";
+
+                        activePlayers.Remove(activeGame.Player1.UserToken);
+                        activePlayers.Remove(activeGame.Player2.UserToken);
+
+                        completeGames.Add(GameID, activeGame);
+
+                        activeGames.Remove(GameID);
+
+                        SetStatus(Conflict);
+                        return null;
+                    }
+                }
+
+                if (! (activeGames.ContainsKey(GameID) || pendingGameID == GameID))
                 {
                     SetStatus(Forbidden);
                     return null;
