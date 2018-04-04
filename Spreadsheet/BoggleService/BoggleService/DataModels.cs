@@ -109,7 +109,7 @@ namespace Boggle
         public Player Player2 { get; set; }
 
         [DataMember(EmitDefaultValue = false)]
-        public int TimeLeft { get; set; }
+        public int? TimeLeft { get; set; }
 
         [DataMember(EmitDefaultValue = false)]
         public int StartingTime { get; set; }
