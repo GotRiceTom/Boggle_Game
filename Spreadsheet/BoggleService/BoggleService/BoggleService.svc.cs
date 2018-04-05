@@ -15,7 +15,7 @@ namespace Boggle
         private readonly static Dictionary<string, Game> activeGames = new Dictionary<string, Game>();
         private readonly static Dictionary<string, Game> completeGames = new Dictionary<string, Game>();
 
-        //only keep track of one pending game at a time
+        //only keep track of one pending game at a time.
         private static Game pendingGame;
         private static string pendingGameID;
 
@@ -132,11 +132,11 @@ namespace Boggle
 
                         pendingGame.StartingTime = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
 
-                        activeGames.Add(gameCounter.ToString(), pendingGame);
-
                         pendingGame.FullBoard = new BoggleBoard();
 
                         pendingGame.Board = pendingGame.FullBoard.ToString();
+
+                        activeGames.Add(gameCounter.ToString(), pendingGame);
 
                         pendingGame = new Game();
                         pendingGame.GameState = "pending";
