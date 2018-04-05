@@ -15,7 +15,7 @@ namespace Boggle
         private readonly static Dictionary<string, Game> activeGames = new Dictionary<string, Game>();
         private readonly static Dictionary<string, Game> completeGames = new Dictionary<string, Game>();
 
-        //only keep track of one pending game at a time
+        //only keep track of one pending game at a time.
         private static Game pendingGame;
         private static string pendingGameID;
 
