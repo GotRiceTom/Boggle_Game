@@ -24,7 +24,6 @@ namespace Boggle
         private static string pendingGameID;
 
         //count the games so we know what the gameID will be
-        private static int gameCounter;
         private static int newestActiveGameID;
 
         // Keep track of the users that are waiting for a game or in an active one.
@@ -67,7 +66,6 @@ namespace Boggle
         /// <returns></returns>
         public Token CreateUser(User user)
         {
-            
             //checking for null
             if (user.Nickname == null || user.Nickname.Trim().Length == 0 || user.Nickname.Trim().Length > 50)
             {
@@ -335,7 +333,6 @@ namespace Boggle
 
         public void CancelJoinRequest(Token UserToken)
         {
-         
             //check for nulls
             if (pendingGame.Player1 == null)
             {
@@ -349,7 +346,6 @@ namespace Boggle
                 SetStatus(Forbidden);
                 return;
             }
-
 
             //if the usertoken is invalid, return forbidden
             using (SqlConnection conn = new SqlConnection(BoggleDB))
@@ -389,582 +385,13 @@ namespace Boggle
             }
         }
 
-
-        public ScoreObject PlayWord(WordPlayed wordPlayed, string GameID)
-        {
-            // throw new NotImplementedException();
-            return null;
-        }
-
         //public ScoreObject PlayWord(WordPlayed wordPlayed, string GameID)
         //{
-        //    lock (sync)
-        //    {
-
-        //        if ((activeGames.TryGetValue(GameID, out Game activeGame)))
-        //        {
-        //            int currentTime;
-
-        //            currentTime = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
-
-        //            activeGame.TimeLeft = (int)activeGame.TimeLimit - (currentTime - activeGame.StartingTime);
-
-        //            // then check the status of the game
-        //            //if timeleft is zero
-        //            // the game is compltete status and add to the dictionary
-        //            // remove this game key and value off the active game
-        //            if (activeGame.TimeLeft <= 0)
-        //            {
-        //                activeGame.TimeLeft = 0;
-
-        //                //set value game to complete
-        //                activeGame.GameState = "completed";
-
-        //                activePlayers.Remove(activeGame.Player1.UserToken);
-        //                activePlayers.Remove(activeGame.Player2.UserToken);
-
-        //                completeGames.Add(GameID, activeGame);
-
-        //                activeGames.Remove(GameID);
-
-        //                SetStatus(Conflict);
-        //                return null;
-        //            }
-        //        }
-
-        //        if (! (activeGames.ContainsKey(GameID) || pendingGameID == GameID))
-        //        {
-        //            SetStatus(Forbidden);
-        //            return null;
-        //        }
-
-        //        // check 
-        //        if (pendingGameID == GameID || !activeGames.ContainsKey(GameID) || completeGames.ContainsKey(GameID))
-        //        {
-        //            SetStatus(Conflict);
-        //            return null;
-        //        }
-
-        //        // check if Word is null or empty or longer than 30 characters when trimmed, or if GameID or UserToken is invalid
-        //        if (wordPlayed.Word == null || wordPlayed.Word.Trim().Length > 30 || wordPlayed.Word.Trim().Length == 0 || !activeGames.ContainsKey(GameID)
-        //            || !activePlayers.Contains(wordPlayed.UserToken))
-        //        {
-        //            SetStatus(Forbidden);
-        //            return null;
-        //        }
-
-        //        //grab the game associated with the gameID
-        //        if (activeGames.TryGetValue(GameID, out Game game))
-        //        {
-        //            //check if the usertoken is not a player in the gameID
-        //            if (game.Player1.UserToken != wordPlayed.UserToken && game.Player2.UserToken != wordPlayed.UserToken)
-        //            {
-        //                SetStatus(Forbidden);
-        //                return null;
-        //            }
-
-        //            //check if the game is set to something other than active
-        //            if (game.GameState != "active")
-        //            {
-        //                SetStatus(Conflict);
-        //                return null;
-        //            }
-
-        //            // records the trimmed Word as being played by UserToken in the game identified by GameID. Returns the score for Word in the context of the game
-
-
-        //            Player currentPlayer;
-
-        //            ScoreObject scoreObject = new ScoreObject();
-
-        //            SetStatus(OK);
-
-        //            // check who's userToken is this belong to
-        //            if (game.Player1.UserToken == wordPlayed.UserToken)
-        //            {
-        //                currentPlayer = game.Player1;
-        //            }
-        //            else
-        //            {
-        //                currentPlayer = game.Player2;
-        //            }
-
-        //            if (wordPlayed.Word.Length < 3)
-        //            {
-        //                WordList wordIsTooShort = new WordList();
-
-        //                wordIsTooShort.Word = wordPlayed.Word;
-
-        //                wordIsTooShort.Score = 0;
-
-        //                // add the WordList object to the current player WordsPlayed
-        //                currentPlayer.WordsPlayed.Add(wordIsTooShort);
-
-        //                //deduct player 1 score by 0
-        //                game.Player1.Score += 0;
-
-        //                scoreObject.Score = 0;
-
-        //                return scoreObject;
-        //            }
-
-        //            //if word cannot be formed on the board, score of the word is -1
-        //            if (!game.FullBoard.CanBeFormed(wordPlayed.Word))
-        //            {
-
-        //                //if userToken is player1 token
-        //                if (game.Player1.UserToken == wordPlayed.UserToken)
-        //                {
-
-        //                    //check if this bad word is already in the list
-        //                    // if so, deduct player 1 score by -1
-        //                    // check the content of WordsPlayed list from Player 1
-        //                    foreach (WordList badword in game.Player1.WordsPlayed)
-        //                    {
-        //                        if (badword.Word == wordPlayed.Word)
-        //                        {
-        //                            // a temp variable
-        //                            WordList badwordTemp = new WordList();
-
-        //                            badwordTemp.Word = wordPlayed.Word;
-
-        //                            badwordTemp.Score = -1;
-
-        //                            // add the WordList object to the current player WordsPlayed
-        //                            currentPlayer.WordsPlayed.Add(badwordTemp);
-
-        //                            //deduct player 1 score by -1
-        //                            game.Player1.Score -= 1;
-
-        //                            scoreObject.Score = -1;
-
-        //                            return scoreObject;
-        //                        }
-        //                    }
-
-        //                    // at this point, this  bad word is player 1 enounter
-        //                    //deduct -1 to player 1
-        //                    WordList temp = new WordList();
-
-        //                    temp.Word = wordPlayed.Word;
-
-        //                    temp.Score = -1;
-
-        //                    // add the WordList object to the current player WordsPlayed
-        //                    currentPlayer.WordsPlayed.Add(temp);
-
-        //                    game.Player1.Score -= 1;
-
-        //                    scoreObject.Score = -1;
-
-        //                    return scoreObject;
-        //                }
-
-        //                else
-        //                {
-        //                    // else, this current player is player 2
-        //                    // check the content of WordsPlayed list from Player 2
-        //                    foreach (WordList badword in game.Player2.WordsPlayed)
-        //                    {
-        //                        //check if this bad word is already in the list
-        //                        // if so, deduct player 2 score by -1
-        //                        if (badword.Word == wordPlayed.Word)
-        //                        {
-        //                            WordList badwordTemp = new WordList();
-
-        //                            badwordTemp.Word = wordPlayed.Word;
-
-        //                            badwordTemp.Score = -1;
-
-        //                            // add the WordList object to the current player WordsPlayed
-        //                            currentPlayer.WordsPlayed.Add(badwordTemp);
-
-        //                            game.Player2.Score -= 1;
-
-        //                            scoreObject.Score = -1;
-
-        //                            return scoreObject;
-        //                        }
-        //                    }
-
-        //                    //deduct -1 to player 2
-        //                    WordList temp = new WordList();
-
-        //                    temp.Word = wordPlayed.Word;
-
-        //                    temp.Score = -1;
-
-        //                    // add the WordList object to the current player WordsPlayed
-        //                    currentPlayer.WordsPlayed.Add(temp);
-
-        //                    game.Player2.Score -= 1;
-
-        //                    scoreObject.Score = -1;
-
-        //                    return scoreObject;
-        //                }
-        //            }
-
-        //            // AT THIS POINT, THE PLAYWORD CAN BE FORM
-        //            // flag if playWord exist in the dictionary 
-        //            Boolean playWordFound = false;
-
-
-        //            string line;
-
-        //            //access the dictionary.txt
-        //            using (StreamReader file = new System.IO.StreamReader(AppDomain.CurrentDomain.BaseDirectory + "dictionary.txt"))
-        //            {
-        //                while ((line = file.ReadLine()) != null)
-        //                {
-        //                    // if word exist, set playWordFound to true and break out the loopo 
-        //                    if (line == wordPlayed.Word)
-        //                    {
-        //                        playWordFound = true;
-        //                        break;
-        //                    }
-        //                }
-
-        //            }
-
-        //            // check for duplicates
-
-        //            if (game.Player1.UserToken == wordPlayed.UserToken)
-        //            {
-        //                // check the content of WordsPlayed list from Player 1
-        //                foreach (WordList dup in game.Player1.WordsPlayed)
-        //                {
-
-        //                    //if there is a existing word in Player1 WordsPlayed
-        //                    if (dup.Word == wordPlayed.Word)
-        //                    {
-        //                        WordList dupTemp = new WordList();
-
-        //                        dupTemp.Word = wordPlayed.Word;
-
-        //                        // if the word doesn't exist on the dictionary.txt
-        //                        // deduct point by - 1
-        //                        if (playWordFound == false)
-        //                        {
-        //                            dupTemp.Score = -1;
-
-        //                            currentPlayer.WordsPlayed.Add(dupTemp);
-
-        //                            game.Player1.Score -= 1;
-
-        //                            scoreObject.Score = -1;
-
-        //                            return scoreObject;
-        //                        }
-
-        //                        // if Player1 already contain the word in the WordsPlayed, 
-        //                        // give 0 point to Player1
-        //                        dupTemp.Score = 0;
-
-        //                        currentPlayer.WordsPlayed.Add(dupTemp);
-
-        //                        game.Player1.Score +=0;
-
-        //                        scoreObject.Score = 0;
-
-        //                        return scoreObject;
-        //                    }
-        //                }
-
-
-        //            }
-
-        //            else
-        //            {
-
-        //                // check the content of WordsPlayed list from Player 2
-        //                foreach (WordList dup in game.Player2.WordsPlayed)
-        //                {
-
-        //                    //if there is a existing word in Player2 WordsPlayed
-        //                    if (dup.Word == wordPlayed.Word)
-        //                    {
-        //                        WordList dupTemp = new WordList();
-
-        //                        dupTemp.Word = wordPlayed.Word;
-
-
-        //                        // if the word doesn't exist on the dictionary.txt
-        //                        // deduct point by - 1
-        //                        if (playWordFound == false)
-        //                        {
-        //                            dupTemp.Score = -1;
-
-        //                            currentPlayer.WordsPlayed.Add(dupTemp);
-
-        //                            game.Player2.Score -= 1;
-
-        //                            scoreObject.Score = -1;
-
-        //                            return scoreObject;
-        //                        }
-
-        //                        // if Player1 already contain the word in the WordsPlayed, 
-        //                        // give 0 point to Player1
-        //                        dupTemp.Score = 0;
-
-        //                        currentPlayer.WordsPlayed.Add(dupTemp);
-
-        //                        game.Player2.Score += 0;
-
-        //                        scoreObject.Score = 0;
-
-        //                        return scoreObject;
-        //                    }
-        //                }
-        //            }
-
-
-        //            if (playWordFound == true)
-        //            {
-
-
-
-        //                //if the word can be formed, and it is in the dictioniary, award points accordingly 
-        //                //Three- and four-letter words are worth one point,
-        //                //five -letter words are worth two points, 
-        //                //six -letter words are worth three points,
-        //                //seven -letter words are worth five points,
-        //                //and longer words are worth 11 points)
-        //                if (wordPlayed.Word.Length == 3 || wordPlayed.Word.Length == 4)
-        //                {
-        //                    if (game.Player1.UserToken == wordPlayed.UserToken)
-        //                    {
-        //                        //award to player 1
-        //                        WordList temp = new WordList();
-        //                        temp.Word = wordPlayed.Word;
-        //                        temp.Score = 1;
-        //                        currentPlayer.WordsPlayed.Add(temp);
-
-        //                        game.Player1.Score += 1;
-        //                        scoreObject.Score = 1;
-        //                        return scoreObject;
-        //                    }
-
-        //                    else
-        //                    {
-        //                        //award to player 2
-        //                        WordList temp = new WordList();
-        //                        temp.Word = wordPlayed.Word;
-        //                        temp.Score = 1;
-        //                        currentPlayer.WordsPlayed.Add(temp);
-
-        //                        game.Player2.Score += 1;
-        //                        scoreObject.Score = 1;
-        //                        return scoreObject;
-        //                    }
-        //                }
-
-        //                if (wordPlayed.Word.Length == 5)
-        //                {
-        //                    if (game.Player1.UserToken == wordPlayed.UserToken)
-        //                    {
-        //                        //award to player 1
-        //                        WordList temp = new WordList();
-        //                        temp.Word = wordPlayed.Word;
-        //                        temp.Score = 2;
-        //                        currentPlayer.WordsPlayed.Add(temp);
-
-        //                        game.Player1.Score += 2;
-        //                        scoreObject.Score = 2;
-        //                        return scoreObject;
-        //                    }
-
-        //                    else
-        //                    {
-        //                        //award to player 2
-        //                        WordList temp = new WordList();
-        //                        temp.Word = wordPlayed.Word;
-        //                        temp.Score = 2;
-        //                        currentPlayer.WordsPlayed.Add(temp);
-
-        //                        game.Player2.Score += 2;
-        //                        scoreObject.Score = 2;
-        //                        return scoreObject;
-        //                    }
-        //                }
-
-        //                if (wordPlayed.Word.Length == 6)
-        //                {
-        //                    if (game.Player1.UserToken == wordPlayed.UserToken)
-        //                    {
-        //                        //award to player 1
-        //                        WordList temp = new WordList();
-        //                        temp.Word = wordPlayed.Word;
-        //                        temp.Score = 3;
-        //                        currentPlayer.WordsPlayed.Add(temp);
-
-        //                        game.Player1.Score += 3;
-        //                        scoreObject.Score = 3;
-        //                        return scoreObject;
-        //                    }
-
-        //                    else
-        //                    {
-        //                        //award to player 2
-        //                        WordList temp = new WordList();
-        //                        temp.Word = wordPlayed.Word;
-        //                        temp.Score = 3;
-        //                        currentPlayer.WordsPlayed.Add(temp);
-
-        //                        game.Player2.Score += 3;
-        //                        scoreObject.Score = 3;
-        //                        return scoreObject;
-        //                    }
-        //                }
-
-        //                if (wordPlayed.Word.Length == 7)
-        //                {
-        //                    if (game.Player1.UserToken == wordPlayed.UserToken)
-        //                    {
-        //                        //award to player 1
-        //                        WordList temp = new WordList();
-        //                        temp.Word = wordPlayed.Word;
-        //                        temp.Score = 5;
-        //                        currentPlayer.WordsPlayed.Add(temp);
-
-        //                        game.Player1.Score += 5;
-        //                        scoreObject.Score = 5;
-        //                        return scoreObject;
-        //                    }
-
-        //                    else
-        //                    {
-        //                        //award to player 2
-        //                        WordList temp = new WordList();
-        //                        temp.Word = wordPlayed.Word;
-        //                        temp.Score = 5;
-        //                        currentPlayer.WordsPlayed.Add(temp);
-
-        //                        game.Player2.Score += 5;
-        //                        scoreObject.Score = 5;
-        //                        return scoreObject;
-        //                    }
-        //                }
-
-        //                if (wordPlayed.Word.Length > 7)
-        //                {
-        //                    if (game.Player1.UserToken == wordPlayed.UserToken)
-        //                    {
-        //                        //award to player 1
-        //                        WordList temp = new WordList();
-        //                        temp.Word = wordPlayed.Word;
-        //                        temp.Score = 11;
-        //                        currentPlayer.WordsPlayed.Add(temp);
-
-        //                        game.Player1.Score += 11;
-        //                        scoreObject.Score = 11;
-        //                        return scoreObject;
-        //                    }
-
-        //                    else
-        //                    {
-        //                        //award to player 2
-        //                        WordList temp = new WordList();
-        //                        temp.Word = wordPlayed.Word;
-        //                        temp.Score = 11;
-        //                        currentPlayer.WordsPlayed.Add(temp);
-
-        //                        game.Player2.Score += 11;
-        //                        scoreObject.Score = 11;
-        //                        return scoreObject;
-        //                    }
-        //                }
-        //            }
-
-
-        //            /// at this point, the word doesn't exist on the dictionary, so it should be worth -1
-        //            if (game.Player1.UserToken == wordPlayed.UserToken)
-        //            {
-        //                foreach (WordList badword in game.Player1.WordsPlayed)
-        //                {
-        //                    if (badword.Word == wordPlayed.Word)
-        //                    {
-        //                        WordList badwordTemp = new WordList();
-
-        //                        badwordTemp.Word = wordPlayed.Word;
-
-        //                        badwordTemp.Score = -1;
-
-        //                        currentPlayer.WordsPlayed.Add(badwordTemp);
-
-        //                        game.Player1.Score -= 1;
-
-        //                        scoreObject.Score = -1;
-
-        //                        return scoreObject;
-        //                    }
-        //                }
-
-        //                //deduct to player 1
-        //                WordList temp = new WordList();
-
-        //                temp.Word = wordPlayed.Word;
-
-        //                temp.Score = -1;
-        //                currentPlayer.WordsPlayed.Add(temp);
-
-        //                game.Player1.Score -= 1;
-
-        //                scoreObject.Score = 1;
-
-        //                return scoreObject;
-        //            }
-
-        //            else
-        //            {
-        //                foreach (WordList badword in game.Player2.WordsPlayed)
-        //                {
-        //                    if (badword.Word == wordPlayed.Word)
-        //                    {
-        //                        WordList badwordTemp = new WordList();
-
-        //                        badwordTemp.Word = wordPlayed.Word;
-
-        //                        badwordTemp.Score = -1;
-
-        //                        currentPlayer.WordsPlayed.Add(badwordTemp);
-
-        //                        game.Player2.Score -= 1;
-
-        //                        scoreObject.Score = -1;
-
-        //                        return scoreObject;
-        //                    }
-        //                }
-
-        //                //deduct to player 2
-        //                WordList temp = new WordList();
-
-        //                temp.Word = wordPlayed.Word;
-
-        //                temp.Score = -1;
-
-        //                currentPlayer.WordsPlayed.Add(temp);
-
-        //                game.Player2.Score -= 1;
-
-        //                scoreObject.Score = 1;
-        //                return scoreObject;
-        //            }
-
-        //        }
-        //    }
-
+        //    // throw new NotImplementedException();
         //    return null;
         //}
 
-        //public Game GetGameStatus(string Brief, string GameID)
-        //{
-        //    return null;
-        //}
-
-        public Game GetGameStatus(string Brief, string GameID)
+        public ScoreObject PlayWord(WordPlayed wordPlayed, string GameID)
         {
             //opend the connection to the our database that we made in the static constructor
             using (SqlConnection conn = new SqlConnection(BoggleDB))
@@ -975,105 +402,67 @@ namespace Boggle
                 //start up a transaction with the database
                 using (SqlTransaction trans = conn.BeginTransaction())
                 {
-                    int currentTime;
+                    Game activeGame = new Game();
+                    activeGame.Player1 = new Player();
+                    activeGame.Player2 = new Player();
 
-                    // if (brief is yes?) and the game is pending
-                    if (pendingGameID == GameID)
+                    // START BY BUILDING THE GAME WITH THE GAMEID THAT WAS GIVEN
+                    using (SqlCommand commandBuildGame = new SqlCommand("select * from Games where GameID = @GameID", conn, trans))
                     {
-                        SetStatus(OK);
-                        pendingGame.GameState = "pending";
-                        return pendingGame;
-                    }
+                        //set the parameter for the command
+                        commandBuildGame.Parameters.AddWithValue("@GameID", GameID);
 
-                    // if brief is yes and the game is active
-                    if (Brief == "yes")
-                    {
-                        //if (activeGames.TryGetValue(GameID, out Game currentGame))
-                        using (SqlCommand command = new SqlCommand("select * from Games where GameID = @GameID", conn, trans))
+                        using (SqlDataReader reader = commandBuildGame.ExecuteReader())
                         {
-                            command.Parameters.AddWithValue("@GameID", GameID);
-
-                            using (SqlDataReader reader = command.ExecuteReader())
+                            // if the reader returns something, then the gameID is valid. Otherwise, it's forbidden.
+                            if (reader.HasRows)
                             {
-                                if (reader.HasRows)
+                                //advance
+                                reader.Read();
+
+                                activeGame.Player1.UserToken = (string)reader["Player1"];
+                                activeGame.Player2.UserToken = (string)reader["Player2"];
+                                activeGame.Board = (string)reader["Board"];
+                                activeGame.FullBoard = new BoggleBoard(activeGame.Board);
+                                activeGame.TimeLimit = (int)reader["TimeLimit"];
+                                activeGame.StartingTime = (int)reader["StartTime"];
+                                activeGame.TimeLeft = (int)reader["TimeLeft"];
+                                activeGame.GameState = (string)reader["GameState"];
+
+                                reader.Close();
+                            }
+
+                            //this means the gameID didn't map to anything in our database or our pending game. We'll say forbidden.
+                            else
+                            {
+                                reader.Close();
+
+                                //if the gameID is our pendingGame, set the active game to the pending game and continue
+                                if (GameID == (newestActiveGameID + 1).ToString())
                                 {
-                                    SetStatus(OK);
-                                    reader.Read();
-
-                                    string player1NickName;
-                                    string player2NickName;
-
-
-
-
-                                        //THIS IS WHERE WE LEFT OFF. CREATING THE GAME OBJECT TO RETURN TO THE USER
-
-                                        //currentGame.GameState = "active";
-                                        currentTime = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
-
-                                    returnGame.TimeLeft = (int)returnGame.TimeLimit - (currentTime - returnGame.StartingTime);
-
-                                    return returnGame;
+                                    activeGame = pendingGame;
                                 }
 
+                                else
+                                {
+                                    SetStatus(Forbidden);
+                                    //trans.Commit();
+                                    return null;
+                                }
                             }
                         }
 
-                        // if brief is yes and the game is completed
-                        if (activeGames.TryGetValue(GameID, out Game completedGame))
+                        //if ((activeGames.TryGetValue(GameID, out Game activeGame)))
+                        if (activeGame.GameState == "active")
                         {
-                            SetStatus(OK);
-                            completedGame.GameState = "completed";
-                            currentTime = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
+                            int currentTime;
 
-                            completedGame.TimeLeft = (int)completedGame.TimeLimit - (currentTime - completedGame.StartingTime);
-
-                            return completedGame;
-                        }
-                    }
-
-                    // if brief is not yes
-                    if (Brief != "yes")
-                    {
-                        //check for null
-                        if (GameID == null)
-                        {
-                            SetStatus(Forbidden);
-                            return null;
-                        }
-
-                        //Make sure that the game ID matches to an active or completed game or the pending game
-                        if (!(activeGames.ContainsKey(GameID) || completeGames.ContainsKey(GameID) || pendingGameID == GameID))
-                        {
-                            SetStatus(Forbidden);
-                            return null;
-                        }
-
-
-                        // set status code to (OK)
-                        SetStatus(OK);
-
-                        //if the game is pending
-                        if (pendingGameID == GameID)
-                        {
-                            return pendingGame;
-                        }
-
-                        //if the Game is in the complete game dictionary 
-                        if (completeGames.TryGetValue(GameID.ToUpper(), out Game completeGame))
-                        {
-                            return completeGame;
-                        }
-
-                        // at this point the game is in a active status
-                        if (activeGames.TryGetValue(GameID, out Game activeGame))
-                        {
                             currentTime = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
 
                             activeGame.TimeLeft = (int)activeGame.TimeLimit - (currentTime - activeGame.StartingTime);
 
                             // then check the status of the game
-                            //if timeleft is zero
+                            // if timeleft is zero
                             // the game is compltete status and add to the dictionary
                             // remove this game key and value off the active game
                             if (activeGame.TimeLeft <= 0)
@@ -1081,24 +470,791 @@ namespace Boggle
                                 activeGame.TimeLeft = 0;
 
                                 //set value game to complete
-                                activeGame.GameState = "completed";
+                                activeGame.GameState = "completed";  // DO WE NEED TO SET THE GAME TO CONFLICT IN THE DATABASE HERE? ----------------------------------------------------------
 
-                                activePlayers.Remove(activeGame.Player1.UserToken);
-                                activePlayers.Remove(activeGame.Player2.UserToken);
+                                //activePlayers.Remove(activeGame.Player1.UserToken);
+                                //activePlayers.Remove(activeGame.Player2.UserToken);
 
-                                completeGames.Add(GameID, activeGame);
+                                //completeGames.Add(GameID, activeGame);
 
-                                activeGames.Remove(GameID);
+                                //activeGames.Remove(GameID);
 
-                                return activeGame;
+                                SetStatus(Conflict);
+                                return null;
+                            }
+                        }
+
+                        //if (!(activeGames.ContainsKey(GameID) || pendingGameID == GameID))
+                        if (activeGame.Player1.UserToken != wordPlayed.UserToken && activeGame.Player2.UserToken != wordPlayed.UserToken)
+                        {
+                            SetStatus(Forbidden);
+                            return null;
+                        }
+
+                        //if (!(activeGames.ContainsKey(GameID) || pendingGameID == GameID))
+                        //if this code runs, we already know the game isn't active. So if it's not pending, we should respond with forbidden.
+                        if (activeGame.GameState == "pending" || activeGame.GameState == "completed")
+                        {
+                            SetStatus(Conflict);
+                            return null;
+                        }
+
+                        // check 
+                        //if (pendingGameID == GameID || !activeGames.ContainsKey(GameID) || completeGames.ContainsKey(GameID))
+                        //{
+                        //    SetStatus(Conflict);
+                        //    return null;
+                        //}
+
+                        // check if Word is null or empty or longer than 30 characters when trimmed, or if GameID or UserToken is invalid
+                        //if (wordPlayed.Word == null || wordPlayed.Word.Trim().Length > 30 || wordPlayed.Word.Trim().Length == 0 || !activeGames.ContainsKey(GameID)
+                        //|| !activePlayers.Contains(wordPlayed.UserToken))
+                        if (wordPlayed.Word == null || wordPlayed.Word.Trim().Length > 30 || wordPlayed.Word.Trim().Length == 0 || activeGame.GameState != "active")
+                        {
+                            SetStatus(Forbidden);
+                            return null;
+                        }
+
+                        //grab the game associated with the gameID
+                        //if (activeGames.TryGetValue(GameID, out Game game))
+                        //I have already built the game from the database, so I just set "game" to the game that I built.
+                        Game game = activeGame;
+                        {
+                            //check if the usertoken is not a player in the gameID
+                            if (game.Player1.UserToken != wordPlayed.UserToken && game.Player2.UserToken != wordPlayed.UserToken)
+                            {
+                                SetStatus(Forbidden);
+                                return null;
                             }
 
-                            return activeGame;
+                            //check if the game is set to something other than active
+                            if (game.GameState != "active")
+                            {
+                                SetStatus(Conflict);
+                                return null;
+                            }
+
+                            // records the trimmed Word as being played by UserToken in the game identified by GameID. Returns the score for Word in the context of the game
+
+
+                            Player currentPlayer;
+
+                            ScoreObject scoreObject = new ScoreObject();
+
+                            SetStatus(OK);
+
+                            // check who's userToken is this belong to
+                            if (game.Player1.UserToken == wordPlayed.UserToken)
+                            {
+                                currentPlayer = game.Player1;
+                            }
+                            else
+                            {
+                                currentPlayer = game.Player2;
+                            }
+
+                            if (wordPlayed.Word.Length < 3)
+                            {
+                                WordList wordIsTooShort = new WordList();
+
+                                wordIsTooShort.Word = wordPlayed.Word;
+
+                                wordIsTooShort.Score = 0;
+
+                                // add the WordList object to the current player WordsPlayed
+                                currentPlayer.WordsPlayed.Add(wordIsTooShort);
+
+                                //deduct player 1 score by 0
+                                game.Player1.Score += 0;
+
+                                scoreObject.Score = 0;
+
+                                //InsertWordIntoDatabase(string word, string gameID, string userToken, int score)
+                                InsertWordIntoDatabase(wordPlayed.Word,GameID,wordPlayed.UserToken,0); //-----------------------------------------------------------------------------------------------------------------
+
+                                return scoreObject;
+                            }
+
+                            //if word cannot be formed on the board, score of the word is -1
+                            if (!game.FullBoard.CanBeFormed(wordPlayed.Word))
+                            {
+
+                                //if userToken is player1 token
+                                if (game.Player1.UserToken == wordPlayed.UserToken)
+                                {
+                                    //check if this bad word is already in the list
+                                    // if so, deduct player 1 score by -1
+                                    // check the content of WordsPlayed list from Player 1
+                                    foreach (WordList badword in game.Player1.WordsPlayed)
+                                    {
+                                        if (badword.Word == wordPlayed.Word)
+                                        {
+                                            // a temp variable
+                                            WordList badwordTemp = new WordList();
+
+                                            badwordTemp.Word = wordPlayed.Word;
+
+                                            badwordTemp.Score = -1;
+
+                                            // add the WordList object to the current player WordsPlayed
+                                            currentPlayer.WordsPlayed.Add(badwordTemp);
+
+                                            //deduct player 1 score by -1
+                                            game.Player1.Score -= 1;
+
+                                            scoreObject.Score = -1;
+
+                                            return scoreObject;
+                                        }
+                                    }
+
+                                    // at this point, this  bad word is player 1 enounter
+                                    //deduct -1 to player 1
+                                    WordList temp = new WordList();
+
+                                    temp.Word = wordPlayed.Word;
+
+                                    temp.Score = -1;
+
+                                    // add the WordList object to the current player WordsPlayed
+                                    currentPlayer.WordsPlayed.Add(temp);
+
+                                    game.Player1.Score -= 1;
+
+                                    scoreObject.Score = -1;
+
+                                    return scoreObject;
+                                }
+
+                                else
+                                {
+                                    // else, this current player is player 2
+                                    // check the content of WordsPlayed list from Player 2
+                                    foreach (WordList badword in game.Player2.WordsPlayed)
+                                    {
+                                        //check if this bad word is already in the list
+                                        // if so, deduct player 2 score by -1
+                                        if (badword.Word == wordPlayed.Word)
+                                        {
+                                            WordList badwordTemp = new WordList();
+
+                                            badwordTemp.Word = wordPlayed.Word;
+
+                                            badwordTemp.Score = -1;
+
+                                            // add the WordList object to the current player WordsPlayed
+                                            currentPlayer.WordsPlayed.Add(badwordTemp);
+
+                                            game.Player2.Score -= 1;
+
+                                            scoreObject.Score = -1;
+
+                                            return scoreObject;
+                                        }
+                                    }
+
+                                    //deduct -1 to player 2
+                                    WordList temp = new WordList();
+
+                                    temp.Word = wordPlayed.Word;
+
+                                    temp.Score = -1;
+
+                                    // add the WordList object to the current player WordsPlayed
+                                    currentPlayer.WordsPlayed.Add(temp);
+
+                                    game.Player2.Score -= 1;
+
+                                    scoreObject.Score = -1;
+
+                                    return scoreObject;
+                                }
+                            }
+
+                            // AT THIS POINT, THE PLAYWORD CAN BE FORM
+                            // flag if playWord exist in the dictionary 
+                            Boolean playWordFound = false;
+
+
+                            string line;
+
+                            //access the dictionary.txt
+                            using (StreamReader file = new System.IO.StreamReader(AppDomain.CurrentDomain.BaseDirectory + "dictionary.txt"))
+                            {
+                                while ((line = file.ReadLine()) != null)
+                                {
+                                    // if word exist, set playWordFound to true and break out the loopo 
+                                    if (line == wordPlayed.Word)
+                                    {
+                                        playWordFound = true;
+                                        break;
+                                    }
+                                }
+
+                            }
+
+                            // check for duplicates
+
+                            if (game.Player1.UserToken == wordPlayed.UserToken)
+                            {
+                                // check the content of WordsPlayed list from Player 1
+                                foreach (WordList dup in game.Player1.WordsPlayed)
+                                {
+
+                                    //if there is a existing word in Player1 WordsPlayed
+                                    if (dup.Word == wordPlayed.Word)
+                                    {
+                                        WordList dupTemp = new WordList();
+
+                                        dupTemp.Word = wordPlayed.Word;
+
+                                        // if the word doesn't exist on the dictionary.txt
+                                        // deduct point by - 1
+                                        if (playWordFound == false)
+                                        {
+                                            dupTemp.Score = -1;
+
+                                            currentPlayer.WordsPlayed.Add(dupTemp);
+
+                                            game.Player1.Score -= 1;
+
+                                            scoreObject.Score = -1;
+
+                                            return scoreObject;
+                                        }
+
+                                        // if Player1 already contain the word in the WordsPlayed, 
+                                        // give 0 point to Player1
+                                        dupTemp.Score = 0;
+
+                                        currentPlayer.WordsPlayed.Add(dupTemp);
+
+                                        game.Player1.Score += 0;
+
+                                        scoreObject.Score = 0;
+
+                                        return scoreObject;
+                                    }
+                                }
+
+
+                            }
+
+                            else
+                            {
+
+                                // check the content of WordsPlayed list from Player 2
+                                foreach (WordList dup in game.Player2.WordsPlayed)
+                                {
+
+                                    //if there is a existing word in Player2 WordsPlayed
+                                    if (dup.Word == wordPlayed.Word)
+                                    {
+                                        WordList dupTemp = new WordList();
+
+                                        dupTemp.Word = wordPlayed.Word;
+
+
+                                        // if the word doesn't exist on the dictionary.txt
+                                        // deduct point by - 1
+                                        if (playWordFound == false)
+                                        {
+                                            dupTemp.Score = -1;
+
+                                            currentPlayer.WordsPlayed.Add(dupTemp);
+
+                                            game.Player2.Score -= 1;
+
+                                            scoreObject.Score = -1;
+
+                                            return scoreObject;
+                                        }
+
+                                        // if Player1 already contain the word in the WordsPlayed, 
+                                        // give 0 point to Player1
+                                        dupTemp.Score = 0;
+
+                                        currentPlayer.WordsPlayed.Add(dupTemp);
+
+                                        game.Player2.Score += 0;
+
+                                        scoreObject.Score = 0;
+
+                                        return scoreObject;
+                                    }
+                                }
+                            }
+
+
+                            if (playWordFound == true)
+                            {
+
+
+
+                                //if the word can be formed, and it is in the dictioniary, award points accordingly 
+                                //Three- and four-letter words are worth one point,
+                                //five -letter words are worth two points, 
+                                //six -letter words are worth three points,
+                                //seven -letter words are worth five points,
+                                //and longer words are worth 11 points)
+                                if (wordPlayed.Word.Length == 3 || wordPlayed.Word.Length == 4)
+                                {
+                                    if (game.Player1.UserToken == wordPlayed.UserToken)
+                                    {
+                                        //award to player 1
+                                        WordList temp = new WordList();
+                                        temp.Word = wordPlayed.Word;
+                                        temp.Score = 1;
+                                        currentPlayer.WordsPlayed.Add(temp);
+
+                                        game.Player1.Score += 1;
+                                        scoreObject.Score = 1;
+                                        return scoreObject;
+                                    }
+
+                                    else
+                                    {
+                                        //award to player 2
+                                        WordList temp = new WordList();
+                                        temp.Word = wordPlayed.Word;
+                                        temp.Score = 1;
+                                        currentPlayer.WordsPlayed.Add(temp);
+
+                                        game.Player2.Score += 1;
+                                        scoreObject.Score = 1;
+                                        return scoreObject;
+                                    }
+                                }
+
+                                if (wordPlayed.Word.Length == 5)
+                                {
+                                    if (game.Player1.UserToken == wordPlayed.UserToken)
+                                    {
+                                        //award to player 1
+                                        WordList temp = new WordList();
+                                        temp.Word = wordPlayed.Word;
+                                        temp.Score = 2;
+                                        currentPlayer.WordsPlayed.Add(temp);
+
+                                        game.Player1.Score += 2;
+                                        scoreObject.Score = 2;
+                                        return scoreObject;
+                                    }
+
+                                    else
+                                    {
+                                        //award to player 2
+                                        WordList temp = new WordList();
+                                        temp.Word = wordPlayed.Word;
+                                        temp.Score = 2;
+                                        currentPlayer.WordsPlayed.Add(temp);
+
+                                        game.Player2.Score += 2;
+                                        scoreObject.Score = 2;
+                                        return scoreObject;
+                                    }
+                                }
+
+                                if (wordPlayed.Word.Length == 6)
+                                {
+                                    if (game.Player1.UserToken == wordPlayed.UserToken)
+                                    {
+                                        //award to player 1
+                                        WordList temp = new WordList();
+                                        temp.Word = wordPlayed.Word;
+                                        temp.Score = 3;
+                                        currentPlayer.WordsPlayed.Add(temp);
+
+                                        game.Player1.Score += 3;
+                                        scoreObject.Score = 3;
+                                        return scoreObject;
+                                    }
+
+                                    else
+                                    {
+                                        //award to player 2
+                                        WordList temp = new WordList();
+                                        temp.Word = wordPlayed.Word;
+                                        temp.Score = 3;
+                                        currentPlayer.WordsPlayed.Add(temp);
+
+                                        game.Player2.Score += 3;
+                                        scoreObject.Score = 3;
+                                        return scoreObject;
+                                    }
+                                }
+
+                                if (wordPlayed.Word.Length == 7)
+                                {
+                                    if (game.Player1.UserToken == wordPlayed.UserToken)
+                                    {
+                                        //award to player 1
+                                        WordList temp = new WordList();
+                                        temp.Word = wordPlayed.Word;
+                                        temp.Score = 5;
+                                        currentPlayer.WordsPlayed.Add(temp);
+
+                                        game.Player1.Score += 5;
+                                        scoreObject.Score = 5;
+                                        return scoreObject;
+                                    }
+
+                                    else
+                                    {
+                                        //award to player 2
+                                        WordList temp = new WordList();
+                                        temp.Word = wordPlayed.Word;
+                                        temp.Score = 5;
+                                        currentPlayer.WordsPlayed.Add(temp);
+
+                                        game.Player2.Score += 5;
+                                        scoreObject.Score = 5;
+                                        return scoreObject;
+                                    }
+                                }
+
+                                if (wordPlayed.Word.Length > 7)
+                                {
+                                    if (game.Player1.UserToken == wordPlayed.UserToken)
+                                    {
+                                        //award to player 1
+                                        WordList temp = new WordList();
+                                        temp.Word = wordPlayed.Word;
+                                        temp.Score = 11;
+                                        currentPlayer.WordsPlayed.Add(temp);
+
+                                        game.Player1.Score += 11;
+                                        scoreObject.Score = 11;
+                                        return scoreObject;
+                                    }
+
+                                    else
+                                    {
+                                        //award to player 2
+                                        WordList temp = new WordList();
+                                        temp.Word = wordPlayed.Word;
+                                        temp.Score = 11;
+                                        currentPlayer.WordsPlayed.Add(temp);
+
+                                        game.Player2.Score += 11;
+                                        scoreObject.Score = 11;
+                                        return scoreObject;
+                                    }
+                                }
+                            }
+
+
+                            /// at this point, the word doesn't exist on the dictionary, so it should be worth -1
+                            if (game.Player1.UserToken == wordPlayed.UserToken)
+                            {
+                                foreach (WordList badword in game.Player1.WordsPlayed)
+                                {
+                                    if (badword.Word == wordPlayed.Word)
+                                    {
+                                        WordList badwordTemp = new WordList();
+
+                                        badwordTemp.Word = wordPlayed.Word;
+
+                                        badwordTemp.Score = -1;
+
+                                        currentPlayer.WordsPlayed.Add(badwordTemp);
+
+                                        game.Player1.Score -= 1;
+
+                                        scoreObject.Score = -1;
+
+                                        return scoreObject;
+                                    }
+                                }
+
+                                //deduct to player 1
+                                WordList temp = new WordList();
+
+                                temp.Word = wordPlayed.Word;
+
+                                temp.Score = -1;
+                                currentPlayer.WordsPlayed.Add(temp);
+
+                                game.Player1.Score -= 1;
+
+                                scoreObject.Score = 1;
+
+                                return scoreObject;
+                            }
+
+                            else
+                            {
+                                foreach (WordList badword in game.Player2.WordsPlayed)
+                                {
+                                    if (badword.Word == wordPlayed.Word)
+                                    {
+                                        WordList badwordTemp = new WordList();
+
+                                        badwordTemp.Word = wordPlayed.Word;
+
+                                        badwordTemp.Score = -1;
+
+                                        currentPlayer.WordsPlayed.Add(badwordTemp);
+
+                                        game.Player2.Score -= 1;
+
+                                        scoreObject.Score = -1;
+
+                                        return scoreObject;
+                                    }
+                                }
+
+                                //deduct to player 2
+                                WordList temp = new WordList();
+
+                                temp.Word = wordPlayed.Word;
+
+                                temp.Score = -1;
+
+                                currentPlayer.WordsPlayed.Add(temp);
+
+                                game.Player2.Score -= 1;
+
+                                scoreObject.Score = 1;
+                                return scoreObject;
+                            }
+
                         }
                     }
                 }
+            }
+        }
 
-                return null;
+        /// <summary>
+        /// Temporary method I wrote while the real method is under construction.
+        /// </summary>
+        /// <param name="Brief"></param>
+        /// <param name="GameID"></param>
+        /// <returns></returns>
+        public Game GetGameStatus(string Brief, string GameID)
+        {
+            //SetStatus(OK);
+            //Game temp = new Game();
+            //temp.FullBoard = new BoggleBoard();
+            //temp.Board = temp.FullBoard.ToString();
+
+            //return temp;
+
+            using (SqlConnection conn = new SqlConnection(BoggleDB))
+            {
+                //open it
+                conn.Open();
+
+                //start up a transaction with the database
+                using (SqlTransaction trans = conn.BeginTransaction())
+                {
+                    Game activeGame = new Game();
+                    activeGame.Player1 = new Player();
+                    activeGame.Player2 = new Player();
+
+                    // START BY BUILDING THE GAME WITH THE GAMEID THAT WAS GIVEN
+                    using (SqlCommand commandBuildGame = new SqlCommand("select * from Games where GameID = @GameID", conn, trans))
+                    {
+                        //set the parameter for the command
+                        commandBuildGame.Parameters.AddWithValue("@GameID", GameID);
+
+                        using (SqlDataReader reader = commandBuildGame.ExecuteReader())
+                        {
+                            // if the reader returns something, then the gameID is valid. Otherwise, it's forbidden.
+                            if (reader.HasRows)
+                            {
+                                //advance
+                                reader.Read();
+
+                                activeGame.Player1.UserToken = (string)reader["Player1"];
+                                activeGame.Player2.UserToken = (string)reader["Player2"];
+                                activeGame.Board = (string)reader["Board"];
+                                activeGame.FullBoard = new BoggleBoard(activeGame.Board);
+                                activeGame.TimeLimit = (int)reader["TimeLimit"];
+                                activeGame.StartingTime = (int)reader["StartTime"];
+                                activeGame.TimeLeft = (int)reader["TimeLeft"];
+                                activeGame.GameState = (string)reader["GameState"];
+
+                                reader.Close();
+                            }
+                        }
+                    }
+                    SetStatus(OK);
+                    trans.Commit();
+                    return activeGame;
+                }
+            }
+        }
+
+        //public Game GetGameStatus(string Brief, string GameID)
+        //{
+        //    //opend the connection to the our database that we made in the static constructor
+        //    using (SqlConnection conn = new SqlConnection(BoggleDB))
+        //    {
+        //        //open it
+        //        conn.Open();
+
+        //        //start up a transaction with the database
+        //        using (SqlTransaction trans = conn.BeginTransaction())
+        //        {
+        //            int currentTime;
+
+        //            // if (brief is yes?) and the game is pending
+        //            if (pendingGameID == GameID)
+        //            {
+        //                SetStatus(OK);
+        //                pendingGame.GameState = "pending";
+        //                return pendingGame;
+        //            }
+
+        //            // if brief is yes and the game is active
+        //            if (Brief == "yes")
+        //            {
+        //                //if (activeGames.TryGetValue(GameID, out Game currentGame))
+        //                using (SqlCommand command = new SqlCommand("select * from Games where GameID = @GameID", conn, trans))
+        //                {
+        //                    command.Parameters.AddWithValue("@GameID", GameID);
+
+        //                    using (SqlDataReader reader = command.ExecuteReader())
+        //                    {
+        //                        if (reader.HasRows)
+        //                        {
+        //                            SetStatus(OK);
+        //                            reader.Read();
+
+        //                            string player1NickName;
+        //                            string player2NickName;
+
+
+
+
+        //                                //THIS IS WHERE WE LEFT OFF. CREATING THE GAME OBJECT TO RETURN TO THE USER
+
+        //                                //currentGame.GameState = "active";
+        //                                currentTime = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
+
+        //                            returnGame.TimeLeft = (int)returnGame.TimeLimit - (currentTime - returnGame.StartingTime);
+
+        //                            return returnGame;
+        //                        }
+
+        //                    }
+        //                }
+
+        //                // if brief is yes and the game is completed
+        //                if (activeGames.TryGetValue(GameID, out Game completedGame))
+        //                {
+        //                    SetStatus(OK);
+        //                    completedGame.GameState = "completed";
+        //                    currentTime = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
+
+        //                    completedGame.TimeLeft = (int)completedGame.TimeLimit - (currentTime - completedGame.StartingTime);
+
+        //                    return completedGame;
+        //                }
+        //            }
+
+        //            // if brief is not yes
+        //            if (Brief != "yes")
+        //            {
+        //                //check for null
+        //                if (GameID == null)
+        //                {
+        //                    SetStatus(Forbidden);
+        //                    return null;
+        //                }
+
+        //                //Make sure that the game ID matches to an active or completed game or the pending game
+        //                if (!(activeGames.ContainsKey(GameID) || completeGames.ContainsKey(GameID) || pendingGameID == GameID))
+        //                {
+        //                    SetStatus(Forbidden);
+        //                    return null;
+        //                }
+
+
+        //                // set status code to (OK)
+        //                SetStatus(OK);
+
+        //                //if the game is pending
+        //                if (pendingGameID == GameID)
+        //                {
+        //                    return pendingGame;
+        //                }
+
+        //                //if the Game is in the complete game dictionary 
+        //                if (completeGames.TryGetValue(GameID.ToUpper(), out Game completeGame))
+        //                {
+        //                    return completeGame;
+        //                }
+
+        //                // at this point the game is in a active status
+        //                if (activeGames.TryGetValue(GameID, out Game activeGame))
+        //                {
+        //                    currentTime = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
+
+        //                    activeGame.TimeLeft = (int)activeGame.TimeLimit - (currentTime - activeGame.StartingTime);
+
+        //                    // then check the status of the game
+        //                    //if timeleft is zero
+        //                    // the game is compltete status and add to the dictionary
+        //                    // remove this game key and value off the active game
+        //                    if (activeGame.TimeLeft <= 0)
+        //                    {
+        //                        activeGame.TimeLeft = 0;
+
+        //                        //set value game to complete
+        //                        activeGame.GameState = "completed";
+
+        //                        activePlayers.Remove(activeGame.Player1.UserToken);
+        //                        activePlayers.Remove(activeGame.Player2.UserToken);
+
+        //                        completeGames.Add(GameID, activeGame);
+
+        //                        activeGames.Remove(GameID);
+
+        //                        return activeGame;
+        //                    }
+
+        //                    return activeGame;
+        //                }
+        //            }
+        //        }
+
+        //        return null;
+        //    }
+        //}
+
+        /// <summary>
+        /// This is an extremely helpful method that I wrote to insert a word into the database.
+        /// </summary>
+        /// <param name="word"></param>
+        /// <param name="gameID"></param>
+        /// <param name="userToken"></param>
+        /// <param name="score"></param>
+        private void InsertWordIntoDatabase(string word, string gameID, string userToken, int score)
+        {
+            using (SqlConnection conn = new SqlConnection(BoggleDB))
+            {
+                //open it
+                conn.Open();
+
+                //start up a transaction with the database
+                using (SqlTransaction trans = conn.BeginTransaction())
+                {
+                    // Insert the word into the WORDS table
+                    using (SqlCommand commandInsertWord = new SqlCommand("insert into Words (Word, GameID, Player, Score) values(@Word, @GameID, @Player, @Score)", conn, trans))
+                    {
+                        //set the parameter for the command
+                        commandInsertWord.Parameters.AddWithValue("@Word", word);
+                        commandInsertWord.Parameters.AddWithValue("@GameID", gameID);
+                        commandInsertWord.Parameters.AddWithValue("@Player", userToken);
+                        commandInsertWord.Parameters.AddWithValue("@Score", score);
+
+                        commandInsertWord.ExecuteNonQuery();
+
+                        trans.Commit();
+                    }
+                }
             }
         }
     }
