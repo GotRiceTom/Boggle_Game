@@ -1,4 +1,6 @@
-﻿using System;
+﻿//TO DO LIST: Find out the gameID of the most recent game when the server starts up.
+
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlClient;
@@ -23,6 +25,7 @@ namespace Boggle
 
         //count the games so we know what the gameID will be
         private static int gameCounter;
+        private static int newestActiveGameID;
 
         // Keep track of the users that are waiting for a game or in an active one.
         //  private static HashSet<string> activePlayers = new HashSet<string>();                                                // GONE
@@ -121,21 +124,40 @@ namespace Boggle
                 //start up a transaction with the database
                 using (SqlTransaction trans = conn.BeginTransaction())
                 {
-                    // Make sure there's a pending game.
+                    // Make sure there's a pending game when the server fires up.
                     if (pendingGame == null)
                     {
                         pendingGame = new Game();
                         pendingGame.GameState = "pending";
-                        pendingGameID = 1.ToString();
+
+                        //here, we find the highest GameID value and set the pendingGameID to that + 1.
+                        using (SqlCommand commandMax = new SqlCommand("select count(GameID) from Games", conn, trans))
+                        {
+                            using (SqlDataReader reader = commandMax.ExecuteReader())
+                            {
+                                if (reader.HasRows)
+                                {
+                                    reader.Read();
+                                    newestActiveGameID = (int)reader[0];
+                                    pendingGameID = (newestActiveGameID + 1).ToString();
+                                    reader.Close();
+                                }
+
+                                //if the database is empty, we set it to this. hopefully this code never activates anyway.
+                                else
+                                {
+                                    pendingGameID = 0.ToString();
+                                    newestActiveGameID = 0;
+                                }
+                            }
+                        }
                     }
 
-                    if (pendingGame.Player1 != null)
+                    //if the user is already waiting in a game, there's a conflict.
+                    if (pendingGame.Player1 != null && pendingGame.Player1.UserToken == joiningGame.UserToken)
                     {
-                        if (pendingGame.Player1.UserToken == joiningGame.UserToken)
-                        {
-                            SetStatus(Conflict);
-                            return null;
-                        }
+                        SetStatus(Conflict);
+                        return null;                     
                     }
 
                     // If the time limit they entered is bad, reply forbidden and don't start a game.
@@ -145,10 +167,9 @@ namespace Boggle
                         return null;
                     }
 
-                    //CHECK IF THE USERTOKEN DOES EXIST IN THE Database
+                    //check if the user exists in the database
                     using (SqlCommand command = new SqlCommand("select UserID from Users where UserID = @UserID", conn, trans))
                     {
-
                         command.Parameters.AddWithValue("@UserID", joiningGame.UserToken);
 
                         using (SqlDataReader reader = command.ExecuteReader())
@@ -162,8 +183,6 @@ namespace Boggle
                             }
                         }
                     }
-
-
 
                     // check if games that have the gamestate "active" have the userToken in them/
                     // If the user token is already in a game, respond with conflict
@@ -240,9 +259,8 @@ namespace Boggle
                             }
                         }
 
-                        using (SqlCommand command = new SqlCommand("insert into Games (GameID, Player1,Player2,Board,TimeLimit,StartTime,TimeLeft,GameState) values(@GameID, @Player1,@Player2,@Board,@TimeLimit,@StartTime,@TimeLeft,@GameState)", conn, trans))
+                        using (SqlCommand command = new SqlCommand("insert into Games (Player1,Player2,Board,TimeLimit,StartTime,TimeLeft,GameState) output inserted.GameID values(@Player1,@Player2,@Board,@TimeLimit,@StartTime,@TimeLeft,@GameState)", conn, trans))
                         {
-                            command.Parameters.AddWithValue("@GameID", pendingGameID);
                             command.Parameters.AddWithValue("@Player1", pendingGame.Player1.UserToken);
                             command.Parameters.AddWithValue("@Player2", pendingGame.Player2.UserToken);
                             command.Parameters.AddWithValue("@Board", pendingGame.Board);
@@ -251,28 +269,19 @@ namespace Boggle
                             command.Parameters.AddWithValue("@TimeLeft", pendingGame.TimeLimit);
                             command.Parameters.AddWithValue("@GameState", pendingGame.GameState);
 
-                          //  command.ExecuteNonQuery();
-    
+                            //command.ExecuteNonQuery();
+                            newestActiveGameID = (int)command.ExecuteScalar();
+
+                            temp.GameID = newestActiveGameID.ToString();
+
+                            pendingGameID = (newestActiveGameID + 1).ToString();
                         }
-
-
 
                         pendingGame = new Game();
                         pendingGame.GameState = "pending";
-
-
-                        temp.GameID = gameCounter.ToString();
-
-                        gameCounter++;
-
-                        pendingGameID = (gameCounter + 1).ToString();
-
                         
                         trans.Commit();
                         return temp;
-
-
-
                     }
 
                     // If there's nobody in the pending game, then add them to the pending game and increments the game counter.
@@ -301,9 +310,10 @@ namespace Boggle
 
                                 pendingGame.TimeLimit = joiningGame.TimeLimit;
 
-                                temp.GameID = gameCounter.ToString();
+                                //temp.GameID = gameCounter.ToString();
+                                temp.GameID = (newestActiveGameID + 1).ToString();
 
-                                pendingGameID = gameCounter.ToString();
+                                //pendingGameID = gameCounter.ToString();
 
                                 reader.Close();
                                 command.ExecuteNonQuery();
@@ -314,26 +324,13 @@ namespace Boggle
 
                             }
                         }
-       
                     }
-                    
-
-
                 }
-
             }
 
             // Unreachable code to please the constructor
             return null;
         }
-
-        public ScoreObject PlayWord(WordPlayed wordPlayed, string GameID)
-        {
-            // throw new NotImplementedException();
-            return null;
-        }
-
-
 
 
         public void CancelJoinRequest(Token UserToken)
@@ -390,6 +387,13 @@ namespace Boggle
                     SetStatus(OK);
                 }
             }
+        }
+
+
+        public ScoreObject PlayWord(WordPlayed wordPlayed, string GameID)
+        {
+            // throw new NotImplementedException();
+            return null;
         }
 
         //public ScoreObject PlayWord(WordPlayed wordPlayed, string GameID)
@@ -955,6 +959,10 @@ namespace Boggle
         //    return null;
         //}
 
+        //public Game GetGameStatus(string Brief, string GameID)
+        //{
+        //    return null;
+        //}
 
         public Game GetGameStatus(string Brief, string GameID)
         {
@@ -981,33 +989,33 @@ namespace Boggle
                     if (Brief == "yes")
                     {
                         //if (activeGames.TryGetValue(GameID, out Game currentGame))
-                        using (SqlCommand command = new SqlCommand("select * from Games where GameID = @GameID and (GameState = @GameState)", conn, trans))
+                        using (SqlCommand command = new SqlCommand("select * from Games where GameID = @GameID", conn, trans))
                         {
                             command.Parameters.AddWithValue("@GameID", GameID);
-                            command.Parameters.AddWithValue("@Gamestate" , "active");
 
                             using (SqlDataReader reader = command.ExecuteReader())
                             {
                                 if (reader.HasRows)
                                 {
-
+                                    SetStatus(OK);
                                     reader.Read();
 
-                                    SetStatus(OK);
+                                    string player1NickName;
+                                    string player2NickName;
 
-                                    Game returnGame = new Game();
-                                    returnGame.Player1
-                                    
+
+
+
                                         //THIS IS WHERE WE LEFT OFF. CREATING THE GAME OBJECT TO RETURN TO THE USER
 
-                                    //currentGame.GameState = "active";
-                                    currentTime = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
+                                        //currentGame.GameState = "active";
+                                        currentTime = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
 
                                     returnGame.TimeLeft = (int)returnGame.TimeLimit - (currentTime - returnGame.StartingTime);
 
                                     return returnGame;
                                 }
-                               
+
                             }
                         }
 
@@ -1021,7 +1029,8 @@ namespace Boggle
                             completedGame.TimeLeft = (int)completedGame.TimeLimit - (currentTime - completedGame.StartingTime);
 
                             return completedGame;
-                        } }
+                        }
+                    }
 
                     // if brief is not yes
                     if (Brief != "yes")
