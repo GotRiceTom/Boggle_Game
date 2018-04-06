@@ -93,23 +93,30 @@ namespace Boggle
         [DataMember(EmitDefaultValue = false)]
         public BoggleBoard FullBoard { get; set; }
 
+
         [DataMember(EmitDefaultValue = false)]
         public string Board { get; set; }
+
 
         [DataMember(EmitDefaultValue = false)]
         public int? TimeLimit { get; set; }
 
+
         [DataMember]
         public string GameState { get; set; }
+
 
         [DataMember(EmitDefaultValue = false)]
         public Player Player1 { get; set; }
 
+
         [DataMember(EmitDefaultValue = false)]
         public Player Player2 { get; set; }
 
+
         [DataMember(EmitDefaultValue = false)]
         public int? TimeLeft { get; set; }
+
 
         [DataMember(EmitDefaultValue = false)]
         public int StartingTime { get; set; }

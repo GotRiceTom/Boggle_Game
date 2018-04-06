@@ -112,7 +112,6 @@ namespace Boggle
 
         public TheGameID JoinGame(JoiningGame joiningGame)
         {
-            
             //opend the connection to the our database that we made in the static constructor
             using (SqlConnection conn = new SqlConnection(BoggleDB))
             {
@@ -959,106 +958,137 @@ namespace Boggle
 
         public Game GetGameStatus(string Brief, string GameID)
         {
-            lock (sync)
+            //opend the connection to the our database that we made in the static constructor
+            using (SqlConnection conn = new SqlConnection(BoggleDB))
             {
-                int currentTime;
+                //open it
+                conn.Open();
 
-                // if brief is yes and the game is pending
-                if (pendingGameID == GameID)
+                //start up a transaction with the database
+                using (SqlTransaction trans = conn.BeginTransaction())
                 {
-                    SetStatus(OK);
-                    pendingGame.GameState = "pending";
-                    return pendingGame;
-                }
+                    int currentTime;
 
-                // if brief is yes and the game is active
-                if (Brief == "yes" && (activeGames.TryGetValue(GameID, out Game currentGame)))
-                {
-                    SetStatus(OK);
-                    currentGame.GameState = "active";
-                    currentTime = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
-
-                    currentGame.TimeLeft = (int)currentGame.TimeLimit - (currentTime - currentGame.StartingTime);
-
-                    return currentGame;
-                }
-
-                // if brief is yes and the game is completed
-                if (Brief == "yes" && (activeGames.TryGetValue(GameID, out Game completedGame)))
-                {
-                    SetStatus(OK);
-                    completedGame.GameState = "completed";
-                    currentTime = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
-
-                    completedGame.TimeLeft = (int)completedGame.TimeLimit - (currentTime - completedGame.StartingTime);
-
-                    return completedGame;
-                }
-
-                // if brief is not yes
-                if (Brief != "yes")
-                {
-                    //check for null
-                    if (GameID == null)
-                    {
-                        SetStatus(Forbidden);
-                        return null;
-                    }
-
-                    //Make sure that the game ID matches to an active or completed game or the pending game
-                    if (!(activeGames.ContainsKey(GameID) || completeGames.ContainsKey(GameID) || pendingGameID == GameID))
-                    {
-                        SetStatus(Forbidden);
-                        return null;
-                    }
-
-
-                    // set status code to (OK)
-                    SetStatus(OK);
-
-                    //if the game is pending
+                    // if (brief is yes?) and the game is pending
                     if (pendingGameID == GameID)
                     {
+                        SetStatus(OK);
+                        pendingGame.GameState = "pending";
                         return pendingGame;
                     }
 
-                    //if the Game is in the complete game dictionary 
-                    if (completeGames.TryGetValue(GameID.ToUpper(), out Game completeGame))
+                    // if brief is yes and the game is active
+                    if (Brief == "yes")
                     {
-                        return completeGame;
-                    }
-
-                    // at this point the game is in a active status
-                    if (activeGames.TryGetValue(GameID, out Game activeGame))
-                    {
-                        currentTime = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
-
-                        activeGame.TimeLeft = (int)activeGame.TimeLimit - (currentTime - activeGame.StartingTime);
-
-                        // then check the status of the game
-                        //if timeleft is zero
-                        // the game is compltete status and add to the dictionary
-                        // remove this game key and value off the active game
-                        if (activeGame.TimeLeft <= 0)
+                        //if (activeGames.TryGetValue(GameID, out Game currentGame))
+                        using (SqlCommand command = new SqlCommand("select * from Games where GameID = @GameID and (GameState = @GameState)", conn, trans))
                         {
-                            activeGame.TimeLeft = 0;
+                            command.Parameters.AddWithValue("@GameID", GameID);
+                            command.Parameters.AddWithValue("@Gamestate" , "active");
 
-                            //set value game to complete
-                            activeGame.GameState = "completed";
+                            using (SqlDataReader reader = command.ExecuteReader())
+                            {
+                                if (reader.HasRows)
+                                {
 
-                            activePlayers.Remove(activeGame.Player1.UserToken);
-                            activePlayers.Remove(activeGame.Player2.UserToken);
+                                    reader.Read();
 
-                            completeGames.Add(GameID, activeGame);
+                                    SetStatus(OK);
 
-                            activeGames.Remove(GameID);
+                                    Game returnGame = new Game();
+                                    returnGame.Player1
+                                    
+                                        //THIS IS WHERE WE LEFT OFF. CREATING THE GAME OBJECT TO RETURN TO THE USER
+
+                                    //currentGame.GameState = "active";
+                                    currentTime = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
+
+                                    returnGame.TimeLeft = (int)returnGame.TimeLimit - (currentTime - returnGame.StartingTime);
+
+                                    return returnGame;
+                                }
+                               
+                            }
+                        }
+
+                        // if brief is yes and the game is completed
+                        if (activeGames.TryGetValue(GameID, out Game completedGame))
+                        {
+                            SetStatus(OK);
+                            completedGame.GameState = "completed";
+                            currentTime = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
+
+                            completedGame.TimeLeft = (int)completedGame.TimeLimit - (currentTime - completedGame.StartingTime);
+
+                            return completedGame;
+                        } }
+
+                    // if brief is not yes
+                    if (Brief != "yes")
+                    {
+                        //check for null
+                        if (GameID == null)
+                        {
+                            SetStatus(Forbidden);
+                            return null;
+                        }
+
+                        //Make sure that the game ID matches to an active or completed game or the pending game
+                        if (!(activeGames.ContainsKey(GameID) || completeGames.ContainsKey(GameID) || pendingGameID == GameID))
+                        {
+                            SetStatus(Forbidden);
+                            return null;
+                        }
+
+
+                        // set status code to (OK)
+                        SetStatus(OK);
+
+                        //if the game is pending
+                        if (pendingGameID == GameID)
+                        {
+                            return pendingGame;
+                        }
+
+                        //if the Game is in the complete game dictionary 
+                        if (completeGames.TryGetValue(GameID.ToUpper(), out Game completeGame))
+                        {
+                            return completeGame;
+                        }
+
+                        // at this point the game is in a active status
+                        if (activeGames.TryGetValue(GameID, out Game activeGame))
+                        {
+                            currentTime = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
+
+                            activeGame.TimeLeft = (int)activeGame.TimeLimit - (currentTime - activeGame.StartingTime);
+
+                            // then check the status of the game
+                            //if timeleft is zero
+                            // the game is compltete status and add to the dictionary
+                            // remove this game key and value off the active game
+                            if (activeGame.TimeLeft <= 0)
+                            {
+                                activeGame.TimeLeft = 0;
+
+                                //set value game to complete
+                                activeGame.GameState = "completed";
+
+                                activePlayers.Remove(activeGame.Player1.UserToken);
+                                activePlayers.Remove(activeGame.Player2.UserToken);
+
+                                completeGames.Add(GameID, activeGame);
+
+                                activeGames.Remove(GameID);
+
+                                return activeGame;
+                            }
 
                             return activeGame;
                         }
-
-                        return activeGame;
                     }
                 }
+
                 return null;
             }
         }
