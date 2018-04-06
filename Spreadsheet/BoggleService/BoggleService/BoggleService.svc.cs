@@ -56,10 +56,6 @@ namespace Boggle
             return File.OpenRead(AppDomain.CurrentDomain.BaseDirectory + "index.html");
         }
 
-        public void CancelJoinRequest(Token UserToken)
-        {
-            //throw new NotImplementedException();
-        }
 
         /// <summary>
         /// This is called when a user tries to register with our server. It takes in a nickname and returns a usertoken associated with that nickname and player.
@@ -113,14 +109,10 @@ namespace Boggle
             }
         }
 
-        public Game GetGameStatus(string Brief, string GameID)
-        {
-            // throw new NotImplementedException();
-            return null;
-        }
 
         public TheGameID JoinGame(JoiningGame joiningGame)
         {
+            
             //opend the connection to the our database that we made in the static constructor
             using (SqlConnection conn = new SqlConnection(BoggleDB))
             {
@@ -136,6 +128,15 @@ namespace Boggle
                         pendingGame = new Game();
                         pendingGame.GameState = "pending";
                         pendingGameID = 1.ToString();
+                    }
+
+                    if (pendingGame.Player1 != null)
+                    {
+                        if (pendingGame.Player1.UserToken == joiningGame.UserToken)
+                        {
+                            SetStatus(Conflict);
+                            return null;
+                        }
                     }
 
                     // If the time limit they entered is bad, reply forbidden and don't start a game.
@@ -156,6 +157,7 @@ namespace Boggle
                             if (!reader.HasRows)
                             {
                                 SetStatus(Forbidden);
+                                reader.Close();
                                 trans.Commit();
                                 return null;
                             }
@@ -177,20 +179,20 @@ namespace Boggle
                         {
                             //if the reader has rows, it means there are active games.
                             //if the reader has no rows, there are NO active games, so there CANNOT be conflict
-                            if (reader.HasRows)
+                            
+                            while (reader.Read())
                             {
-                                while (reader.Read())
-                                {
-                                    string tempPlayer1 = (string)reader["Player1"];
-                                    string tempPlayer2 = (string)reader["Player2"];
+                                string tempPlayer1 = (string)reader["Player1"];
+                                string tempPlayer2 = (string)reader["Player2"];
 
-                                    if (tempPlayer1 == joiningGame.UserToken || tempPlayer2 == joiningGame.UserToken)
-                                    {
-                                        SetStatus(Conflict);
-                                        trans.Commit();
-                                        return null;
-                                    }
+                                if (tempPlayer1 == joiningGame.UserToken || tempPlayer2 == joiningGame.UserToken)
+                                {
+                                    SetStatus(Conflict);
+                                    reader.Close();
+                                    trans.Commit();
+                                    return null;
                                 }
+                                
                             }
                         }
                     }
@@ -247,10 +249,10 @@ namespace Boggle
                             command.Parameters.AddWithValue("@Board", pendingGame.Board);
                             command.Parameters.AddWithValue("@TimeLimit", pendingGame.TimeLimit);
                             command.Parameters.AddWithValue("@StartTime", pendingGame.StartingTime);
-                            command.Parameters.AddWithValue("@TimeLeft", pendingGame.TimeLeft);
+                            command.Parameters.AddWithValue("@TimeLeft", pendingGame.TimeLimit);
                             command.Parameters.AddWithValue("@GameState", pendingGame.GameState);
 
-                            command.ExecuteNonQuery();
+                          //  command.ExecuteNonQuery();
     
                         }
 
@@ -266,7 +268,7 @@ namespace Boggle
 
                         pendingGameID = (gameCounter + 1).ToString();
 
-
+                        
                         trans.Commit();
                         return temp;
 
@@ -281,16 +283,13 @@ namespace Boggle
 
                       //  if (users.TryGetValue(joiningGame.UserToken, out string nickname))
                        
-                            using (SqlCommand command = new SqlCommand("select * from Users where UserID = @UserID", conn, trans))
+                        using (SqlCommand command = new SqlCommand("select * from Users where UserID = @UserID", conn, trans))
+                        {
+                            command.Parameters.AddWithValue("@UserID", joiningGame.UserToken);
+
+                            using (SqlDataReader reader = command.ExecuteReader())
                             {
-                                command.Parameters.AddWithValue("@UserID", joiningGame.UserToken);
-
-                                using (SqlDataReader reader = command.ExecuteReader())
-                                {
-
-
                                 reader.Read();
-
 
                                 string nickname = (string)reader["Nickname"];
                                 SetStatus(Accepted);
@@ -307,13 +306,15 @@ namespace Boggle
 
                                 pendingGameID = gameCounter.ToString();
 
-
+                                reader.Close();
                                 command.ExecuteNonQuery();
+
+
                                 trans.Commit();
                                 return temp;
 
-                                }
                             }
+                        }
        
                     }
                     
@@ -336,36 +337,61 @@ namespace Boggle
 
 
 
-        //public void CancelJoinRequest(Token UserToken)
-        //{
-        //    lock (sync)
-        //    {
-        //        //check for nulls
+        public void CancelJoinRequest(Token UserToken)
+        {
+         
+            //check for nulls
+            if (pendingGame.Player1 == null)
+            {
+                SetStatus(Forbidden);
+                return;
+            }
+
+            // If the usertoken isn't in a pending game, return forbidden
+            if (pendingGame.Player1.UserToken != UserToken.UserToken)
+            {
+                SetStatus(Forbidden);
+                return;
+            }
 
 
-        //        if (pendingGame.Player1 == null)
-        //        {
-        //            SetStatus(Forbidden);
-        //            return;
-        //        }
+            //if the usertoken is invalid, return forbidden
+            using (SqlConnection conn = new SqlConnection(BoggleDB))
+            {
+                //open it
+                conn.Open();
 
-        //        // If the usertoken is invalid or the user isn't in a pending game, return forbidden
-        //        if (!activePlayers.Contains(UserToken.UserToken) || pendingGame.Player1.UserToken != UserToken.UserToken)
-        //        {
-        //            SetStatus(Forbidden);
-        //            return;
-        //        }
+                //start up a transaction with the database
+                using (SqlTransaction trans = conn.BeginTransaction())
+                {
 
-        //        // otherwise, reset the pending game
-        //        else
-        //        {
-        //            activePlayers.Remove(UserToken.UserToken);
-        //            pendingGame = new Game();
-        //            pendingGame.GameState = "pending";
-        //            SetStatus(OK);
-        //        }
-        //    }
-        //}
+
+                    // if (!activePlayers.Contains(UserToken.UserToken))
+                    using (SqlCommand command = new SqlCommand("select * from Users where UserID = @UserID", conn, trans))
+                    {
+                        command.Parameters.AddWithValue("@UserID", UserToken.UserToken);
+
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            if (!reader.HasRows)
+                            {
+                                SetStatus(Forbidden);
+                                reader.Close();
+                                trans.Commit();
+                                
+                                return;
+                            }
+                        }
+                    }
+
+                    // otherwise, reset the pending 
+                    //activePlayers.Remove(UserToken.UserToken);
+                    pendingGame = new Game();
+                    pendingGame.GameState = "pending";
+                    SetStatus(OK);
+                }
+            }
+        }
 
         //public ScoreObject PlayWord(WordPlayed wordPlayed, string GameID)
         //{
@@ -931,110 +957,110 @@ namespace Boggle
         //}
 
 
-        //public Game GetGameStatus(string Brief, string GameID)
-        //{
-        //    lock (sync)
-        //    {
-        //        int currentTime;
+        public Game GetGameStatus(string Brief, string GameID)
+        {
+            lock (sync)
+            {
+                int currentTime;
 
-        //        // if brief is yes and the game is pending
-        //        if (pendingGameID == GameID)
-        //        {
-        //            SetStatus(OK);
-        //            pendingGame.GameState = "pending";
-        //            return pendingGame;
-        //        }
+                // if brief is yes and the game is pending
+                if (pendingGameID == GameID)
+                {
+                    SetStatus(OK);
+                    pendingGame.GameState = "pending";
+                    return pendingGame;
+                }
 
-        //        // if brief is yes and the game is active
-        //        if (Brief == "yes" && (activeGames.TryGetValue(GameID,out Game currentGame)))
-        //        {
-        //            SetStatus(OK);
-        //            currentGame.GameState = "active";
-        //            currentTime = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
+                // if brief is yes and the game is active
+                if (Brief == "yes" && (activeGames.TryGetValue(GameID, out Game currentGame)))
+                {
+                    SetStatus(OK);
+                    currentGame.GameState = "active";
+                    currentTime = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
 
-        //            currentGame.TimeLeft = (int)currentGame.TimeLimit - (currentTime - currentGame.StartingTime);
+                    currentGame.TimeLeft = (int)currentGame.TimeLimit - (currentTime - currentGame.StartingTime);
 
-        //            return currentGame;
-        //        }
+                    return currentGame;
+                }
 
-        //        // if brief is yes and the game is completed
-        //        if (Brief == "yes" && (activeGames.TryGetValue(GameID, out Game completedGame)))
-        //        {
-        //            SetStatus(OK);
-        //            completedGame.GameState = "completed";
-        //            currentTime = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
+                // if brief is yes and the game is completed
+                if (Brief == "yes" && (activeGames.TryGetValue(GameID, out Game completedGame)))
+                {
+                    SetStatus(OK);
+                    completedGame.GameState = "completed";
+                    currentTime = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
 
-        //            completedGame.TimeLeft = (int)completedGame.TimeLimit - (currentTime - completedGame.StartingTime);
+                    completedGame.TimeLeft = (int)completedGame.TimeLimit - (currentTime - completedGame.StartingTime);
 
-        //            return completedGame;
-        //        }
+                    return completedGame;
+                }
 
-        //        // if brief is not yes
-        //        if (Brief != "yes")
-        //        {
-        //            //check for null
-        //            if (GameID == null)
-        //            {
-        //                SetStatus(Forbidden);
-        //                return null;
-        //            }
+                // if brief is not yes
+                if (Brief != "yes")
+                {
+                    //check for null
+                    if (GameID == null)
+                    {
+                        SetStatus(Forbidden);
+                        return null;
+                    }
 
-        //            //Make sure that the game ID matches to an active or completed game or the pending game
-        //            if (!(activeGames.ContainsKey(GameID) || completeGames.ContainsKey(GameID) || pendingGameID == GameID))
-        //            {
-        //                SetStatus(Forbidden);
-        //                return null;
-        //            }
+                    //Make sure that the game ID matches to an active or completed game or the pending game
+                    if (!(activeGames.ContainsKey(GameID) || completeGames.ContainsKey(GameID) || pendingGameID == GameID))
+                    {
+                        SetStatus(Forbidden);
+                        return null;
+                    }
 
 
-        //            // set status code to (OK)
-        //            SetStatus(OK);
+                    // set status code to (OK)
+                    SetStatus(OK);
 
-        //            //if the game is pending
-        //            if (pendingGameID == GameID)
-        //            {
-        //                return pendingGame;
-        //            }
+                    //if the game is pending
+                    if (pendingGameID == GameID)
+                    {
+                        return pendingGame;
+                    }
 
-        //            //if the Game is in the complete game dictionary 
-        //            if (completeGames.TryGetValue(GameID.ToUpper(), out Game completeGame))
-        //            {
-        //                return completeGame;
-        //            }
+                    //if the Game is in the complete game dictionary 
+                    if (completeGames.TryGetValue(GameID.ToUpper(), out Game completeGame))
+                    {
+                        return completeGame;
+                    }
 
-        //            // at this point the game is in a active status
-        //            if (activeGames.TryGetValue(GameID, out Game activeGame))
-        //            {
-        //                currentTime = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
+                    // at this point the game is in a active status
+                    if (activeGames.TryGetValue(GameID, out Game activeGame))
+                    {
+                        currentTime = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
 
-        //                activeGame.TimeLeft = (int)activeGame.TimeLimit - (currentTime - activeGame.StartingTime);
+                        activeGame.TimeLeft = (int)activeGame.TimeLimit - (currentTime - activeGame.StartingTime);
 
-        //                // then check the status of the game
-        //                //if timeleft is zero
-        //                // the game is compltete status and add to the dictionary
-        //                // remove this game key and value off the active game
-        //                if (activeGame.TimeLeft <= 0)
-        //                {
-        //                    activeGame.TimeLeft = 0;
+                        // then check the status of the game
+                        //if timeleft is zero
+                        // the game is compltete status and add to the dictionary
+                        // remove this game key and value off the active game
+                        if (activeGame.TimeLeft <= 0)
+                        {
+                            activeGame.TimeLeft = 0;
 
-        //                    //set value game to complete
-        //                    activeGame.GameState = "completed";
+                            //set value game to complete
+                            activeGame.GameState = "completed";
 
-        //                    activePlayers.Remove(activeGame.Player1.UserToken);
-        //                    activePlayers.Remove(activeGame.Player2.UserToken);
+                            activePlayers.Remove(activeGame.Player1.UserToken);
+                            activePlayers.Remove(activeGame.Player2.UserToken);
 
-        //                    completeGames.Add(GameID, activeGame);
+                            completeGames.Add(GameID, activeGame);
 
-        //                    activeGames.Remove(GameID);
+                            activeGames.Remove(GameID);
 
-        //                    return activeGame;
-        //                }
+                            return activeGame;
+                        }
 
-        //                return activeGame;
-        //            }
-        //        }
-        //        return null;
-        //    }
-        //}
+                        return activeGame;
+                    }
+                }
+                return null;
+            }
+        }
     }
 }
