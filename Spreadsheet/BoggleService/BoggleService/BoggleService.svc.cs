@@ -1427,7 +1427,7 @@ namespace Boggle
                         }
 
                         //I don't know why I had to do this... but I did. Active game couldn't be used below this point, but current game could.
-                        Game currentGame = activeGame;
+                        //Game currentGame = activeGame;
 
                         // if brief is not yes
                         if (Brief != "yes")
@@ -1441,7 +1441,7 @@ namespace Boggle
 
                             //Make sure that the game ID matches to an active or completed game or the pending game
                             //if (!(activeGames.ContainsKey(GameID) || completeGames.ContainsKey(GameID) || pendingGameID == GameID))
-                            if ( ! (currentGame.GameState == "active" || currentGame.GameState == "completed" || pendingGameID == GameID) )
+                            if ( ! (activeGame.GameState == "active" || activeGame.GameState == "completed" || pendingGameID == GameID) )
                             {
                                 SetStatus(Forbidden);
                                 return null;
@@ -1459,29 +1459,29 @@ namespace Boggle
 
                             //if the Game is in the complete game dictionary 
                             //if (completeGames.TryGetValue(GameID.ToUpper(), out Game completeGame))
-                            if (currentGame.GameState == "completed")
+                            if (activeGame.GameState == "completed")
                             {
-                                return currentGame;
+                                return activeGame;
                             }
 
                             // at this point the game is in a active status
                             //if (activeGames.TryGetValue(GameID, out Game activeGame))
-                            if (currentGame.GameState == "active")
+                            if (activeGame.GameState == "active")
                             {
                                 currentTime = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
 
-                                currentGame.TimeLeft = (int)currentGame.TimeLimit - (currentTime - currentGame.StartingTime);
+                                activeGame.TimeLeft = (int)activeGame.TimeLimit - (currentTime - activeGame.StartingTime);
 
                                 // then check the status of the game
                                 //if timeleft is zero
                                 // the game is compltete status and add to the dictionary
                                 // remove this game key and value off the active game
-                                if (currentGame.TimeLeft <= 0)
+                                if (activeGame.TimeLeft <= 0)
                                 {
-                                    currentGame.TimeLeft = 0;
+                                    activeGame.TimeLeft = 0;
 
                                     //set value game to complete
-                                    currentGame.GameState = "completed";
+                                    activeGame.GameState = "completed";
 
                                     //activePlayers.Remove(currentGame.Player1.UserToken);
                                     //activePlayers.Remove(currentGame.Player2.UserToken);
@@ -1501,15 +1501,17 @@ namespace Boggle
                                     }
 
                                     trans.Commit();
-                                    return currentGame;
+                                    return activeGame;
                                 }
 
-                                return currentGame;
+                                return activeGame;
                             }
                         }
                     }
                 }
+
                 return null;
+
             }
         }
 
