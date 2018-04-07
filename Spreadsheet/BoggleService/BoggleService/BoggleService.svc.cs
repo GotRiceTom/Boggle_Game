@@ -14,11 +14,6 @@ namespace Boggle
 {
     public class BoggleService : IBoggleService
     {
-
-        //private readonly static Dictionary<String, String> users = new Dictionary<String, String>();               // GONE
-        //private readonly static Dictionary<string, Game> activeGames = new Dictionary<string, Game>();               // GONE
-        //private readonly static Dictionary<string, Game> completeGames = new Dictionary<string, Game>();               // GONE
-
         //only keep track of one pending game at a time.
         private static Game pendingGame;
         private static string pendingGameID;
@@ -27,7 +22,6 @@ namespace Boggle
         private static int newestActiveGameID;
 
         // Keep track of the users that are waiting for a game or in an active one.
-        //  private static HashSet<string> activePlayers = new HashSet<string>();                                                // GONE
 
         //static constructor
         private static string BoggleDB;
@@ -88,7 +82,7 @@ namespace Boggle
                         //create the user token
                         string userID = Guid.NewGuid().ToString();
 
-                        // replaces users.Add(userID, user.Nickname);
+                      
                         command.Parameters.AddWithValue("@UserID", userID);
                         command.Parameters.AddWithValue("@Nickname", user.Nickname.Trim());
 
@@ -241,7 +235,6 @@ namespace Boggle
 
                                 pendingGame.Player2.UserToken = joiningGame.UserToken;
 
-                                // activePlayers.Add(joiningGame.UserToken);
 
                                 pendingGame.TimeLimit = (pendingGame.TimeLimit + joiningGame.TimeLimit) / 2;
 
@@ -287,7 +280,7 @@ namespace Boggle
                     {
                         pendingGame.Player1 = new Player();
 
-                      //  if (users.TryGetValue(joiningGame.UserToken, out string nickname))
+                   
                        
                         using (SqlCommand command = new SqlCommand("select * from Users where UserID = @UserID", conn, trans))
                         {
@@ -304,14 +297,13 @@ namespace Boggle
 
                                 pendingGame.Player1.UserToken = joiningGame.UserToken;
 
-                                //activePlayers.Add(joiningGame.UserToken);
+                              
 
                                 pendingGame.TimeLimit = joiningGame.TimeLimit;
 
-                                //temp.GameID = gameCounter.ToString();
+                               
                                 temp.GameID = (newestActiveGameID + 1).ToString();
 
-                                //pendingGameID = gameCounter.ToString();
 
                                 reader.Close();
                                 command.ExecuteNonQuery();
@@ -384,12 +376,6 @@ namespace Boggle
                 }
             }
         }
-
-        //public ScoreObject PlayWord(WordPlayed wordPlayed, string GameID)
-        //{
-        //    // throw new NotImplementedException();
-        //    return null;
-        //}
 
         public ScoreObject PlayWord(WordPlayed wordPlayed, string GameID)
         {
@@ -507,26 +493,19 @@ namespace Boggle
                                 //set value game to complete
                                 activeGame.GameState = "completed";  // DO WE NEED TO SET THE GAME TO CONFLICT IN THE DATABASE HERE? ----------------------------------------------------------
 
-                                //activePlayers.Remove(activeGame.Player1.UserToken);
-                                //activePlayers.Remove(activeGame.Player2.UserToken);
-
-                                //completeGames.Add(GameID, activeGame);
-
-                                //activeGames.Remove(GameID);
-
                                 SetStatus(Conflict);
                                 return null;
                             }
                         }
 
-                        //if (!(activeGames.ContainsKey(GameID) || pendingGameID == GameID))
+                      
                         if (activeGame.Player1.UserToken != wordPlayed.UserToken && activeGame.Player2.UserToken != wordPlayed.UserToken)
                         {
                             SetStatus(Forbidden);
                             return null;
                         }
 
-                        //if (!(activeGames.ContainsKey(GameID) || pendingGameID == GameID))
+                   
                         //if this code runs, we already know the game isn't active. So if it's not pending, we should respond with forbidden.
                         if (activeGame.GameState == "pending" || activeGame.GameState == "completed")
                         {
@@ -534,16 +513,8 @@ namespace Boggle
                             return null;
                         }
 
-                        // check 
-                        //if (pendingGameID == GameID || !activeGames.ContainsKey(GameID) || completeGames.ContainsKey(GameID))
-                        //{
-                        //    SetStatus(Conflict);
-                        //    return null;
-                        //}
-
                         // check if Word is null or empty or longer than 30 characters when trimmed, or if GameID or UserToken is invalid
-                        //if (wordPlayed.Word == null || wordPlayed.Word.Trim().Length > 30 || wordPlayed.Word.Trim().Length == 0 || !activeGames.ContainsKey(GameID)
-                        //|| !activePlayers.Contains(wordPlayed.UserToken))
+
                         if (wordPlayed.Word == null || wordPlayed.Word.Trim().Length > 30 || wordPlayed.Word.Trim().Length == 0 || activeGame.GameState != "active")
                         {
                             SetStatus(Forbidden);
@@ -551,7 +522,6 @@ namespace Boggle
                         }
 
                         //grab the game associated with the gameID
-                        //if (activeGames.TryGetValue(GameID, out Game game))
                         //I have already built the game from the database, so I just set "game" to the game that I built.
                         Game game = activeGame;
                         {
@@ -1137,68 +1107,6 @@ namespace Boggle
             }
         }
 
-        /// <summary>
-        /// Temporary method I wrote while the real method is under construction.
-        /// </summary>
-        /// <param name="Brief"></param>
-        /// <param name="GameID"></param>
-        /// <returns></returns>
-        //public Game GetGameStatus(string Brief, string GameID)
-        //{
-        //    //SetStatus(OK);
-        //    //Game temp = new Game();
-        //    //temp.FullBoard = new BoggleBoard();
-        //    //temp.Board = temp.FullBoard.ToString();
-
-        //    //return temp;
-
-        //    using (SqlConnection conn = new SqlConnection(BoggleDB))
-        //    {
-        //        //open it
-        //        conn.Open();
-
-        //        //start up a transaction with the database
-        //        using (SqlTransaction trans = conn.BeginTransaction())
-        //        {
-        //            Game activeGame = new Game();
-        //            activeGame.Player1 = new Player();
-        //            activeGame.Player2 = new Player();
-
-        //            // START BY BUILDING THE GAME WITH THE GAMEID THAT WAS GIVEN
-        //            using (SqlCommand commandInsertWord = new SqlCommand("select * from Games where GameID = @GameID", conn, trans))
-        //            {
-        //                //set the parameter for the command
-        //                commandInsertWord.Parameters.AddWithValue("@GameID", GameID);
-
-        //                using (SqlDataReader reader = commandInsertWord.ExecuteReader())
-        //                {
-        //                    // if the reader returns something, then the gameID is valid. Otherwise, it's forbidden.
-        //                    if (reader.HasRows)
-        //                    {
-        //                        //advance
-        //                        reader.Read();
-
-        //                        activeGame.Player1.UserToken = (string)reader["Player1"];
-        //                        activeGame.Player2.UserToken = (string)reader["Player2"];
-        //                        activeGame.Board = (string)reader["Board"];
-        //                        activeGame.FullBoard = new BoggleBoard(activeGame.Board);
-        //                        activeGame.TimeLimit = (int)reader["TimeLimit"];
-        //                        activeGame.StartingTime = (int)reader["StartTime"];
-        //                        activeGame.TimeLeft = (int)reader["TimeLeft"];
-        //                        activeGame.GameState = (string)reader["GameState"];
-
-        //                        reader.Close();
-        //                    }
-        //                }
-        //            }
-
-        //            SetStatus(OK);
-        //            trans.Commit();
-        //            return activeGame;
-        //        }
-        //    }
-        //}
-
         public Game GetGameStatus(string Brief, string GameID)
         {
             Game activeGame = new Game();
@@ -1318,6 +1226,7 @@ namespace Boggle
                                                 //we don't know which player it will be that has the words, but it doesn't matter right now
                                                 WordList word = new WordList();
                                                 word.Word = (string)reader2["Word"];
+                                                word.Score = (int)reader2["Score"];
                                                 int partialScore = (int)reader2["Score"];
                                                 activeGame.Player1.Score += partialScore;
                                                 activeGame.Player1.WordsPlayed.Add(word);
@@ -1352,6 +1261,7 @@ namespace Boggle
                                                 //we don't know which player it will be that has the words, but it doesn't matter right now
                                                 WordList word = new WordList();
                                                 word.Word = (string)reader3["Word"];
+                                                word.Score = (int)reader3["Score"];
                                                 int partialScore = (int)reader3["Score"];
                                                 activeGame.Player2.Score += partialScore;
                                                 activeGame.Player2.WordsPlayed.Add(word);
@@ -1482,13 +1392,6 @@ namespace Boggle
 
                                     //set value game to complete
                                     activeGame.GameState = "completed";
-
-                                    //activePlayers.Remove(currentGame.Player1.UserToken);
-                                    //activePlayers.Remove(currentGame.Player2.UserToken);
-
-                                    //completeGames.Add(GameID, currentGame);
-
-                                    //activeGames.Remove(GameID);
 
                                     //UPDATE THE DATABASE SO THIS GAME IS NOW COMPLETED AND TIME LEFT IS ZERO
 
