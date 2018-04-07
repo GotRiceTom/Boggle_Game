@@ -429,7 +429,42 @@ namespace Boggle
                                 activeGame.TimeLeft = (int)reader["TimeLeft"];
                                 activeGame.GameState = (string)reader["GameState"];
 
+                                //ADD THE WORDS THAT EACH PLAYER IS PLAYING--------------------------------------------------------------------------------------------------------------------
+
                                 reader.Close();
+
+                                //THEN WE HAVE TO ADD THE WORDS THAT EACH PLAYER HAS PLAYED TO THE GAME
+                                using (SqlCommand commandBuildWordList = new SqlCommand("select * from Words where GameID = @GameID and Player = @Player", conn, trans))
+                                {
+                                    //set the parameter for the command
+                                    commandBuildWordList.Parameters.AddWithValue("@GameID", GameID);
+                                    commandBuildWordList.Parameters.AddWithValue("@Player", wordPlayed.UserToken);
+
+                                    using (SqlDataReader reader2 = commandBuildWordList.ExecuteReader())
+                                    {
+                                        // if the reader returns something, then the gameID is valid. Otherwise, it's forbidden.
+                                        if (reader2.HasRows)
+                                        {
+                                            //advance
+                                            while (reader2.Read())
+                                            {
+                                                //we don't know which player it will be that has the words, but it doesn't matter right now
+                                                WordList word = new WordList();
+                                                word.Word = (string)reader2["Word"];
+                                                activeGame.Player1.WordsPlayed.Add(word);
+                                                activeGame.Player2.WordsPlayed.Add(word);
+                                            }
+                                        }
+
+                                        else
+                                        {
+                                            activeGame.Player1.WordsPlayed = new List<WordList>();
+                                            activeGame.Player1.WordsPlayed = new List<WordList>();
+                                        }
+
+                                        reader2.Close();
+                                    }
+                                }
                             }
 
                             //this means the gameID didn't map to anything in our database or our pending game. We'll say forbidden.
@@ -604,6 +639,9 @@ namespace Boggle
 
                                             scoreObject.Score = -1;
 
+                                            //Insert the word, gameID, player, and score into the database.
+                                            InsertWordIntoDatabase(wordPlayed.Word, GameID, wordPlayed.UserToken, -1);
+
                                             return scoreObject;
                                         }
                                     }
@@ -622,6 +660,9 @@ namespace Boggle
                                     game.Player1.Score -= 1;
 
                                     scoreObject.Score = -1;
+
+                                    //Insert the word, gameID, player, and score into the database.
+                                    InsertWordIntoDatabase(wordPlayed.Word, GameID, wordPlayed.UserToken, -1);
 
                                     return scoreObject;
                                 }
@@ -649,6 +690,9 @@ namespace Boggle
 
                                             scoreObject.Score = -1;
 
+                                            //Insert the word, gameID, player, and score into the database.
+                                            InsertWordIntoDatabase(wordPlayed.Word, GameID, wordPlayed.UserToken, -1);
+
                                             return scoreObject;
                                         }
                                     }
@@ -666,6 +710,9 @@ namespace Boggle
                                     game.Player2.Score -= 1;
 
                                     scoreObject.Score = -1;
+
+                                    //Insert the word, gameID, player, and score into the database.
+                                    InsertWordIntoDatabase(wordPlayed.Word, GameID, wordPlayed.UserToken, -1);
 
                                     return scoreObject;
                                 }
@@ -720,6 +767,9 @@ namespace Boggle
 
                                             scoreObject.Score = -1;
 
+                                            //Insert the word, gameID, player, and score into the database.
+                                            InsertWordIntoDatabase(wordPlayed.Word, GameID, wordPlayed.UserToken, -1);
+
                                             return scoreObject;
                                         }
 
@@ -732,6 +782,9 @@ namespace Boggle
                                         game.Player1.Score += 0;
 
                                         scoreObject.Score = 0;
+
+                                        //Insert the word, gameID, player, and score into the database.
+                                        InsertWordIntoDatabase(wordPlayed.Word, GameID, wordPlayed.UserToken, 0);
 
                                         return scoreObject;
                                     }
@@ -767,6 +820,9 @@ namespace Boggle
 
                                             scoreObject.Score = -1;
 
+                                            //Insert the word, gameID, player, and score into the database.
+                                            InsertWordIntoDatabase(wordPlayed.Word, GameID, wordPlayed.UserToken, -1);
+
                                             return scoreObject;
                                         }
 
@@ -779,6 +835,9 @@ namespace Boggle
                                         game.Player2.Score += 0;
 
                                         scoreObject.Score = 0;
+
+                                        //Insert the word, gameID, player, and score into the database.
+                                        InsertWordIntoDatabase(wordPlayed.Word, GameID, wordPlayed.UserToken, 0);
 
                                         return scoreObject;
                                     }
@@ -809,6 +868,10 @@ namespace Boggle
 
                                         game.Player1.Score += 1;
                                         scoreObject.Score = 1;
+
+                                        //Insert the word, gameID, player, and score into the database.
+                                        InsertWordIntoDatabase(wordPlayed.Word, GameID, wordPlayed.UserToken, 1);
+
                                         return scoreObject;
                                     }
 
@@ -822,6 +885,10 @@ namespace Boggle
 
                                         game.Player2.Score += 1;
                                         scoreObject.Score = 1;
+
+                                        //Insert the word, gameID, player, and score into the database.
+                                        InsertWordIntoDatabase(wordPlayed.Word, GameID, wordPlayed.UserToken, 1);
+
                                         return scoreObject;
                                     }
                                 }
@@ -838,6 +905,10 @@ namespace Boggle
 
                                         game.Player1.Score += 2;
                                         scoreObject.Score = 2;
+
+                                        //Insert the word, gameID, player, and score into the database.
+                                        InsertWordIntoDatabase(wordPlayed.Word, GameID, wordPlayed.UserToken, 2);
+
                                         return scoreObject;
                                     }
 
@@ -851,6 +922,10 @@ namespace Boggle
 
                                         game.Player2.Score += 2;
                                         scoreObject.Score = 2;
+
+                                        //Insert the word, gameID, player, and score into the database.
+                                        InsertWordIntoDatabase(wordPlayed.Word, GameID, wordPlayed.UserToken, 2);
+
                                         return scoreObject;
                                     }
                                 }
@@ -867,6 +942,10 @@ namespace Boggle
 
                                         game.Player1.Score += 3;
                                         scoreObject.Score = 3;
+
+                                        //Insert the word, gameID, player, and score into the database.
+                                        InsertWordIntoDatabase(wordPlayed.Word, GameID, wordPlayed.UserToken, 3);
+
                                         return scoreObject;
                                     }
 
@@ -880,6 +959,10 @@ namespace Boggle
 
                                         game.Player2.Score += 3;
                                         scoreObject.Score = 3;
+
+                                        //Insert the word, gameID, player, and score into the database.
+                                        InsertWordIntoDatabase(wordPlayed.Word, GameID, wordPlayed.UserToken, 3);
+
                                         return scoreObject;
                                     }
                                 }
@@ -896,6 +979,10 @@ namespace Boggle
 
                                         game.Player1.Score += 5;
                                         scoreObject.Score = 5;
+
+                                        //Insert the word, gameID, player, and score into the database.
+                                        InsertWordIntoDatabase(wordPlayed.Word, GameID, wordPlayed.UserToken, 5);
+
                                         return scoreObject;
                                     }
 
@@ -909,6 +996,10 @@ namespace Boggle
 
                                         game.Player2.Score += 5;
                                         scoreObject.Score = 5;
+
+                                        //Insert the word, gameID, player, and score into the database.
+                                        InsertWordIntoDatabase(wordPlayed.Word, GameID, wordPlayed.UserToken, 5);
+
                                         return scoreObject;
                                     }
                                 }
@@ -925,6 +1016,10 @@ namespace Boggle
 
                                         game.Player1.Score += 11;
                                         scoreObject.Score = 11;
+
+                                        //Insert the word, gameID, player, and score into the database.
+                                        InsertWordIntoDatabase(wordPlayed.Word, GameID, wordPlayed.UserToken, 11);
+
                                         return scoreObject;
                                     }
 
@@ -938,6 +1033,10 @@ namespace Boggle
 
                                         game.Player2.Score += 11;
                                         scoreObject.Score = 11;
+
+                                        //Insert the word, gameID, player, and score into the database.
+                                        InsertWordIntoDatabase(wordPlayed.Word, GameID, wordPlayed.UserToken, 11);
+
                                         return scoreObject;
                                     }
                                 }
@@ -963,6 +1062,9 @@ namespace Boggle
 
                                         scoreObject.Score = -1;
 
+                                        //Insert the word, gameID, player, and score into the database.
+                                        InsertWordIntoDatabase(wordPlayed.Word, GameID, wordPlayed.UserToken, -1);
+
                                         return scoreObject;
                                     }
                                 }
@@ -977,7 +1079,10 @@ namespace Boggle
 
                                 game.Player1.Score -= 1;
 
-                                scoreObject.Score = 1;
+                                scoreObject.Score = -1; // this was 1 instead of -1.... i changed it... -------------------------------------------------------------------------------------
+
+                                //Insert the word, gameID, player, and score into the database.
+                                InsertWordIntoDatabase(wordPlayed.Word, GameID, wordPlayed.UserToken, -1);
 
                                 return scoreObject;
                             }
@@ -1000,6 +1105,9 @@ namespace Boggle
 
                                         scoreObject.Score = -1;
 
+                                        //Insert the word, gameID, player, and score into the database.
+                                        InsertWordIntoDatabase(wordPlayed.Word, GameID, wordPlayed.UserToken, -1);
+
                                         return scoreObject;
                                     }
                                 }
@@ -1015,7 +1123,11 @@ namespace Boggle
 
                                 game.Player2.Score -= 1;
 
-                                scoreObject.Score = 1;
+                                scoreObject.Score = -1; // this was 1 instead of -1.... i changed it... -------------------------------------------------------------------------------------
+
+                                //Insert the word, gameID, player, and score into the database.
+                                InsertWordIntoDatabase(wordPlayed.Word, GameID, wordPlayed.UserToken, -1);
+
                                 return scoreObject;
                             }
 
@@ -1053,12 +1165,12 @@ namespace Boggle
                     activeGame.Player2 = new Player();
 
                     // START BY BUILDING THE GAME WITH THE GAMEID THAT WAS GIVEN
-                    using (SqlCommand commandBuildGame = new SqlCommand("select * from Games where GameID = @GameID", conn, trans))
+                    using (SqlCommand commandInsertWord = new SqlCommand("select * from Games where GameID = @GameID", conn, trans))
                     {
                         //set the parameter for the command
-                        commandBuildGame.Parameters.AddWithValue("@GameID", GameID);
+                        commandInsertWord.Parameters.AddWithValue("@GameID", GameID);
 
-                        using (SqlDataReader reader = commandBuildGame.ExecuteReader())
+                        using (SqlDataReader reader = commandInsertWord.ExecuteReader())
                         {
                             // if the reader returns something, then the gameID is valid. Otherwise, it's forbidden.
                             if (reader.HasRows)
@@ -1079,6 +1191,7 @@ namespace Boggle
                             }
                         }
                     }
+
                     SetStatus(OK);
                     trans.Commit();
                     return activeGame;
