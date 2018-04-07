@@ -1143,65 +1143,15 @@ namespace Boggle
         /// <param name="Brief"></param>
         /// <param name="GameID"></param>
         /// <returns></returns>
-        public Game GetGameStatus(string Brief, string GameID)
-        {
-            //SetStatus(OK);
-            //Game temp = new Game();
-            //temp.FullBoard = new BoggleBoard();
-            //temp.Board = temp.FullBoard.ToString();
-
-            //return temp;
-
-            using (SqlConnection conn = new SqlConnection(BoggleDB))
-            {
-                //open it
-                conn.Open();
-
-                //start up a transaction with the database
-                using (SqlTransaction trans = conn.BeginTransaction())
-                {
-                    Game activeGame = new Game();
-                    activeGame.Player1 = new Player();
-                    activeGame.Player2 = new Player();
-
-                    // START BY BUILDING THE GAME WITH THE GAMEID THAT WAS GIVEN
-                    using (SqlCommand commandInsertWord = new SqlCommand("select * from Games where GameID = @GameID", conn, trans))
-                    {
-                        //set the parameter for the command
-                        commandInsertWord.Parameters.AddWithValue("@GameID", GameID);
-
-                        using (SqlDataReader reader = commandInsertWord.ExecuteReader())
-                        {
-                            // if the reader returns something, then the gameID is valid. Otherwise, it's forbidden.
-                            if (reader.HasRows)
-                            {
-                                //advance
-                                reader.Read();
-
-                                activeGame.Player1.UserToken = (string)reader["Player1"];
-                                activeGame.Player2.UserToken = (string)reader["Player2"];
-                                activeGame.Board = (string)reader["Board"];
-                                activeGame.FullBoard = new BoggleBoard(activeGame.Board);
-                                activeGame.TimeLimit = (int)reader["TimeLimit"];
-                                activeGame.StartingTime = (int)reader["StartTime"];
-                                activeGame.TimeLeft = (int)reader["TimeLeft"];
-                                activeGame.GameState = (string)reader["GameState"];
-
-                                reader.Close();
-                            }
-                        }
-                    }
-
-                    SetStatus(OK);
-                    trans.Commit();
-                    return activeGame;
-                }
-            }
-        }
-
         //public Game GetGameStatus(string Brief, string GameID)
         //{
-        //    //opend the connection to the our database that we made in the static constructor
+        //    //SetStatus(OK);
+        //    //Game temp = new Game();
+        //    //temp.FullBoard = new BoggleBoard();
+        //    //temp.Board = temp.FullBoard.ToString();
+
+        //    //return temp;
+
         //    using (SqlConnection conn = new SqlConnection(BoggleDB))
         //    {
         //        //open it
@@ -1210,132 +1160,727 @@ namespace Boggle
         //        //start up a transaction with the database
         //        using (SqlTransaction trans = conn.BeginTransaction())
         //        {
-        //            int currentTime;
+        //            Game activeGame = new Game();
+        //            activeGame.Player1 = new Player();
+        //            activeGame.Player2 = new Player();
 
-        //            // if (brief is yes?) and the game is pending
-        //            if (pendingGameID == GameID)
+        //            // START BY BUILDING THE GAME WITH THE GAMEID THAT WAS GIVEN
+        //            using (SqlCommand commandInsertWord = new SqlCommand("select * from Games where GameID = @GameID", conn, trans))
         //            {
-        //                SetStatus(OK);
-        //                pendingGame.GameState = "pending";
-        //                return pendingGame;
-        //            }
+        //                //set the parameter for the command
+        //                commandInsertWord.Parameters.AddWithValue("@GameID", GameID);
 
-        //            // if brief is yes and the game is active
-        //            if (Brief == "yes")
-        //            {
-        //                //if (activeGames.TryGetValue(GameID, out Game currentGame))
-        //                using (SqlCommand command = new SqlCommand("select * from Games where GameID = @GameID", conn, trans))
+        //                using (SqlDataReader reader = commandInsertWord.ExecuteReader())
         //                {
-        //                    command.Parameters.AddWithValue("@GameID", GameID);
-
-        //                    using (SqlDataReader reader = command.ExecuteReader())
+        //                    // if the reader returns something, then the gameID is valid. Otherwise, it's forbidden.
+        //                    if (reader.HasRows)
         //                    {
-        //                        if (reader.HasRows)
-        //                        {
-        //                            SetStatus(OK);
-        //                            reader.Read();
+        //                        //advance
+        //                        reader.Read();
 
-        //                            string player1NickName;
-        //                            string player2NickName;
+        //                        activeGame.Player1.UserToken = (string)reader["Player1"];
+        //                        activeGame.Player2.UserToken = (string)reader["Player2"];
+        //                        activeGame.Board = (string)reader["Board"];
+        //                        activeGame.FullBoard = new BoggleBoard(activeGame.Board);
+        //                        activeGame.TimeLimit = (int)reader["TimeLimit"];
+        //                        activeGame.StartingTime = (int)reader["StartTime"];
+        //                        activeGame.TimeLeft = (int)reader["TimeLeft"];
+        //                        activeGame.GameState = (string)reader["GameState"];
 
-
-
-
-        //                                //THIS IS WHERE WE LEFT OFF. CREATING THE GAME OBJECT TO RETURN TO THE USER
-
-        //                                //currentGame.GameState = "active";
-        //                                currentTime = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
-
-        //                            returnGame.TimeLeft = (int)returnGame.TimeLimit - (currentTime - returnGame.StartingTime);
-
-        //                            return returnGame;
-        //                        }
-
+        //                        reader.Close();
         //                    }
         //                }
-
-        //                // if brief is yes and the game is completed
-        //                if (activeGames.TryGetValue(GameID, out Game completedGame))
-        //                {
-        //                    SetStatus(OK);
-        //                    completedGame.GameState = "completed";
-        //                    currentTime = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
-
-        //                    completedGame.TimeLeft = (int)completedGame.TimeLimit - (currentTime - completedGame.StartingTime);
-
-        //                    return completedGame;
-        //                }
         //            }
 
-        //            // if brief is not yes
-        //            if (Brief != "yes")
-        //            {
-        //                //check for null
-        //                if (GameID == null)
-        //                {
-        //                    SetStatus(Forbidden);
-        //                    return null;
-        //                }
-
-        //                //Make sure that the game ID matches to an active or completed game or the pending game
-        //                if (!(activeGames.ContainsKey(GameID) || completeGames.ContainsKey(GameID) || pendingGameID == GameID))
-        //                {
-        //                    SetStatus(Forbidden);
-        //                    return null;
-        //                }
-
-
-        //                // set status code to (OK)
-        //                SetStatus(OK);
-
-        //                //if the game is pending
-        //                if (pendingGameID == GameID)
-        //                {
-        //                    return pendingGame;
-        //                }
-
-        //                //if the Game is in the complete game dictionary 
-        //                if (completeGames.TryGetValue(GameID.ToUpper(), out Game completeGame))
-        //                {
-        //                    return completeGame;
-        //                }
-
-        //                // at this point the game is in a active status
-        //                if (activeGames.TryGetValue(GameID, out Game activeGame))
-        //                {
-        //                    currentTime = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
-
-        //                    activeGame.TimeLeft = (int)activeGame.TimeLimit - (currentTime - activeGame.StartingTime);
-
-        //                    // then check the status of the game
-        //                    //if timeleft is zero
-        //                    // the game is compltete status and add to the dictionary
-        //                    // remove this game key and value off the active game
-        //                    if (activeGame.TimeLeft <= 0)
-        //                    {
-        //                        activeGame.TimeLeft = 0;
-
-        //                        //set value game to complete
-        //                        activeGame.GameState = "completed";
-
-        //                        activePlayers.Remove(activeGame.Player1.UserToken);
-        //                        activePlayers.Remove(activeGame.Player2.UserToken);
-
-        //                        completeGames.Add(GameID, activeGame);
-
-        //                        activeGames.Remove(GameID);
-
-        //                        return activeGame;
-        //                    }
-
-        //                    return activeGame;
-        //                }
-        //            }
+        //            SetStatus(OK);
+        //            trans.Commit();
+        //            return activeGame;
         //        }
-
-        //        return null;
         //    }
         //}
+
+        public Game GetGameStatus(string Brief, string GameID)
+        {
+            //opend the connection to the our database that we made in the static constructor
+            using (SqlConnection conn = new SqlConnection(BoggleDB))
+            {
+                //open it
+                conn.Open();
+
+                //start up a transaction with the database
+                using (SqlTransaction trans = conn.BeginTransaction())
+                {
+                    int currentTime;
+
+                    // if (brief is yes?) and the game is pending
+                    if (pendingGameID == GameID)
+                    {
+                        SetStatus(OK);
+                        pendingGame.GameState = "pending";
+                        return pendingGame;
+                    }
+
+                    // if brief is yes and the game is active
+                    if (Brief == "yes")
+                    {
+
+                        string player1Token;
+                        string player2Token;
+                        string player1Nickname;
+                        string player2Nickname;
+                        int tempTimeLeft;
+                        int tempStartingTime;
+                        int tempTimeLimit;
+                        int Score1;
+                        int Score2;
+
+
+                        //check if the game is active
+                        //if (activeGames.TryGetValue(GameID, out Game currentGame))
+                        using (SqlCommand command = new SqlCommand("select * from Games where GameID = @GameID and (GameState = @GameState)", conn, trans))
+                        {
+                            command.Parameters.AddWithValue("@GameID", GameID);
+                            command.Parameters.AddWithValue("@GameState", "active");
+
+
+
+                            using (SqlDataReader reader = command.ExecuteReader())
+                            {
+                                //this mean something is return back to use
+                                if (reader.HasRows)
+                                {
+                                    SetStatus(OK);
+                                    reader.Read();
+
+                                    player1Token = (string)reader["Player1"];
+                                    player2Token = (string)reader["Player2"];
+                                    tempTimeLeft = (int)reader["TimeLeft"];
+                                    tempTimeLimit = (int)reader["TimeLimit"];
+                                    tempStartingTime = (int)reader["StartTime"];
+
+
+                                    currentTime = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
+
+                                    tempTimeLeft = (int)tempTimeLimit - (currentTime - tempStartingTime);
+
+                                    reader.Close();
+
+
+
+                                    using (SqlCommand Player1Cmd = new SqlCommand("select * from Users where UserID = @UserID", conn, trans))
+                                    {
+                                        Player1Cmd.Parameters.AddWithValue("@UserID", player1Token);
+
+                                        using (SqlDataReader read1 = command.ExecuteReader())
+                                        {
+                                            read1.Read();
+                                            player1Nickname = (string)reader["Nickname"];
+                                            read1.Close();
+                                        }
+                                    }
+
+                                    using (SqlCommand Player2Cmd = new SqlCommand("select * from Users where UserID = @UserID", conn, trans))
+                                    {
+                                        Player2Cmd.Parameters.AddWithValue("@UserID", player2Token);
+
+                                        using (SqlDataReader read2 = command.ExecuteReader())
+                                        {
+                                            read2.Read();
+                                            player2Nickname = (string)reader["Nickname"];
+                                            read2.Close();
+                                        }
+                                    }
+
+                                    //get player 1 score
+                                    using (SqlCommand score1CMD = new SqlCommand("select Sum(Score) from Words where GameID = @GameID and Player = @Player ", conn, trans))
+                                    {
+                                        score1CMD.Parameters.AddWithValue("@GameID", GameID);
+                                        score1CMD.Parameters.AddWithValue("@Player", player1Token);
+
+                                        Score1 = (int)score1CMD.ExecuteScalar();
+
+                                    }
+
+
+                                    //get player 2 score
+                                    using (SqlCommand score1CMD = new SqlCommand("select Sum(Score) from Words where GameID = @GameID and Player = @Player ", conn, trans))
+                                    {
+                                        score1CMD.Parameters.AddWithValue("@GameID", GameID);
+                                        score1CMD.Parameters.AddWithValue("@Player", player2Token);
+
+                                        Score2 = (int)score1CMD.ExecuteScalar();
+
+                                    }
+
+                                    Game returnGame = new Game();
+
+                                    Player temp1 = new Player();
+                                    temp1.Score = Score1;
+
+                                    Player temp2 = new Player();
+                                    temp2.Score = Score2;
+
+                                    returnGame.GameState = "active";
+                                    returnGame.TimeLeft = tempTimeLeft;
+                                    returnGame.Player1 = temp1;
+                                    returnGame.Player2 = temp2;
+
+                                    // get userNickname;
+
+                                    trans.Commit();
+                                    return returnGame;
+                                }
+
+
+                            }
+                        }
+
+                        //check if the game is completed
+                        //if (activeGames.TryGetValue(GameID, out Game currentGame))
+                        using (SqlCommand command = new SqlCommand("select * from Games where GameID = @GameID and (GameState = @GameState)", conn, trans))
+                        {
+                            command.Parameters.AddWithValue("@GameID", GameID);
+                            command.Parameters.AddWithValue("@GameState", "completed");
+
+
+
+                            using (SqlDataReader reader = command.ExecuteReader())
+                            {
+                                //this mean something is return back to use
+                                if (reader.HasRows)
+                                {
+                                    SetStatus(OK);
+                                    reader.Read();
+
+                                    player1Token = (string)reader["Player1"];
+                                    player2Token = (string)reader["Player2"];
+                                    tempTimeLeft = (int)reader["TimeLeft"];
+                                    tempTimeLimit = (int)reader["TimeLimit"];
+                                    tempStartingTime = (int)reader["StartTime"];
+
+
+                                    currentTime = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
+
+                                    tempTimeLeft = (int)tempTimeLimit - (currentTime - tempStartingTime);
+
+                                    reader.Close();
+
+
+
+                                    using (SqlCommand Player1Cmd = new SqlCommand("select * from Users where UserID = @UserID", conn, trans))
+                                    {
+                                        Player1Cmd.Parameters.AddWithValue("@UserID", player1Token);
+
+                                        using (SqlDataReader read1 = command.ExecuteReader())
+                                        {
+                                            read1.Read();
+                                            player1Nickname = (string)reader["Nickname"];
+                                            read1.Close();
+                                        }
+                                    }
+
+                                    using (SqlCommand Player2Cmd = new SqlCommand("select * from Users where UserID = @UserID", conn, trans))
+                                    {
+                                        Player2Cmd.Parameters.AddWithValue("@UserID", player2Token);
+
+                                        using (SqlDataReader read2 = command.ExecuteReader())
+                                        {
+                                            read2.Read();
+                                            player2Nickname = (string)reader["Nickname"];
+                                            read2.Close();
+                                        }
+                                    }
+
+                                    //get player 1 score
+                                    using (SqlCommand score1CMD = new SqlCommand("select Sum(Score) from Words where GameID = @GameID and Player = @Player ", conn, trans))
+                                    {
+                                        score1CMD.Parameters.AddWithValue("@GameID", GameID);
+                                        score1CMD.Parameters.AddWithValue("@Player", player1Token);
+
+                                        Score1 = (int)score1CMD.ExecuteScalar();
+
+                                    }
+
+
+                                    //get player 2 score
+                                    using (SqlCommand score1CMD = new SqlCommand("select Sum(Score) from Words where GameID = @GameID and Player = @Player ", conn, trans))
+                                    {
+                                        score1CMD.Parameters.AddWithValue("@GameID", GameID);
+                                        score1CMD.Parameters.AddWithValue("@Player", player2Token);
+
+                                        Score2 = (int)score1CMD.ExecuteScalar();
+
+                                    }
+
+                                    Game returnGame = new Game();
+
+                                    Player temp1 = new Player();
+                                    temp1.Score = Score1;
+
+                                    Player temp2 = new Player();
+                                    temp2.Score = Score2;
+
+                                    returnGame.GameState = "completed";
+                                    returnGame.TimeLeft = tempTimeLeft;
+                                    returnGame.Player1 = temp1;
+                                    returnGame.Player2 = temp2;
+
+                                    // get userNickname;
+
+                                    trans.Commit();
+                                    return returnGame;
+                                }
+
+
+                            }
+                        }
+                        //check the game is completed
+
+
+
+
+
+                        //// if brief is yes and the game is completed
+                        //if (activeGames.TryGetValue(GameID, out Game completedGame))
+                        //{
+                        //    SetStatus(OK);
+                        //    completedGame.GameState = "completed";
+                        //    currentTime = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
+
+                        //    completedGame.TimeLeft = (int)completedGame.TimeLimit - (currentTime - completedGame.StartingTime);
+
+                        //    return completedGame;
+                        //}
+                    }
+
+                    // if brief is not yes
+                    if (Brief != "yes")
+                    {
+
+                        string player1Token;
+                        string player2Token;
+                        string player1Nickname;
+                        string player2Nickname;
+                        int tempTimeLeft;
+                        int tempStartingTime;
+                        int tempTimeLimit;
+                        int Score1;
+                        int Score2;
+                        string Board;
+
+
+                        //check for null
+                        if (GameID == null)
+                        {
+                            SetStatus(Forbidden);
+                            return null;
+                        }
+
+                        //if ((newestActiveGameID + 1).ToString() != GameID)
+                        //{
+                        //    SetStatus(Forbidden);
+                        //    return null;
+                        //}
+
+                        ////Make sure that the game ID matches to an active or completed game or the pending game
+                        //if (!(activeGames.ContainsKey(GameID) || completeGames.ContainsKey(GameID) || pendingGameID == GameID))
+                        //{
+                        //    SetStatus(Forbidden);
+                        //    return null;
+                        //}
+
+                        using (SqlCommand command = new SqlCommand("select * from Games where GameID = @GameID", conn, trans))
+                        {
+                            command.Parameters.AddWithValue("@GameID", GameID);
+
+                            using (SqlDataReader reader = command.ExecuteReader())
+                            {
+                                if (!reader.HasRows)
+                                {
+
+                                    reader.Close();
+                                    SetStatus(Forbidden);
+                                    return null;
+
+                                }
+                            }
+                        }
+
+                        // set status code to (OK)
+                        SetStatus(OK);
+
+                        //if the game is pending
+                        if (pendingGameID == GameID)
+                        {
+                            return pendingGame;
+                        }
+
+                        ////if the Game is in the complete game dictionary 
+                        //if (completeGames.TryGetValue(GameID.ToUpper(), out Game completeGame))
+                        //{
+                        //    return completeGame;
+                        //}
+
+                        using (SqlCommand command = new SqlCommand("select * from Games where GameID = @GameID and GameState = @GameState", conn, trans))
+                        {
+                            command.Parameters.AddWithValue("@GameID", GameID);
+                            command.Parameters.AddWithValue("@GameState", "complete");
+
+
+                            using (SqlDataReader reader = command.ExecuteReader())
+                            {
+                                //this mean something is return back to use
+                                if (reader.HasRows)
+                                {
+                                    SetStatus(OK);
+                                    reader.Read();
+
+                                    Board = (string)reader["Board"];
+                                    player1Token = (string)reader["Player1"];
+                                    player2Token = (string)reader["Player2"];
+                                    tempTimeLeft = (int)reader["TimeLeft"];
+                                    tempTimeLimit = (int)reader["TimeLimit"];
+                                    tempStartingTime = (int)reader["StartTime"];
+
+
+
+                                    currentTime = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
+
+                                    tempTimeLeft = (int)tempTimeLimit - (currentTime - tempStartingTime);
+
+                                    reader.Close();
+
+
+
+                                    using (SqlCommand Player1Cmd = new SqlCommand("select * from Users where UserID = @UserID", conn, trans))
+                                    {
+                                        Player1Cmd.Parameters.AddWithValue("@UserID", player1Token);
+
+                                        using (SqlDataReader read1 = command.ExecuteReader())
+                                        {
+                                            read1.Read();
+                                            player1Nickname = (string)reader["Nickname"];
+                                            read1.Close();
+                                        }
+                                    }
+
+                                    using (SqlCommand Player2Cmd = new SqlCommand("select * from Users where UserID = @UserID", conn, trans))
+                                    {
+                                        Player2Cmd.Parameters.AddWithValue("@UserID", player2Token);
+
+                                        using (SqlDataReader read2 = command.ExecuteReader())
+                                        {
+                                            read2.Read();
+                                            player2Nickname = (string)reader["Nickname"];
+                                            read2.Close();
+                                        }
+                                    }
+
+                                    //get player 1 score
+                                    using (SqlCommand score1CMD = new SqlCommand("select Sum(Score) from Words where GameID = @GameID and Player = @Player ", conn, trans))
+                                    {
+                                        score1CMD.Parameters.AddWithValue("@GameID", GameID);
+                                        score1CMD.Parameters.AddWithValue("@Player", player1Token);
+
+                                        Score1 = (int)score1CMD.ExecuteScalar();
+
+                                    }
+
+
+                                    //get player 2 score
+                                    using (SqlCommand score1CMD = new SqlCommand("select Sum(Score) from Words where GameID = @GameID and Player = @Player ", conn, trans))
+                                    {
+                                        score1CMD.Parameters.AddWithValue("@GameID", GameID);
+                                        score1CMD.Parameters.AddWithValue("@Player", player2Token);
+
+                                        Score2 = (int)score1CMD.ExecuteScalar();
+
+                                    }
+
+                                    //get playe 1 words
+
+                                    List<WordList> player1Words = new List<WordList>();
+
+                                    List<WordList> player2Words = new List<WordList>();
+
+                                    using (SqlCommand score1CMD = new SqlCommand("select * from Words where GameID = @GameID and Player = @Player ", conn, trans))
+                                    {
+                                        score1CMD.Parameters.AddWithValue("@GameID", GameID);
+                                        score1CMD.Parameters.AddWithValue("@Player", player1Token);
+
+                                        using (SqlDataReader readerList = command.ExecuteReader())
+                                        {
+                                            // This time we care about the rows being retuned.  The Read
+                                            // method lets us iterate through them one at a time.
+                                            while (readerList.Read())
+                                            {
+                                                // Notice how we extract the values from each row by column name.
+                                                player1Words.Add(new WordList
+                                                {
+                                                    Word = (string)readerList["Word"],
+                                                    Score = (int)readerList["Score"],
+
+                                                });
+                                            }
+
+                                            readerList.Close();
+
+                                        }
+
+
+
+                                    }
+
+
+
+
+                                    //get player 2 words
+
+
+
+
+                                    using (SqlCommand score1CMD = new SqlCommand("select * from Words where GameID = @GameID and Player = @Player ", conn, trans))
+                                    {
+                                        score1CMD.Parameters.AddWithValue("@GameID", GameID);
+                                        score1CMD.Parameters.AddWithValue("@Player", player2Token);
+
+                                        using (SqlDataReader readerList = command.ExecuteReader())
+                                        {
+                                            // This time we care about the rows being retuned.  The Read
+                                            // method lets us iterate through them one at a time.
+                                            while (readerList.Read())
+                                            {
+                                                // Notice how we extract the values from each row by column name.
+                                                player2Words.Add(new WordList
+                                                {
+                                                    Word = (string)readerList["Word"],
+                                                    Score = (int)readerList["Score"],
+
+                                                });
+                                            }
+
+                                            readerList.Close();
+
+                                        }
+
+
+
+                                    }
+
+                                    Game returnGame = new Game();
+
+                                    Player temPlayer1 = new Player();
+                                    Player temPlayer2 = new Player();
+
+                                    temPlayer1.Score = Score1;
+                                    temPlayer1.Nickname = player1Nickname;
+                                    temPlayer1.WordsPlayed = player1Words;
+
+
+                                    temPlayer2.Score = Score2;
+                                    temPlayer2.Score = Score2;
+                                    temPlayer2.Nickname = player2Nickname;
+                                    temPlayer2.WordsPlayed = player2Words;
+
+
+                                    returnGame.GameState = "completed";
+                                    returnGame.Board = Board;
+                                    returnGame.TimeLimit = tempTimeLimit;
+                                    returnGame.TimeLeft = tempTimeLeft;
+                                    returnGame.Player1 = temPlayer1;
+                                    returnGame.Player2 = temPlayer2;
+
+
+
+                                    trans.Commit();
+                                    return returnGame;
+                                }
+
+                            }
+
+
+
+
+
+
+
+
+                            //// at this point the game is in a active status
+                            //if (activeGames.TryGetValue(GameID, out Game activeGame))
+                            //{
+                            //    currentTime = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
+
+                            //    activeGame.TimeLeft = (int)activeGame.TimeLimit - (currentTime - activeGame.StartingTime);
+
+                            //    // then check the status of the game
+                            //    //if timeleft is zero
+                            //    // the game is compltete status and add to the dictionary
+                            //    // remove this game key and value off the active game
+                            //    if (activeGame.TimeLeft <= 0)
+                            //    {
+                            //        activeGame.TimeLeft = 0;
+
+                            //        //set value game to complete
+                            //        activeGame.GameState = "completed";
+
+                            //        activePlayers.Remove(activeGame.Player1.UserToken);
+                            //        activePlayers.Remove(activeGame.Player2.UserToken);
+
+                            //        completeGames.Add(GameID, activeGame);
+
+                            //        activeGames.Remove(GameID);
+
+                            //        return activeGame;
+                            //    }
+
+                            //    return activeGame;
+                            //}
+                            //check if the game is active
+                            //if (activeGames.TryGetValue(GameID, out Game currentGame))
+                            using (SqlCommand activeCmd = new SqlCommand("select * from Games where GameID = @GameID and (GameState = @GameState)", conn, trans))
+                            {
+                                activeCmd.Parameters.AddWithValue("@GameID", GameID);
+                                activeCmd.Parameters.AddWithValue("@GameState", "active");
+
+
+
+                                using (SqlDataReader reader = activeCmd.ExecuteReader())
+                                {
+                                    //this mean something is return back to use
+                                    if (reader.HasRows)
+                                    {
+                                        SetStatus(OK);
+                                        reader.Read();
+
+                                        player1Token = (string)reader["Player1"];
+                                        player2Token = (string)reader["Player2"];
+                                        tempTimeLeft = (int)reader["TimeLeft"];
+                                        tempTimeLimit = (int)reader["TimeLimit"];
+                                        tempStartingTime = (int)reader["StartTime"];
+                                        Board = (string)reader["Board"];
+
+
+                                        currentTime = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
+
+                                        tempTimeLeft = (int)tempTimeLimit - (currentTime - tempStartingTime);
+
+                                        //if timeleft is < 0;
+
+                                        //update the value on the database
+
+                                        //if (tempTimeLeft <= 0)
+                                        //{
+                                        //    using (SqlCommand updateCmd = new SqlCommand("update Games set GameState = @GameState, TimeLeft = @TimeLeft where GameID = @GameID", conn, trans))
+                                        //    {
+                                        //        // set the data base that game state to completed and timeleft to 0
+                                        //        updateCmd.Parameters.AddWithValue("@GameID", GameID);
+                                        //        updateCmd.Parameters.AddWithValue("@GameState", "completed");
+                                        //        updateCmd.Parameters.AddWithValue("@TimeLeft", 0);
+
+
+                                        //        //then return the active game that's not complete
+                                        //    }
+
+
+
+
+
+                                        //}
+
+
+                                        reader.Close();
+
+
+
+                                        using (SqlCommand Player1Cmd = new SqlCommand("select * from Users where UserID = '@UserID'", conn, trans))
+                                        {
+                                            Player1Cmd.Parameters.AddWithValue("@UserID", player1Token);
+
+                                            using (SqlDataReader read1 = command.ExecuteReader())
+                                            {
+                                               
+
+
+                                                    read1.Read();
+                                                    player1Nickname = read1[0].ToString();
+                                                    read1.Close();
+                                                
+                                            }
+                                        }
+
+                                        using (SqlCommand Player2Cmd = new SqlCommand("select * from Users where UserID = '@UserID'", conn, trans))
+                                        {
+                                            Player2Cmd.Parameters.AddWithValue("@UserID", player2Token);
+
+                                            using (SqlDataReader read2 = command.ExecuteReader())
+                                            {
+                                                
+
+
+                                                    read2.Read();
+                                                    player2Nickname = read2[0].ToString();
+                                                    read2.Close();
+                                                
+                                            }
+                                        }
+
+                                        //get player 1 score
+                                        using (SqlCommand score1CMD = new SqlCommand("select Sum(Score) from Words where GameID = @GameID and Player = @Player ", conn, trans))
+                                        {
+                                            score1CMD.Parameters.AddWithValue("@GameID", GameID);
+                                            score1CMD.Parameters.AddWithValue("@Player", player1Token);
+
+                                            Score1 = (int)score1CMD.ExecuteScalar();
+
+                                        }
+
+
+                                        //get player 2 score
+                                        using (SqlCommand score1CMD = new SqlCommand("select Sum(Score) from Words where GameID = @GameID and Player = @Player ", conn, trans))
+                                        {
+                                            score1CMD.Parameters.AddWithValue("@GameID", GameID);
+                                            score1CMD.Parameters.AddWithValue("@Player", player2Token);
+
+                                            Score2 = (int)score1CMD.ExecuteScalar();
+
+                                        }
+
+                                        Game returnGame = new Game();
+
+                                        Player temp1 = new Player();
+                                        temp1.Nickname = player1Nickname;
+                                        temp1.Score = Score1;
+
+                                        Player temp2 = new Player();
+                                        temp2.Nickname = player2Nickname;
+                                        temp2.Score = Score2;
+
+                                        returnGame.GameState = "active";
+                                        returnGame.TimeLeft = tempTimeLeft;
+                                        returnGame.Player1 = temp1;
+                                        returnGame.Player2 = temp2;
+
+                                        // get userNickname;
+
+                                        trans.Commit();
+                                        return returnGame;
+                                    }
+
+
+                                }
+
+
+
+
+
+                            }
+                        }
+                    }
+
+                    return null;
+                }
+            }
+        }
 
         /// <summary>
         /// This is an extremely helpful method that I wrote to insert a word into the database.
