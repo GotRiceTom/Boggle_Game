@@ -5,7 +5,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Boggle;
-using 
+using CustomNetworking;
 
 namespace MyBoggleService
 {
@@ -25,7 +25,7 @@ namespace MyBoggleService
             // exiting while the server is in use
             Console.ReadLine();
 
-            SS testing = new SS();
+            SS testing ;
         }
     }
 }

@@ -9,6 +9,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BoggleServiceTests", "Boggl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyBoggleService", "MyBoggleService\MyBoggleService.csproj", "{72E78227-D18B-4132-BF8D-B089051C607B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NewFolder1", "NewFolder1", "{F96151E9-14FF-46F7-B373-B864E80EF87D}"
+	ProjectSection(SolutionItems) = preProject
+		MyBoggleService\SS.dll = MyBoggleService\SS.dll
+		MyBoggleService\SS.XML = MyBoggleService\SS.XML
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
