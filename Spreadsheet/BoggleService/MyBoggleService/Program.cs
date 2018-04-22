@@ -37,6 +37,7 @@ namespace MyBoggleService
 
         public static void Main()
         {
+            
             SSListener server = new SSListener(60000, Encoding.UTF8);
             server.Start();
             server.BeginAcceptSS(ConnectionMade, server);
@@ -124,15 +125,16 @@ namespace MyBoggleService
                 {
                     User n = JsonConvert.DeserializeObject<User>(line);
                     Token user = new BoggleService().CreateUser(n, out HttpStatusCode status);
-                    String result = "HTTP / 1.1 " + (int)status + " " + status + "\r\n";
+                    String result = "HTTP/1.1 " + (int)status + " " + status + "\r\n";
                     if((int)status / 100 == 2)
                     {
                         String res = JsonConvert.SerializeObject(user);
                         result += "Content-Length: " + Encoding.UTF8.GetByteCount(res) +  "\r\n";
                         result += res;
                     }
+
                     ss.BeginSend(result, (x, y) => { ss.Shutdown(SocketShutdown.Both); }, null);
-                   
+ 
                 }
             }
         }

@@ -29,7 +29,11 @@ namespace Boggle
 
         static BoggleService()
         {
-            BoggleDB = "Data Source = (LocalDB)\\MSSQLLocalDB; AttachDbFilename = |DataDirectory|\\BoggleDB.mdf; Integrated Security = True"; //spaces were added...
+            string dbFolder = System.IO.Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName;
+            string connectionString = String.Format(@"Data Source = (LocalDB)\MSSQLLocalDB; AttachDbFilename = {0}\BoggleDB.mdf; Integrated Security = True", dbFolder);
+            // BoggleDB = "Data Source = (LocalDB)\\MSSQLLocalDB; AttachDbFilename = |DataDirectory|\\BoggleDB.mdf; Integrated Security = True"; //spaces were added...
+
+            BoggleDB = connectionString;
         }
 
         /// <summary>
@@ -65,8 +69,8 @@ namespace Boggle
             //checking for null
             if (user.Nickname == null || user.Nickname.Trim().Length == 0 || user.Nickname.Trim().Length > 50)
             {
-                SetStatus(Forbidden, out HttpStatusCode status2);
-                status = status2;
+               // SetStatus(Forbidden, out HttpStatusCode status2);
+                status = Forbidden;
                 return null;
             }
 
