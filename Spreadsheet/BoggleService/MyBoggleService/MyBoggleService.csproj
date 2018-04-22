@@ -80,11 +80,8 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="BoggleDB.mdf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Content Include="BoggleDB.mdf" />
     <Content Include="BoggleDB_log.ldf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <DependentUpon>BoggleDB.mdf</DependentUpon>
     </Content>
     <Content Include="dictionary.txt">
