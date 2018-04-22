@@ -132,6 +132,7 @@ namespace MyBoggleService
                         result += res;
                     }
                     ss.BeginSend(result, (x, y) => { ss.Shutdown(SocketShutdown.Both); }, null);
+                   
                 }
             }
         }

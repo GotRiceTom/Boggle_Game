@@ -246,26 +246,26 @@ namespace Boggle
         {
 
            
-            string line;
+            //string line;
 
-            BoggleBoard board = new BoggleBoard(input);
-            //access the dictionary.txt
-            using (StreamReader file = new System.IO.StreamReader(AppDomain.CurrentDomain.BaseDirectory + "dictionary.txt"))
-            {
-                while ((line = file.ReadLine()) != null)
-                {
-                    // if word exist, set playWordFound to true and break out the loopo 
-                    if (board.CanBeFormed(line))
-                    {
-                        if (line.Length > 2)
-                        {
-                            return line.ToUpper();
-                        }
+            //BoggleBoard board = new BoggleBoard(input);
+            ////access the dictionary.txt
+            //using (StreamReader file = new System.IO.StreamReader(AppDomain.CurrentDomain.BaseDirectory + "dictionary.txt"))
+            //{
+            //    while ((line = file.ReadLine()) != null)
+            //    {
+            //        // if word exist, set playWordFound to true and break out the loopo 
+            //        if (board.CanBeFormed(line))
+            //        {
+            //            if (line.Length > 2)
+            //            {
+            //                return line.ToUpper();
+            //            }
 
                         
-                    }
-                }
-            }
+            //        }
+            //    }
+            //}
 
             return null;
         }
