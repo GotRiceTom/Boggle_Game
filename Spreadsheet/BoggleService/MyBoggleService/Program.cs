@@ -51,7 +51,7 @@ namespace MyBoggleService
 
             //matches the first line fo a "make user" request
             private static readonly Regex makeUserPattern = new Regex(@"^POST /BoggleService.svc/users HTTP"); //DO WE WANT THIS TO BE BOGGLESERVICE.SVC??
-
+            private static readonly Regex makeJoinGamePattern = new Regex(@"^POST /BoggleService.svc/games HTTP");
             //Matches a content-length header and extracts the integer
             private static readonly Regex contentLengthPattern = new Regex(@"^content-length: (\d+)", RegexOptions.IgnoreCase);
 
@@ -108,13 +108,13 @@ namespace MyBoggleService
                     User n = JsonConvert.DeserializeObject<User>(line);
                     Token user = new BoggleService().CreateUser(n, out HttpStatusCode status);
                     String result = "HTTP/1.1 " + (int)status + " " + status + "\r\n";
-                   
 
-                    if((int)status / 100 == 2)
+
+                    if ((int)status / 100 == 2)
                     {
                         String res = JsonConvert.SerializeObject(user);
-                        
-                        result += "Content-Length: " + Encoding.UTF8.GetByteCount(res) +  "\r\n" + "\r\n";
+
+                        result += "Content-Length: " + Encoding.UTF8.GetByteCount(res) + "\r\n" + "\r\n";
 
                         result += res + "\r\n";
 
@@ -126,7 +126,34 @@ namespace MyBoggleService
                     }
 
                     ss.BeginSend(result, (x, y) => { ss.Shutdown(SocketShutdown.Both); }, null);
- 
+
+                }
+                else if (makeJoinGamePattern.IsMatch(firstLine))
+                {
+                    
+                    JoiningGame n = JsonConvert.DeserializeObject<JoiningGame>(line);
+
+                    TheGameID user = new BoggleService().JoinGame(n, out HttpStatusCode status);
+
+                    String result = "HTTP/1.1 " + (int)status + " " + status + "\r\n";
+
+
+                    if ((int)status / 100 == 2)
+                    {
+                        String res = JsonConvert.SerializeObject(user);
+
+                        result += "Content-Length: " + Encoding.UTF8.GetByteCount(res) + "\r\n" + "\r\n";
+
+                        result += res + "\r\n";
+
+                        Console.WriteLine(result);
+                    }
+                    else
+                    {
+                        result = result + "\r\n";
+                    }
+
+                    ss.BeginSend(result, (x, y) => { ss.Shutdown(SocketShutdown.Both); }, null);
                 }
             }
         }

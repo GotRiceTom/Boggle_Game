@@ -113,7 +113,7 @@ namespace Boggle
         }
 
 
-        public TheGameID JoinGame(JoiningGame joiningGame)
+        public TheGameID JoinGame(JoiningGame joiningGame, out HttpStatusCode status)
         {
             //opend the connection to the our database that we made in the static constructor
             using (SqlConnection conn = new SqlConnection(BoggleDB))
@@ -156,14 +156,16 @@ namespace Boggle
                     //if the user is already waiting in a game, there's a conflict.
                     if (pendingGame.Player1 != null && pendingGame.Player1.UserToken == joiningGame.UserToken)
                     {
-                        SetStatus(Conflict, out HttpStatusCode status2);
+                        //SetStatus(Conflict, out HttpStatusCode status2);
+                        status = Conflict;
                         return null;
                     }
 
                     // If the time limit they entered is bad, reply forbidden and don't start a game.
                     if (joiningGame.TimeLimit < 5 || joiningGame.TimeLimit > 120)
                     {
-                        SetStatus(Forbidden, out HttpStatusCode status2);
+                      //  SetStatus(Forbidden, out HttpStatusCode status2);
+                        status = Forbidden;
                         return null;
                     }
 
@@ -176,7 +178,8 @@ namespace Boggle
                         {
                             if (!reader.HasRows)
                             {
-                                SetStatus(Forbidden, out HttpStatusCode status2);
+                               // SetStatus(Forbidden, out HttpStatusCode status2);
+                                status = Forbidden;
                                 reader.Close();
                                 trans.Commit();
                                 return null;
@@ -205,7 +208,8 @@ namespace Boggle
 
                                 if (tempPlayer1 == joiningGame.UserToken || tempPlayer2 == joiningGame.UserToken)
                                 {
-                                    SetStatus(Conflict, out HttpStatusCode status2);
+                                  //  SetStatus(Conflict, out HttpStatusCode status2);
+                                    status = Conflict;
                                     reader.Close();
                                     trans.Commit();
                                     return null;
@@ -237,7 +241,8 @@ namespace Boggle
                                 string TempNickname = (string)reader["Nickname"];
 
 
-                                SetStatus(Created, out HttpStatusCode status2);
+                              //  SetStatus(Created, out HttpStatusCode status2);
+                                status = Created;
 
                                 pendingGame.Player2.Nickname = TempNickname;
 
@@ -299,8 +304,9 @@ namespace Boggle
                                 reader.Read();
 
                                 string nickname = (string)reader["Nickname"];
-                                SetStatus(Accepted, out HttpStatusCode status2);
+                              //  SetStatus(Accepted, out HttpStatusCode status2);
 
+                                status = Accepted;
                                 pendingGame.Player1.Nickname = nickname;
 
                                 pendingGame.Player1.UserToken = joiningGame.UserToken;
@@ -326,6 +332,7 @@ namespace Boggle
                 }
             }
 
+            status = InternalServerError;
             // Unreachable code to please the constructor
             return null;
         }
