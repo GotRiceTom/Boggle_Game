@@ -398,12 +398,6 @@ namespace Boggle
 
         public ScoreObject PlayWord(WordPlayed wordPlayed, string GameID, out HttpStatusCode status)
         {
-
-            if (!Int32.TryParse(GameID, out int result))
-            {
-                status = Forbidden;
-                return null;
-            }
             //opend the connection to the our database that we made in the static constructor
             using (SqlConnection conn = new SqlConnection(BoggleDB))
             {
@@ -1147,7 +1141,7 @@ namespace Boggle
             }
         }
 
-        public Game GetGameStatus(string Brief, string GameID)
+        public Game GetGameStatus(string Brief, string GameID, out HttpStatusCode status)
         {
             Game activeGame = new Game();
             activeGame.Player1 = new Player();
@@ -1331,8 +1325,10 @@ namespace Boggle
 
                                 else
                                 {
-                                    SetStatus(Forbidden, out HttpStatusCode status2);
+                                    //SetStatus(Forbidden, out HttpStatusCode status2);
+                                    status = Forbidden;
                                     //trans.Commit();
+
                                     return null;
                                 }
                             }
@@ -1345,7 +1341,8 @@ namespace Boggle
                         // if brief is yes and the game is pending
                         if (pendingGameID == GameID)
                         {
-                            SetStatus(OK, out HttpStatusCode status2);
+                            //SetStatus(OK, out HttpStatusCode status2);
+                            status = OK;
                             pendingGame.GameState = "pending";
                             return pendingGame;
                         }
@@ -1354,7 +1351,8 @@ namespace Boggle
                         //if (Brief == "yes" && (activeGames.TryGetValue(GameID, out Game currentGame)))
                         if (Brief == "yes" && (activeGame.GameState == "active"))
                         {
-                            SetStatus(OK, out HttpStatusCode status2);
+                            //SetStatus(OK, out HttpStatusCode status2);
+                            status = OK;
                             activeGame.GameState = "active";
                             currentTime = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
 
@@ -1367,7 +1365,8 @@ namespace Boggle
                         //if (Brief == "yes" && (activeGames.TryGetValue(GameID, out Game completedGame)))
                         if (Brief == "yes" && (activeGame.GameState == "completed"))
                         {
-                            SetStatus(OK, out HttpStatusCode status2);
+                            //SetStatus(OK, out HttpStatusCode status2);
+                            status = OK;
                             activeGame.GameState = "completed";
                             currentTime = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
 
@@ -1385,7 +1384,8 @@ namespace Boggle
                             //check for null
                             if (GameID == null)
                             {
-                                SetStatus(Forbidden, out HttpStatusCode status3);
+                                //SetStatus(Forbidden, out HttpStatusCode status3);
+                                status = Forbidden;
                                 return null;
                             }
 
@@ -1393,13 +1393,15 @@ namespace Boggle
                             //if (!(activeGames.ContainsKey(GameID) || completeGames.ContainsKey(GameID) || pendingGameID == GameID))
                             if (!(activeGame.GameState == "active" || activeGame.GameState == "completed" || pendingGameID == GameID))
                             {
-                                SetStatus(Forbidden, out HttpStatusCode status3);
+                                //SetStatus(Forbidden, out HttpStatusCode status3);
+                                status = Forbidden;
                                 return null;
                             }
 
 
                             // set status code to (OK)
-                            SetStatus(OK, out HttpStatusCode status2);
+                            //SetStatus(OK, out HttpStatusCode status2);
+                            status = OK;
 
                             //if the game is pending
                             if (pendingGameID == GameID)
@@ -1453,6 +1455,7 @@ namespace Boggle
                     }
                 }
 
+                status = Forbidden; //THIS CODE SHOULDN'T BE REACHABLE SO IT SHOULD BE OKAY THAT I SET THE STATUS TO SOMETHING
                 return null;
 
             }

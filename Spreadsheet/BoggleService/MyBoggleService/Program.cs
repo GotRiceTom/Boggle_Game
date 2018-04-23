@@ -53,8 +53,9 @@ namespace MyBoggleService
             private static readonly Regex makeUserPattern = new Regex(@"^POST /BoggleService.svc/users HTTP"); //DO WE WANT THIS TO BE BOGGLESERVICE.SVC??
             private static readonly Regex makeJoinGamePattern = new Regex(@"^POST /BoggleService.svc/games HTTP");
             private static readonly Regex makeCanelGamePattern = new Regex(@"^PUT /BoggleService.svc/games HTTP");
-            private static readonly Regex makePlayWordPattern = new Regex(@"^PUT /BoggleService.svc/games/(\d+) HTTP");
+            private static readonly Regex makePlayWordPattern = new Regex(@"^PUT /BoggleService.svc/games/([\s\S]+) HTTP");
 
+            private static readonly Regex makeGetStatusPattern = new Regex(@"^GET /BoggleService.svc/games/(([\s\S]+)(\?)(brief=(no|yes))) HTTP");
             //Matches a content-length header and extracts the integer
             private static readonly Regex contentLengthPattern = new Regex(@"^content-length: (\d+)", RegexOptions.IgnoreCase);
 
@@ -186,21 +187,49 @@ namespace MyBoggleService
                 else if(makePlayWordPattern.IsMatch(firstLine))
                 {
                     Match m = makePlayWordPattern.Match(firstLine);
- 
-                     string gameID = m.Groups[1].ToString();
+
+                    string gameID = m.Groups[1].ToString();
                     
-
-
                     WordPlayed n = JsonConvert.DeserializeObject<WordPlayed>(line);
 
-                    ScoreObject score = new BoggleService().PlayWord(n, gameID, out HttpStatusCode status);
+                    ScoreObject user = new BoggleService().PlayWord(n,gameID, out HttpStatusCode status);
 
                     String result = "HTTP/1.1 " + (int)status + " " + status + "\r\n";
 
 
                     if ((int)status / 100 == 2)
                     {
-                        String res = JsonConvert.SerializeObject(score);
+                        String res = JsonConvert.SerializeObject(user);
+
+                        result += "Content-Length: " + Encoding.UTF8.GetByteCount(res) + "\r\n" + "\r\n";
+
+                        result += res + "\r\n";
+
+                        Console.WriteLine(result);
+                    }
+                    else
+                    {
+                        result = result + "\r\n";
+                    }
+
+                    ss.BeginSend(result, (x, y) => { ss.Shutdown(SocketShutdown.Both); }, null);
+                }
+                else if (makeGetStatusPattern.IsMatch(firstLine))
+                {
+                    Match m = makeGetStatusPattern.Match(firstLine);
+
+                    string gameID = m.Groups[2].ToString();
+
+                    string brief = m.Groups[5].ToString();
+
+                    Game game = new BoggleService().GetGameStatus(brief, gameID, out HttpStatusCode status);
+
+                    String result = "HTTP/1.1 " + (int)status + " " + status + "\r\n";
+
+
+                    if ((int)status / 100 == 2)
+                    {
+                        String res = JsonConvert.SerializeObject(game);
 
                         result += "Content-Length: " + Encoding.UTF8.GetByteCount(res) + "\r\n" + "\r\n";
 
