@@ -12,25 +12,7 @@ using Newtonsoft.Json;
 
 namespace MyBoggleService
 {
-    //class Program
-    //{
-    //    static void Main (String [] args)
-    //    {
-    //        HttpStatusCode status;
-
-    //        User name = new User { Nickname = "Joe" };
-    //        BoggleService service = new BoggleService();
-    //        Token user = service.CreateUser(name, out status);
-    //        Console.WriteLine(user.UserToken.ToString());
-    //        Console.WriteLine(status.ToString());
-
-    //        // This is our way of preventing the main thread from
-    //        // exiting while the server is in use
-    //        Console.ReadLine();
-
-    //        SS testing ;
-    //    }
-    //}
+   
 
     public class MyServer
     {
@@ -126,11 +108,17 @@ namespace MyBoggleService
                     User n = JsonConvert.DeserializeObject<User>(line);
                     Token user = new BoggleService().CreateUser(n, out HttpStatusCode status);
                     String result = "HTTP/1.1 " + (int)status + " " + status + "\r\n";
+                   
+
                     if((int)status / 100 == 2)
                     {
                         String res = JsonConvert.SerializeObject(user);
-                        result += "Content-Length: " + Encoding.UTF8.GetByteCount(res) +  "\r\n";
-                        result += res;
+                        
+                        result += "Content-Length: " + Encoding.UTF8.GetByteCount(res) +  "\r\n" + "\r\n";
+
+                        result += res + "\r\n";
+
+                        Console.WriteLine(result);
                     }
                     else
                     {
