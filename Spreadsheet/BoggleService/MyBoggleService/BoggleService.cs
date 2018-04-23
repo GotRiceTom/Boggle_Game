@@ -338,19 +338,21 @@ namespace Boggle
         }
 
 
-        public void CancelJoinRequest(Token UserToken)
+        public void CancelJoinRequest(Token UserToken, out HttpStatusCode status)
         {
             //check for nulls
             if (pendingGame.Player1 == null)
             {
-                SetStatus(Forbidden, out HttpStatusCode status2);
+               // SetStatus(Forbidden, out HttpStatusCode status2);
+                status = Forbidden;
                 return;
             }
 
             // If the usertoken isn't in a pending game, return forbidden
             if (pendingGame.Player1.UserToken != UserToken.UserToken)
             {
-                SetStatus(Forbidden, out HttpStatusCode status2);
+                //SetStatus(Forbidden, out HttpStatusCode status2);
+                status = Forbidden;
                 return;
             }
 
@@ -374,7 +376,8 @@ namespace Boggle
                         {
                             if (!reader.HasRows)
                             {
-                                SetStatus(Forbidden, out HttpStatusCode status3);
+                              //  SetStatus(Forbidden, out HttpStatusCode status3);
+                                status = Forbidden;
                                 reader.Close();
                                 trans.Commit();
 
@@ -387,13 +390,20 @@ namespace Boggle
                     //activePlayers.Remove(UserToken.UserToken);
                     pendingGame = new Game();
                     pendingGame.GameState = "pending";
-                    SetStatus(OK, out HttpStatusCode status2);
+                  //  SetStatus(OK, out HttpStatusCode status2);
+                    status = OK;
                 }
             }
         }
 
-        public ScoreObject PlayWord(WordPlayed wordPlayed, string GameID)
+        public ScoreObject PlayWord(WordPlayed wordPlayed, string GameID, out HttpStatusCode status)
         {
+
+            if (!Int32.TryParse(GameID, out int result))
+            {
+                status = Forbidden;
+                return null;
+            }
             //opend the connection to the our database that we made in the static constructor
             using (SqlConnection conn = new SqlConnection(BoggleDB))
             {
@@ -481,8 +491,9 @@ namespace Boggle
 
                                 else
                                 {
-                                    SetStatus(Forbidden, out HttpStatusCode status2);
-                                    //trans.Commit();
+                                 //   SetStatus(Forbidden, out HttpStatusCode status2);
+
+                                    status = Forbidden;
                                     return null;
                                 }
                             }
@@ -508,7 +519,9 @@ namespace Boggle
                                 //set value game to complete
                                 activeGame.GameState = "completed";  // DO WE NEED TO SET THE GAME TO CONFLICT IN THE DATABASE HERE? ----------------------------------------------------------
 
-                                SetStatus(Conflict, out HttpStatusCode status2);
+                                //SetStatus(Conflict, out HttpStatusCode status2);
+
+                                status = Conflict;
                                 return null;
                             }
                         }
@@ -516,7 +529,9 @@ namespace Boggle
 
                         if (activeGame.Player1.UserToken != wordPlayed.UserToken && activeGame.Player2.UserToken != wordPlayed.UserToken)
                         {
-                            SetStatus(Forbidden, out HttpStatusCode status2);
+                           // SetStatus(Forbidden, out HttpStatusCode status2);
+
+                            status = Forbidden;
                             return null;
                         }
 
@@ -524,7 +539,9 @@ namespace Boggle
                         //if this code runs, we already know the game isn't active. So if it's not pending, we should respond with forbidden.
                         if (activeGame.GameState == "pending" || activeGame.GameState == "completed")
                         {
-                            SetStatus(Conflict, out HttpStatusCode status2);
+                         //   SetStatus(Conflict, out HttpStatusCode status2);
+
+                            status = Conflict;
                             return null;
                         }
 
@@ -532,7 +549,9 @@ namespace Boggle
 
                         if (wordPlayed.Word == null || wordPlayed.Word.Trim().Length > 30 || wordPlayed.Word.Trim().Length == 0 || activeGame.GameState != "active")
                         {
-                            SetStatus(Forbidden, out HttpStatusCode status2);
+                           // SetStatus(Forbidden, out HttpStatusCode status2);
+
+                            status = Forbidden;
                             return null;
                         }
 
@@ -543,14 +562,17 @@ namespace Boggle
                             //check if the usertoken is not a player in the gameID
                             if (game.Player1.UserToken != wordPlayed.UserToken && game.Player2.UserToken != wordPlayed.UserToken)
                             {
-                                SetStatus(Forbidden, out HttpStatusCode status3);
+                               // SetStatus(Forbidden, out HttpStatusCode status3);
+
+                                status = Forbidden;
                                 return null;
                             }
 
                             //check if the game is set to something other than active
                             if (game.GameState != "active")
                             {
-                                SetStatus(Conflict, out HttpStatusCode status4);
+                              //  SetStatus(Conflict, out HttpStatusCode status4);
+                                status = Conflict;
                                 return null;
                             }
 
@@ -561,7 +583,9 @@ namespace Boggle
 
                             ScoreObject scoreObject = new ScoreObject();
 
-                            SetStatus(OK, out HttpStatusCode status2);
+                           // SetStatus(OK, out HttpStatusCode status2);
+
+                            status = OK;
 
                             // check who's userToken is this belong to
                             if (game.Player1.UserToken == wordPlayed.UserToken)
@@ -591,6 +615,7 @@ namespace Boggle
 
                                 //InsertWordIntoDatabase(string word, string gameID, string userToken, int score)
                                 InsertWordIntoDatabase(wordPlayed.Word, GameID, wordPlayed.UserToken, 0); //-----------------------------------------------------------------------------------------------------------------
+
 
                                 return scoreObject;
                             }

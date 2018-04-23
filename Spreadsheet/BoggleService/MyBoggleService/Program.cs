@@ -52,6 +52,9 @@ namespace MyBoggleService
             //matches the first line fo a "make user" request
             private static readonly Regex makeUserPattern = new Regex(@"^POST /BoggleService.svc/users HTTP"); //DO WE WANT THIS TO BE BOGGLESERVICE.SVC??
             private static readonly Regex makeJoinGamePattern = new Regex(@"^POST /BoggleService.svc/games HTTP");
+            private static readonly Regex makeCanelGamePattern = new Regex(@"^PUT /BoggleService.svc/games HTTP");
+            private static readonly Regex makePlayWordPattern = new Regex(@"^PUT /BoggleService.svc/games/(\d+) HTTP");
+
             //Matches a content-length header and extracts the integer
             private static readonly Regex contentLengthPattern = new Regex(@"^content-length: (\d+)", RegexOptions.IgnoreCase);
 
@@ -141,6 +144,63 @@ namespace MyBoggleService
                     if ((int)status / 100 == 2)
                     {
                         String res = JsonConvert.SerializeObject(user);
+
+                        result += "Content-Length: " + Encoding.UTF8.GetByteCount(res) + "\r\n" + "\r\n";
+
+                        result += res + "\r\n";
+
+                        Console.WriteLine(result);
+                    }
+                    else
+                    {
+                        result = result + "\r\n";
+                    }
+
+                    ss.BeginSend(result, (x, y) => { ss.Shutdown(SocketShutdown.Both); }, null);
+
+                }
+                else if (makeCanelGamePattern.IsMatch(firstLine))
+                {
+
+                    Token n = JsonConvert.DeserializeObject<Token>(line);
+
+                    new BoggleService().CancelJoinRequest(n, out HttpStatusCode status);
+
+                    String result = "HTTP/1.1 " + (int)status + " " + status + "\r\n";
+
+
+                    if ((int)status / 100 == 2)
+                    {
+
+                        result += "\r\n";
+
+                        Console.WriteLine(result);
+                    }
+                    else
+                    {
+                        result = result + "\r\n";
+                    }
+
+                    ss.BeginSend(result, (x, y) => { ss.Shutdown(SocketShutdown.Both); }, null);
+                }
+                else if(makePlayWordPattern.IsMatch(firstLine))
+                {
+                    Match m = makePlayWordPattern.Match(firstLine);
+ 
+                     string gameID = m.Groups[1].ToString();
+                    
+
+
+                    WordPlayed n = JsonConvert.DeserializeObject<WordPlayed>(line);
+
+                    ScoreObject score = new BoggleService().PlayWord(n, gameID, out HttpStatusCode status);
+
+                    String result = "HTTP/1.1 " + (int)status + " " + status + "\r\n";
+
+
+                    if ((int)status / 100 == 2)
+                    {
+                        String res = JsonConvert.SerializeObject(score);
 
                         result += "Content-Length: " + Encoding.UTF8.GetByteCount(res) + "\r\n" + "\r\n";
 
