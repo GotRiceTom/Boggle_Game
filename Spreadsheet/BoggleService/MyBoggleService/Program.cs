@@ -132,6 +132,10 @@ namespace MyBoggleService
                         result += "Content-Length: " + Encoding.UTF8.GetByteCount(res) +  "\r\n";
                         result += res;
                     }
+                    else
+                    {
+                        result = result + "\r\n";
+                    }
 
                     ss.BeginSend(result, (x, y) => { ss.Shutdown(SocketShutdown.Both); }, null);
  
